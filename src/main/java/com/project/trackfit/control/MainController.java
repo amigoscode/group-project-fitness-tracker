@@ -1,29 +1,26 @@
 package com.project.trackfit.control;
 
 import com.project.trackfit.model.Customer;
+import com.project.trackfit.service.CustomerService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("customers")
+@AllArgsConstructor
+@RequestMapping("api/customers")
 public class MainController {
+
+    private CustomerService customerService;
 
     /**
      * Spring Boot REST API returns a Customer
-     * http://[::1]:8080/customers/customer
+     * http://[::1]:8080/api/customers/customer
      */
-    @GetMapping("customer")
-    public ResponseEntity<Customer> getCustomer(){
-        Customer customer = new Customer(
-                1,
-                "Andreas",
-                "Kreouzos",
-                37,
-                "andreas.kreouzos@email.com",
-                "Athens, Greece"
-                );
-        return ResponseEntity.ok().body(customer);
+    @PostMapping
+    public ResponseEntity<Customer> createUser(@RequestBody Customer customer){
+        Customer savedCustomer = customerService.createCustomer(customer);
+        return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
     }
 }
