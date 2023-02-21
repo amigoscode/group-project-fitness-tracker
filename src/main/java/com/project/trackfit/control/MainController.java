@@ -15,8 +15,8 @@ public class MainController {
     private CustomerService customerService;
 
     /**
-     * Spring Boot REST API returns a Customer
-     * http://[::1]:8080/api/customers/customer
+     * Spring Boot REST API creates a Customer
+     * http://[::1]:8080/api/customers/
      */
     @PostMapping
     public ResponseEntity<Customer> createUser(@RequestBody Customer customer){
