@@ -27,7 +27,7 @@ public class MainControllerTest {
     @Test
     @DisplayName("Should return the student which created through a post request")
     public void createUser() throws Exception {
-        mockMvc.perform(post("/api/customers")
+        mockMvc.perform(post("/api/v1/customers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayLoad))
                 .andExpect(status().isCreated())
