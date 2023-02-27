@@ -1,7 +1,7 @@
 package com.project.trackfit.control;
 
-import com.project.trackfit.model.Customer;
-import com.project.trackfit.service.CustomerService;
+import com.project.trackfit.model.User;
+import com.project.trackfit.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/customers")
+@RequestMapping("api/v1/registrations")
 public class MainController {
 
-    private CustomerService customerService;
+    private UserService userService;
 
     /**
-     * Spring Boot REST API creates a Customer
-     * http://[::1]:8080/api/v1/customers/
+     * Spring Boot REST API creates a User
+     * http://[::1]:8080/api/v1/registrations/
      */
     @PostMapping
-    public ResponseEntity<Customer> createUser(@RequestBody Customer customer){
-        Customer savedCustomer = customerService.createCustomer(customer);
-        return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestBody User user){
+        User savedUser = userService.createUser(user);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 }
