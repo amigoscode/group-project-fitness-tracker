@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/registrations")
+@RequestMapping("api/v1")
 public class MainController {
 
     private UserService userService;
@@ -18,9 +18,19 @@ public class MainController {
      * Spring Boot REST API creates a User
      * http://[::1]:8080/api/v1/registrations/
      */
-    @PostMapping
+    @PostMapping("/registrations")
     public ResponseEntity<User> createUser(@RequestBody User user){
         User savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    /**
+     * Spring Boot REST API gets a User by Id
+     * http://[::1]:8080/api/v1/users/{id}
+     */
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId){
+        User user = userService.getUserById(userId);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
