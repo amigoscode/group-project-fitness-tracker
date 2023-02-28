@@ -1,34 +1,33 @@
 package com.project.trackfit.service.impl;
 
-import com.project.trackfit.exception.UserDoesNotExistException;
+import com.project.trackfit.exception.EmailNotValidException;
+import com.project.trackfit.exception.ResourceNotFoundException;
 import com.project.trackfit.model.User;
+import com.project.trackfit.registration.EmailValidator;
 import com.project.trackfit.repository.UserRepository;
 import com.project.trackfit.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
 public class UserServiceImplementation implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final EmailValidator emailValidator;
 
     @Override
     public User createUser(User user) {
+        if (!(emailValidator.checkMailPattern(user.getEmail()))){
+            throw new EmailNotValidException();
+        }
         return userRepository.save(user);
     }
 
     @Override
-    public User getUserById(Long userId) throws UserDoesNotExistException {
-        Optional<User> optionalUser;
-        try {
-            optionalUser = userRepository.findById(userId);
-        } catch (NoSuchElementException e) {
-            throw new UserDoesNotExistException("User Doesn't Exist",e);
-        }
-        return optionalUser.get();
+    public User getUserById(Long userId) {
+        return userRepository
+                .findById(userId)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }
