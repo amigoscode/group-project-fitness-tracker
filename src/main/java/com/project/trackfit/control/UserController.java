@@ -1,5 +1,6 @@
 package com.project.trackfit.control;
 
+import com.project.trackfit.exception.UserDoesNotExistException;
 import com.project.trackfit.model.User;
 import com.project.trackfit.service.UserService;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1")
-public class MainController {
+public class UserController {
 
     private UserService userService;
 
@@ -29,7 +30,7 @@ public class MainController {
      * http://[::1]:8080/api/v1/users/{id}
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId){
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws UserDoesNotExistException {
         User user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
