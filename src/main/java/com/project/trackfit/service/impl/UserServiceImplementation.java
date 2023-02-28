@@ -27,7 +27,7 @@ public class UserServiceImplementation implements UserService {
         try {
             optionalUser = userRepository.findById(userId);
         } catch (NoSuchElementException e) {
-            throw new UserDoesNotExistException("");
+            throw new UserDoesNotExistException("User Doesn't Exist",e);
         }
         return optionalUser.get();
     }
