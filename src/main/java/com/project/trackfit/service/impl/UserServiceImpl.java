@@ -12,16 +12,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImplementation implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final EmailValidator emailValidator;
 
     @Override
-    public User createUser(User user) {
+    public Long createUser(User user) {
         checkEmailValidity(user);
         checkEmailExists(user.getEmail());
-        return userRepository.save(user);
+        return user.getCustomer_id();
     }
 
     @Override

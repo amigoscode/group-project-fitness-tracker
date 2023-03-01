@@ -19,16 +19,16 @@ public class UserController {
      * http://[::1]:8080/api/v1/users/
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User savedUser = userService.createUser(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    public ResponseEntity<Long> createUser(@RequestBody User user){
+        Long savedUserId = userService.createUser(user);
+        return new ResponseEntity<>(savedUserId, HttpStatus.CREATED);
     }
 
     /**
      * Spring Boot REST API gets a User by Id
      * http://[::1]:8080/api/v1/users/{id}
      */
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
         User user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
