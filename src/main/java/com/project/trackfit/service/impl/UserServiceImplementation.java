@@ -1,5 +1,6 @@
 package com.project.trackfit.service.impl;
 
+import com.project.trackfit.exception.EmailAlreadyTakenException;
 import com.project.trackfit.exception.EmailNotValidException;
 import com.project.trackfit.exception.ResourceNotFoundException;
 import com.project.trackfit.model.User;
@@ -18,9 +19,8 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User createUser(User user) {
-        if (!(emailValidator.checkMailPattern(user.getEmail()))){
-            throw new EmailNotValidException();
-        }
+        checkEmailValidity(user);
+        checkEmailExists(user.getEmail());
         return userRepository.save(user);
     }
 
@@ -29,5 +29,17 @@ public class UserServiceImplementation implements UserService {
         return userRepository
                 .findById(userId)
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void checkEmailValidity(User user) {
+        if (!(emailValidator.checkMailPattern(user.getEmail()))){
+            throw new EmailNotValidException();
+        }
+    }
+
+    private void checkEmailExists(String email){
+        if (userRepository.existsByEmail(email)){
+            throw new EmailAlreadyTakenException();
+        }
     }
 }

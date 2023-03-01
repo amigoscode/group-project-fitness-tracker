@@ -28,4 +28,14 @@ public class GlobalExceptionHandler {
         errorResponse.setEx(exception);
         return errorResponse;
     }
+
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleEmailAlreadyTakenException(EmailAlreadyTakenException exception) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage("Email already taken");
+        errorResponse.setEx(exception);
+        return errorResponse;
+    }
 }
