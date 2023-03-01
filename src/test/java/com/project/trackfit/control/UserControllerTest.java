@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class MainControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,7 +32,7 @@ public class MainControllerTest {
     @Test
     @DisplayName("Should return the user which created through a post request")
     public void createUser() throws Exception {
-        ResultActions resultActions = getResultActions();
+        ResultActions resultActions = postRequest();
         resultActions
                 .andExpect(jsonPath("$.customer_id").value(1))
                 .andExpect(jsonPath("$.firstName").value("Andreas"))
@@ -45,7 +45,7 @@ public class MainControllerTest {
     @Test
     @DisplayName("Should return the user by Id through a get request")
     public void getUserById() throws Exception {
-        getResultActions();
+        postRequest();
 
         mockMvc.perform(get("/api/v1/users/1"))
                 .andExpect(status().isOk())
@@ -58,7 +58,7 @@ public class MainControllerTest {
                 .andExpect(jsonPath("$.address").value("Athens, Greece"));
     }
 
-    private ResultActions getResultActions() throws Exception {
+    private ResultActions postRequest() throws Exception {
         return mockMvc.perform(post("/api/v1/registrations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPayLoad))
