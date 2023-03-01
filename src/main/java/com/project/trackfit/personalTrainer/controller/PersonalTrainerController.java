@@ -1,14 +1,16 @@
 package com.project.trackfit.personalTrainer.controller;
-
-import com.project.trackfit.model.User;
+import com.project.trackfit.core.model.CustomResponse;
 import com.project.trackfit.personalTrainer.model.PersonalTrainer;
 import com.project.trackfit.personalTrainer.service.PersonalTrainerService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
+
+import static java.time.LocalDateTime.now;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @AllArgsConstructor
@@ -17,20 +19,46 @@ public class PersonalTrainerController {
     private  final PersonalTrainerService personalTrainerService;
 
     @PostMapping
-    public ResponseEntity<PersonalTrainer> createTrainer(@RequestBody PersonalTrainer personalTrainer){
+    public ResponseEntity<CustomResponse> createTrainer(@RequestBody PersonalTrainer personalTrainer){
         PersonalTrainer performCreate=personalTrainerService.createTrainer(personalTrainer);
-        return new ResponseEntity<>(performCreate, HttpStatus.CREATED);
+        return  ResponseEntity.ok(
+                CustomResponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("Trainer_ID",performCreate.getId()))
+                        .message("Personal Trainer have been Created Successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+
     }
     @GetMapping
-    public ResponseEntity<Iterable<PersonalTrainer>>getAllTrainers(){
-        return new ResponseEntity<>(personalTrainerService.findAllTrainers(),HttpStatus.OK);
+    public ResponseEntity<CustomResponse>getAllTrainers(){
+      return   ResponseEntity.ok(
+                CustomResponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("Personal Trainers",personalTrainerService.findAllTrainers()))
+                        .message("Fetched All Personal Trainers")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+
     }
 
 
     @GetMapping("{id}")
-    public ResponseEntity<PersonalTrainer> getTrainerById(@PathVariable("id") UUID trainerId) {
+    public ResponseEntity<CustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
         PersonalTrainer trainer = personalTrainerService.getTrainerByID(trainerId);
-        return new ResponseEntity<>(trainer, HttpStatus.OK);
+        return   ResponseEntity.ok(
+                CustomResponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("Trainer",trainer))
+                        .message("Fetched All Personal Trainers")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
     }
 }
 
