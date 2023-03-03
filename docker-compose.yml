@@ -1,37 +1,38 @@
+version: '3'
+
 services:
-  postgres:
-    container_name: trackfit-postgres
-    image: postgres
+  mysql:
+    container_name: trackfit-mysql
+    image: mysql:8.0
     environment:
-      POSTGRES_USER: trackfit
-      POSTGRES_PASSWORD: Ge5cyYjWzywx2bG7
-      PGDATA: /data/postgres
+      MYSQL_ROOT_PASSWORD: Ge5cyYjWzywx2bG7
+      MYSQL_DATABASE: fitness_tracker
+      MYSQL_PASSWORD: Ge5cyYjWzywx2bG7
     volumes:
-      - postgres:/data/postgres
+      - mysql:/var/lib/mysql
     ports:
-      - "5332:5432"
+      - "3307:3306"
     networks:
-      - postgres
+      - mysql
     restart: unless-stopped
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: Ge5cyYjWzywx2bG7
     ports:
-      - "5050:80"
+      - "8080:80"
     networks:
-      - postgres
+      - mysql
     restart: unless-stopped
 
 networks:
-  postgres:
+  mysql:
     driver: bridge
 
 volumes:
-  postgres:
-  pgadmin:
+  mysql:

@@ -3,16 +3,13 @@ package com.project.trackfit.personalTrainer.service.impl;
 import com.project.trackfit.exception.EmailAlreadyTakenException;
 import com.project.trackfit.exception.EmailNotValidException;
 import com.project.trackfit.exception.ResourceNotFoundException;
-import com.project.trackfit.model.User;
-import com.project.trackfit.personalTrainer.model.PersonalTrainer;
+import com.project.trackfit.personalTrainer.model.entity.PersonalTrainerEntity;
 import com.project.trackfit.personalTrainer.repository.PersonalTrainerRepo;
 import com.project.trackfit.personalTrainer.service.PersonalTrainerService;
 import com.project.trackfit.registration.EmailValidator;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,31 +19,34 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
     private  final PersonalTrainerRepo personalTrainerRepo;
     private  final EmailValidator emailValidator;
 
+    private PersonalTrainerEntity findOrThrow(final UUID id){
+        return personalTrainerRepo.
+                findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
 
 
 
     //TODO: Preform Create.
     @Override
-    public PersonalTrainer createTrainer(PersonalTrainer personalTrainer) {
-        checkEmailValidity(personalTrainer);
-        checkEmailExists(personalTrainer.getEmail());
-        return personalTrainerRepo.save(personalTrainer);
+    public PersonalTrainerEntity createTrainer(PersonalTrainerEntity personalTrainerEntity) {
+        checkEmailValidity(personalTrainerEntity);
+        checkEmailExists(personalTrainerEntity.getEmail());
+        return personalTrainerRepo.save(personalTrainerEntity);
     }
 
     @Override
-    public PersonalTrainer getTrainerByID(UUID id) {
-        PersonalTrainer trainer = personalTrainerRepo
-                .findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
-        return trainer;
+    public PersonalTrainerEntity getTrainerByID(UUID id) {
+        return findOrThrow(id);
     }
 
     @Override
-    public Iterable<PersonalTrainer> findAllTrainers() {
+    public Iterable<PersonalTrainerEntity> findAllTrainers() {
         return personalTrainerRepo.findAll();
     }
 
-    private void checkEmailValidity(PersonalTrainer trainer) {
+    private void checkEmailValidity(PersonalTrainerEntity trainer) {
         if (!(emailValidator.checkMailPattern(trainer.getEmail()))){
             throw new EmailNotValidException();
         }

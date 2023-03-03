@@ -1,14 +1,14 @@
 package com.project.trackfit.personalTrainer.service;
 
-import com.project.trackfit.personalTrainer.model.PersonalTrainer;
+import com.project.trackfit.personalTrainer.model.entity.PersonalTrainerEntity;
 
 import java.util.UUID;
 
 
 public interface PersonalTrainerService {
-    PersonalTrainer createTrainer(PersonalTrainer personalTrainer);
-    PersonalTrainer getTrainerByID(UUID trainer_id);
+    PersonalTrainerEntity createTrainer(PersonalTrainerEntity personalTrainerEntity);
+    PersonalTrainerEntity getTrainerByID(UUID trainer_id);
 
-    Iterable<PersonalTrainer> findAllTrainers();
+    Iterable<PersonalTrainerEntity> findAllTrainers();
 
 }
