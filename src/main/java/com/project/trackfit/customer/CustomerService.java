@@ -1,8 +1,8 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.customer.Customer;
+import java.util.UUID;
 
 public interface CustomerService {
     Customer createCustomer(Customer customer);
-    Customer getCustomerById(Long userId);
+    Customer getCustomerById(UUID userId);
 }

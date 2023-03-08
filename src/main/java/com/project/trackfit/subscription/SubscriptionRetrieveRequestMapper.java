@@ -12,12 +12,14 @@ import java.util.function.Function;
 @Service
 @AllArgsConstructor
 public class SubscriptionRetrieveRequestMapper implements Function<Subscription,RetrieveSubscriptionRequest> {
+
     private final TrainerRetrieveRequestMapper trainerRetrieveRequestMapper;
-    private  final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
+    private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
+
     @Override
     public RetrieveSubscriptionRequest apply(Subscription subscription) {
-        RetrieveTrainerRequest trainerRequest=trainerRetrieveRequestMapper.apply(subscription.getPersonalTrainer());
-        RetrieveCustomerRequest customerRequest=customerRetrieveRequestMapper.apply(subscription.getCustomer());
+        RetrieveTrainerRequest trainerRequest = trainerRetrieveRequestMapper.apply(subscription.getPersonalTrainer());
+        RetrieveCustomerRequest customerRequest = customerRetrieveRequestMapper.apply(subscription.getCustomer());
         return new RetrieveSubscriptionRequest(
                 subscription.getId(),
                 subscription.getSubscribedAt(),
@@ -25,9 +27,6 @@ public class SubscriptionRetrieveRequestMapper implements Function<Subscription,
                 subscription.getIsActive(),
                 trainerRequest,
                 customerRequest
-
-
-
         );
     }
 }

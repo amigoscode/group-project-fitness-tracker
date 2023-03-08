@@ -15,7 +15,5 @@ public record RetrieveSubscriptionRequest(
          Boolean isActive,
          RetrieveTrainerRequest personalTrainer,
          RetrieveCustomerRequest customer
-
-
         ) {
 }

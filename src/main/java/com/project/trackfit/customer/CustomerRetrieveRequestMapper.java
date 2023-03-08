@@ -8,7 +8,7 @@ public class CustomerRetrieveRequestMapper  implements Function<Customer,Retriev
     @Override
     public RetrieveCustomerRequest apply(Customer customer) {
         return new RetrieveCustomerRequest(
-                customer.getCustomer_id(),
+                customer.getId(),
                 customer.getFirstName(),
                 customer.getLastName(),
                 customer.getEmail(),

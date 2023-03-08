@@ -19,7 +19,5 @@ public class APICustomResponse {
     protected String reason;
     protected String message;
     protected String developerMessage;
-
     protected Object data;
-
 }

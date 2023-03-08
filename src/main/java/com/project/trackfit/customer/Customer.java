@@ -1,6 +1,5 @@
 package com.project.trackfit.customer;
 
-import com.fasterxml.jackson.annotation.*;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,17 +8,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "customers")
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customer_id;
+    @GeneratedValue(strategy = GenerationType.AUTO,
+            generator = "UUID"
+    )
+    @Column(nullable = false, updatable = false)
+    private UUID id;
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
@@ -33,8 +35,6 @@ public class Customer {
 
 
     @OneToMany(mappedBy ="customer")
-
-
     private Set<Subscription> subscriptions;
 
 

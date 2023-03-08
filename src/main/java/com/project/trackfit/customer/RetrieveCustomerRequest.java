@@ -1,12 +1,12 @@
 package com.project.trackfit.customer;
 
+import java.util.UUID;
+
 public record RetrieveCustomerRequest(
-        Long customer_id,
+        UUID id,
         String firstName,
         String LastName,
         String email,
         Integer age
-
-
 ) {
 }
