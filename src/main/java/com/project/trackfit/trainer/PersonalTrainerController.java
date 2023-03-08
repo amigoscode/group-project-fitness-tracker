@@ -1,46 +1,34 @@
 package com.project.trackfit.trainer;
-import com.project.trackfit.core.model.CustomResponse;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+
+import com.project.trackfit.core.model.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.time.LocalDateTime.now;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/trainers")
 public class PersonalTrainerController {
-    private  final PersonalTrainerService personalTrainerService;
-    private  final ModelMapper modelMapper;
+    private final PersonalTrainerService personalTrainerService;
 
-    private RetrieveTrainerRequest convertToDto(PersonalTrainer entity)
-    {
-     return modelMapper.map(entity,RetrieveTrainerRequest.class);
-    }
-    private PersonalTrainer convertToEntity(PersonalTrainerDTO dto)
-    {
-        return modelMapper.map(dto, PersonalTrainer.class);
-    }
     @PostMapping
-    public ResponseEntity<CustomResponse> createTrainer(@Valid @RequestBody PersonalTrainerDTO personalTrainerDTO){
+    public ResponseEntity<APICustomResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest createTrainerRequest) {
 
-        var entity = convertToEntity(personalTrainerDTO);
-        var trainer= personalTrainerService.createTrainer(entity);
-        return  ResponseEntity.ok(
-                CustomResponse.builder()
+        UUID trainerId = personalTrainerService.createTrainer(createTrainerRequest);
+        Map<String, UUID> data = new HashMap<>();
+        data.put("Trainer_ID", trainerId);
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Trainer_ID",trainer.getId()))
+                        .data(data)
                         .message("Personal Trainer have been Created Successfully")
                         .status(OK)
                         .statusCode(OK.value())
@@ -48,15 +36,17 @@ public class PersonalTrainerController {
         );
 
     }
-    @GetMapping
-    public ResponseEntity<CustomResponse>getAllTrainers(){
-        Iterable<RetrieveTrainerRequest> trainers = personalTrainerService.findAllTrainers();
 
-        return   ResponseEntity.ok(
-                CustomResponse.builder()
+    @GetMapping
+    public ResponseEntity<APICustomResponse> getAllTrainers() {
+        Iterable<RetrieveTrainerRequest> trainers = personalTrainerService.findAllTrainers();
+        Map<String, Iterable<RetrieveTrainerRequest>> data = new HashMap<>();
+        data.put("Personal Trainers", trainers);
+
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Personal Trainers",trainers
-                                ))
+                        .data(data)
                         .message("Fetched All Personal Trainers")
                         .status(OK)
                         .statusCode(OK.value())
@@ -67,14 +57,15 @@ public class PersonalTrainerController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity<CustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
+    public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
 
-        RetrieveTrainerRequest trainer = convertToDto(personalTrainerService.getTrainerByID(trainerId));
+        RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
 
-        return   ResponseEntity.ok(
-                CustomResponse.builder()
+
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Trainer",trainer))
+                        .data(trainer)
                         .message("Fetched All Personal Trainers")
                         .status(OK)
                         .statusCode(OK.value())

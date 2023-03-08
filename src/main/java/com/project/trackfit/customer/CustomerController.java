@@ -1,6 +1,6 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.model.CustomResponse;
+import com.project.trackfit.core.model.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,12 +24,12 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/users/
      */
     @PostMapping
-    public ResponseEntity<CustomResponse> createUser(@Valid @RequestBody Customer customer){
+    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody Customer customer) {
         Customer savedUserId = customerService.createCustomer(customer);
-        return  ResponseEntity.ok(
-                CustomResponse.builder()
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("customer_id",savedUserId.getCustomer_id()))
+                        .data(Map.of("customer_id", savedUserId.getCustomer_id()))
                         .message("Customer have been Created Successfully")
                         .status(OK)
                         .statusCode(OK.value())

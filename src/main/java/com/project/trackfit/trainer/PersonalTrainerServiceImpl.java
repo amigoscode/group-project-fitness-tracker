@@ -14,30 +14,46 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PersonalTrainerServiceImpl implements PersonalTrainerService {
 
-    private  final PersonalTrainerRepo personalTrainerRepo;
-    private  final EmailValidator emailValidator;
-    private  final TrainerRetrieveRequestMapper retrieveRequestMapper;
+    private final PersonalTrainerRepo personalTrainerRepo;
+    private final EmailValidator emailValidator;
+    private final TrainerRetrieveRequestMapper retrieveRequestMapper;
 
-    private PersonalTrainer findOrThrow(final UUID id){
+    private PersonalTrainer findOrThrow(final UUID id) {
         return personalTrainerRepo.
                 findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
 
-
-
     //TODO: Preform Create.
     @Override
-    public PersonalTrainer createTrainer(PersonalTrainer personalTrainer) {
-        checkEmailValidity(personalTrainer);
-        checkEmailExists(personalTrainer.getEmail());
-        return personalTrainerRepo.save(personalTrainer);
+    public UUID createTrainer(CreateTrainerRequest createTrainerRequest) {
+        checkEmailValidity(createTrainerRequest);
+        checkEmailExists(createTrainerRequest.email());
+        //Add Personal Trainer
+        PersonalTrainer personalTrainer = new PersonalTrainer(
+                createTrainerRequest.email(),
+                createTrainerRequest.firstName(),
+                createTrainerRequest.lastName(),
+                createTrainerRequest.phoneNumber()
+        );
+
+        personalTrainerRepo.save(personalTrainer);
+        return personalTrainer.getId();
     }
 
     @Override
     public PersonalTrainer getTrainerByID(UUID id) {
         return findOrThrow(id);
+    }
+
+    @Override
+    public RetrieveTrainerRequest retrieveTrainerByID(UUID trainer_id) {
+        return personalTrainerRepo.
+                findById(trainer_id)
+                .map(retrieveRequestMapper)
+                .orElseThrow(ResourceNotFoundException::new);
+        
     }
 
     @Override
@@ -49,14 +65,14 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
                 .collect(Collectors.toList());
     }
 
-    private void checkEmailValidity(PersonalTrainer trainer) {
-        if (!(emailValidator.checkMailPattern(trainer.getEmail()))){
+    private void checkEmailValidity(CreateTrainerRequest trainer) {
+        if (!(emailValidator.checkMailPattern(trainer.email()))) {
             throw new EmailNotValidException();
         }
     }
 
-    private void checkEmailExists(String email){
-        if (personalTrainerRepo.existsByEmail(email)){
+    private void checkEmailExists(String email) {
+        if (personalTrainerRepo.existsByEmail(email)) {
             throw new EmailAlreadyTakenException();
         }
     }

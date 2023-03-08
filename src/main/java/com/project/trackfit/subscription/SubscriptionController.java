@@ -1,19 +1,12 @@
 package com.project.trackfit.subscription;
 
-import com.project.trackfit.core.model.CustomResponse;
-
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerService;
-import com.project.trackfit.trainer.PersonalTrainer;
-import com.project.trackfit.trainer.PersonalTrainerService;
+import com.project.trackfit.core.model.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,26 +18,19 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RequestMapping("api/v1/subscription")
 public class SubscriptionController {
-    private  final SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
 
-    private  final ModelMapper modelMapper;
-
-    private CreateSubscriptionRequest convertToDto(Subscription entity){
-
-        return  modelMapper.map(entity, CreateSubscriptionRequest.class);
-    }
-    private Subscription convertToEntity(CreateSubscriptionRequest dto){
-        return  modelMapper.map(dto, Subscription.class);
-    }
     @PostMapping
-    public ResponseEntity<CustomResponse>subscribe(@Valid @RequestBody CreateSubscriptionRequest subscriptionRequest){
+    public ResponseEntity<APICustomResponse> subscribe(@Valid @RequestBody CreateSubscriptionRequest subscriptionRequest) {
 
-        subscriptionService.createSubscription(subscriptionRequest);
+        UUID subscriptionId = subscriptionService.createSubscription(subscriptionRequest);
+        Map<String, UUID> data = new HashMap<>();
+        data.put("SubscriptionId", subscriptionId);
 
         return ResponseEntity.ok(
-                CustomResponse.builder()
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Subscription",""))
+                        .data(data)
                         .message("Personal Trainer have been Created Successfully")
                         .status(CREATED)
                         .statusCode(CREATED.value())
@@ -52,14 +38,16 @@ public class SubscriptionController {
         );
 
     }
+
     @GetMapping
-    public ResponseEntity<CustomResponse>getAllSubscriptions(){
-        Iterable<RetrieveSubscriptionRequest>subscriptionRequests=subscriptionService.findAllSubscription();
-        return   ResponseEntity.ok(
-                CustomResponse.builder()
+    public ResponseEntity<APICustomResponse> getAllSubscriptions() {
+        Iterable<RetrieveSubscriptionRequest> subscriptionRequests = subscriptionService.findAllSubscription();
+        Map<String, Iterable<RetrieveSubscriptionRequest>> data = new HashMap<>();
+        data.put("Subscription", subscriptionRequests);
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Subscription",subscriptionRequests
-                        ))
+                        .data(data)
                         .message("Fetched All Subscription")
                         .status(OK)
                         .statusCode(OK.value())
@@ -75,12 +63,14 @@ public class SubscriptionController {
 
      */
     @GetMapping("{subId}")
-    public ResponseEntity<CustomResponse>getSubscriptionDetails(@PathVariable("subId")UUID subId){
-        CreateSubscriptionRequest subscription=convertToDto(subscriptionService.findSubscriptionByID(subId));
-        return   ResponseEntity.ok(
-                CustomResponse.builder()
+    public ResponseEntity<APICustomResponse> getSubscriptionDetails(@PathVariable("subId") UUID subId) {
+        RetrieveSubscriptionRequest subscriptionDetails = subscriptionService.findSubscriptionByID(subId);
+        Map<String, RetrieveSubscriptionRequest> data = new HashMap<>();
+        data.put("SubscriptionDetails", subscriptionDetails);
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("Trainer",subscription))
+                        .data(Map.of("SubscriptionDetails", subscriptionDetails))
                         .message("Fetched All Personal Trainers")
                         .status(OK)
                         .statusCode(OK.value())
