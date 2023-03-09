@@ -1,4 +1,4 @@
-package com.project.trackfit.exception;
+package com.project.trackfit.core.exception;
 
 import lombok.Getter;
 import lombok.Setter;

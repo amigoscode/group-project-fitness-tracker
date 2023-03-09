@@ -1,4 +1,4 @@
-package com.project.trackfit.exception;
+package com.project.trackfit.core.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

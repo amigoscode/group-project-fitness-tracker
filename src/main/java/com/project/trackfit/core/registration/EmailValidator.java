@@ -1,4 +1,4 @@
-package com.project.trackfit.registration;
+package com.project.trackfit.core.registration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

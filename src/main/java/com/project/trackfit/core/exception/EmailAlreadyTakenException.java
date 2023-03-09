@@ -1,4 +1,4 @@
-package com.project.trackfit.exception;
+package com.project.trackfit.core.exception;
 
 public class EmailAlreadyTakenException extends RuntimeException {
     public EmailAlreadyTakenException() {
