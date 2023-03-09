@@ -15,6 +15,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final EmailValidator emailValidator;
+    private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @Override
     public Customer createCustomer(Customer customer) {
@@ -30,14 +31,22 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
+    @Override
+    public RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id) {
+        return customerRepository
+                .findById(customer_id)
+                .map(customerRetrieveRequestMapper)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
     private void checkEmailValidity(Customer customer) {
-        if (!(emailValidator.checkMailPattern(customer.getEmail()))){
+        if (!(emailValidator.checkMailPattern(customer.getEmail()))) {
             throw new EmailNotValidException();
         }
     }
 
-    private void checkEmailExists(String email){
-        if (customerRepository.existsByEmail(email)){
+    private void checkEmailExists(String email) {
+        if (customerRepository.existsByEmail(email)) {
             throw new EmailAlreadyTakenException();
         }
     }

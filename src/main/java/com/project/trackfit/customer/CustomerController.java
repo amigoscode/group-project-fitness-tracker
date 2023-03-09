@@ -3,14 +3,8 @@ package com.project.trackfit.customer;
 import com.project.trackfit.core.model.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +29,7 @@ public class CustomerController {
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("customerId",savedUserId.getId()))
+                        .data(Map.of("customerId", savedUserId.getId()))
                         .message("Customer have been created successfully")
                         .status(OK)
                         .statusCode(OK.value())
@@ -48,8 +42,16 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/users/{id}
      */
     @GetMapping("{id}")
-    public ResponseEntity<Customer> getUserById(@PathVariable("id") UUID userId) {
-        Customer customer = customerService.getCustomerById(userId);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+    public ResponseEntity<APICustomResponse> getUserById(@PathVariable("id") UUID customer_id) {
+        RetrieveCustomerRequest customerRequest = customerService.RetrieveCustomerById(customer_id);
+        return ResponseEntity.ok(
+                APICustomResponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("customer", customerRequest))
+                        .message("Customer have been created successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
     }
 }
