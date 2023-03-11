@@ -33,10 +33,22 @@ public class Customer {
     @Column(nullable = false)
     private String address;
 
-
     @OneToMany(mappedBy ="customer")
     private Set<Subscription> subscriptions;
 
+    public Customer(UUID id,
+                    String firstName,
+                    String lastName,
+                    int age,
+                    String email,
+                    String address) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.address = address;
+    }
 
     public Set<Subscription> getSubscriptions() {
         return subscriptions;
