@@ -10,7 +10,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PersonalTrainerDTO {
-
     private UUID id;
     @NotNull(message = "Email is required")
     private  String email;
@@ -19,8 +18,4 @@ public class PersonalTrainerDTO {
     private  String phoneNumber;
     private  boolean isActivated;
     private Set<Subscription> subscribers;
-
-
-
-
 }

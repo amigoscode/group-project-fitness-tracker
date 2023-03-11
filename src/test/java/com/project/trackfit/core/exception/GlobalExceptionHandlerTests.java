@@ -39,11 +39,11 @@ public class GlobalExceptionHandlerTests {
     @Test
     @DisplayName("Check that EmailNotValidException returns corresponding error response")
     public void handleEmailNotValidException_shouldReturnErrorResponse() {
-        when(emailNotValidException.getMessage()).thenReturn("Invalid email");
+        when(emailNotValidException.getMessage()).thenReturn("Email not valid");
         ErrorResponse response = globalExceptionHandler.handleEmailNotValidException(emailNotValidException);
         assertEquals(HttpStatus.BAD_REQUEST, response.getHttpStatus());
         assertEquals("Email not valid", response.getMessage());
-        assertEquals("Invalid email", response.getEx().getMessage());
+        assertEquals("Email not valid", response.getEx().getMessage());
     }
 
     @Test

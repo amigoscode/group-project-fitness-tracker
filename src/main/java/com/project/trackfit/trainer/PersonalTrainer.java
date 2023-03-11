@@ -18,12 +18,14 @@ import java.util.UUID;
 @AllArgsConstructor
 
 public class PersonalTrainer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
             generator = "UUID"
     )
     @Column(nullable = false, updatable = false)
     private UUID id;
+
     @NotNull(message = "Email is required")
     private String email;
     private String firstName;
@@ -32,12 +34,9 @@ public class PersonalTrainer {
     private boolean isActivated;
 
     @OneToMany(mappedBy = "personalTrainer")
-
-
     private Set<Subscription> subscribers;
     private boolean isSuspended;
     private boolean isExpired;
-
 
     public PersonalTrainer(String email, String firstName, String lastName, String phoneNumber) {
         this.email = email;

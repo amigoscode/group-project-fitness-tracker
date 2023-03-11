@@ -21,7 +21,6 @@ public class PersonalTrainerController {
 
     @PostMapping
     public ResponseEntity<APICustomResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest createTrainerRequest) {
-
         UUID trainerId = personalTrainerService.createTrainer(createTrainerRequest);
         Map<String, UUID> data = new HashMap<>();
         data.put("Trainer_ID", trainerId);
@@ -34,7 +33,6 @@ public class PersonalTrainerController {
                         .statusCode(OK.value())
                         .build()
         );
-
     }
 
     @GetMapping
@@ -52,16 +50,11 @@ public class PersonalTrainerController {
                         .statusCode(OK.value())
                         .build()
         );
-
     }
-
 
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
-
         RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
-
-
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())
@@ -73,4 +66,3 @@ public class PersonalTrainerController {
         );
     }
 }
-
