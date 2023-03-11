@@ -30,7 +30,7 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/customers/
      */
     @PostMapping
-    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody Customer customer) {
+    public ResponseEntity<APICustomResponse> createCustomer(@Valid @RequestBody Customer customer) {
         Customer savedUserId = customerService.createCustomer(customer);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
@@ -48,7 +48,7 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/users/{id}
      */
     @GetMapping("{id}")
-    public ResponseEntity<Customer> getUserById(@PathVariable("id") UUID userId) {
+    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") UUID userId) {
         Customer customer = customerService.getCustomerById(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
