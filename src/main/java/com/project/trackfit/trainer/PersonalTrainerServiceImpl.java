@@ -24,12 +24,10 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    //TODO: Preform Create.
     @Override
     public UUID createTrainer(CreateTrainerRequest createTrainerRequest) {
         checkEmailValidity(createTrainerRequest);
         checkEmailExists(createTrainerRequest.email());
-        //Add Personal Trainer
         PersonalTrainer personalTrainer = new PersonalTrainer(
                 createTrainerRequest.email(),
                 createTrainerRequest.firstName(),

@@ -14,6 +14,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,13 +34,12 @@ public class CustomerServiceImplTests {
     @InjectMocks
     private CustomerServiceImpl customerService;
 
-    private Customer testCustomer;
+    private CreateCustomerRequest testCreateCustomerRequest;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        testCustomer = new Customer(
-                UUID.randomUUID(),
+        testCreateCustomerRequest = new CreateCustomerRequest(
                 "Andreas",
                 "Kreouzos",
                 37,
@@ -52,14 +53,13 @@ public class CustomerServiceImplTests {
     public void testCreateCustomerWithValidEmail() {
         when(emailValidator.checkMailPattern(anyString())).thenReturn(true);
         when(customerRepository.existsByEmail(anyString())).thenReturn(false);
-        when(customerRepository.save(any(Customer.class))).thenReturn(testCustomer);
 
-        Customer createdCustomer = customerService.createCustomer(testCustomer);
+        UUID customerId = customerService.createCustomer(testCreateCustomerRequest);
 
         verify(emailValidator).checkMailPattern(anyString());
         verify(customerRepository).existsByEmail(anyString());
         verify(customerRepository).save(any(Customer.class));
-        assert(createdCustomer).equals(testCustomer);
+        assertNotNull(customerId);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CustomerServiceImplTests {
         when(emailValidator.checkMailPattern(anyString())).thenReturn(false);
 
         assertThrows(EmailNotValidException.class, () -> {
-            customerService.createCustomer(testCustomer);
+            customerService.createCustomer(testCreateCustomerRequest);
         });
 
         verify(emailValidator).checkMailPattern(anyString());
@@ -83,7 +83,7 @@ public class CustomerServiceImplTests {
         when(customerRepository.existsByEmail(anyString())).thenReturn(true);
 
         assertThrows(EmailAlreadyTakenException.class, () -> {
-            customerService.createCustomer(testCustomer);
+            customerService.createCustomer(testCreateCustomerRequest);
         });
 
         verify(emailValidator).checkMailPattern(anyString());
@@ -94,13 +94,14 @@ public class CustomerServiceImplTests {
     @Test
     @DisplayName("Check getCustomerById method with valid Id")
     public void testGetCustomerByIdWithValidId() {
-        UUID testCustomerId = testCustomer.getId();
-        when(customerRepository.findById(testCustomerId)).thenReturn(Optional.of(testCustomer));
+        UUID customerId = UUID.randomUUID();
+        Customer expectedCustomer = new Customer(customerId, "John", "Doe", 30, "johndoe@example.com", "123 Main St");
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(expectedCustomer));
 
-        Customer retrievedCustomer = customerService.getCustomerById(testCustomerId);
+        Customer result = customerService.getID(customerId);
 
-        verify(customerRepository).findById(testCustomerId);
-        assert(retrievedCustomer).equals(testCustomer);
+        verify(customerRepository).findById(customerId);
+        assertEquals(expectedCustomer, result);
     }
 
     @Test
@@ -110,7 +111,7 @@ public class CustomerServiceImplTests {
         when(customerRepository.findById(invalidCustomerId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            customerService.getCustomerById(invalidCustomerId);
+            customerService.getID(invalidCustomerId);
         });
 
         verify(customerRepository).findById(invalidCustomerId);

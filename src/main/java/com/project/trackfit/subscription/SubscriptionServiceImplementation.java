@@ -20,7 +20,6 @@ public class SubscriptionServiceImplementation implements SubscriptionService {
     private final CustomerService customerService;
     private final SubscriptionRetrieveRequestMapper retrieveRequestMapper;
 
-
     private RetrieveSubscriptionRequest findOrThrow(final UUID subId) {
         return subscriptionRepository
                 .findById(subId)
@@ -30,11 +29,8 @@ public class SubscriptionServiceImplementation implements SubscriptionService {
 
     @Override
     public UUID createSubscription(CreateSubscriptionRequest subscriptionRequest) {
-
         PersonalTrainer trainer = personalTrainerService.getTrainerByID(subscriptionRequest.personalTrainerId());
-        Customer currentCustomer = customerService.getCustomerById(subscriptionRequest.customerId());
-
-        //Subscribe
+        Customer currentCustomer = customerService.getID(subscriptionRequest.customerId());
 
         Subscription subscribe = new Subscription(
                 subscriptionRequest.subscribedAt(),
@@ -50,7 +46,6 @@ public class SubscriptionServiceImplementation implements SubscriptionService {
     @Override
     public RetrieveSubscriptionRequest findSubscriptionByID(UUID subscription_id) {
         return findOrThrow(subscription_id);
-
     }
 
     @Override

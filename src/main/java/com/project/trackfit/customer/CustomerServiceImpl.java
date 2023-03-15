@@ -15,23 +15,41 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final EmailValidator emailValidator;
+    private final CustomerRetrieveRequestMapper retrieveRequestMapper;
 
     @Override
-    public Customer createCustomer(Customer customer) {
-        checkEmailValidity(customer);
-        checkEmailExists(customer.getEmail());
-        return customerRepository.save(customer);
+    public UUID createCustomer(CreateCustomerRequest createCustomerRequest) {
+        checkEmailValidity(createCustomerRequest);
+        checkEmailExists(createCustomerRequest.email());
+        Customer customer = new Customer(
+                UUID.randomUUID(),
+                createCustomerRequest.firstName(),
+                createCustomerRequest.lastName(),
+                createCustomerRequest.age(),
+                createCustomerRequest.email(),
+                createCustomerRequest.address()
+        );
+        customerRepository.save(customer);
+        return customer.getId();
     }
 
     @Override
-    public Customer getCustomerById(UUID userId) {
+    public Customer getID(UUID customer_id) {
         return customerRepository
-                .findById(userId)
+                .findById(customer_id)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    private void checkEmailValidity(Customer customer) {
-        if (!(emailValidator.checkMailPattern(customer.getEmail()))){
+    @Override
+    public RetrieveCustomerRequest getCustomerById(UUID userId) {
+        return customerRepository
+                .findById(userId)
+                .map(retrieveRequestMapper)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void checkEmailValidity(CreateCustomerRequest customer) {
+        if (!(emailValidator.checkMailPattern(customer.email()))){
             throw new EmailNotValidException();
         }
     }

@@ -17,6 +17,7 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RequestMapping("api/v1/trainers")
 public class PersonalTrainerController {
+
     private final PersonalTrainerService personalTrainerService;
 
     @PostMapping
