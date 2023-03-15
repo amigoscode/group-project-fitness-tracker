@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class PersonalTrainerController {
     private final PersonalTrainerService personalTrainerService;
 
     @PostMapping
-    public ResponseEntity<APICustomResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest createTrainerRequest) {
+    public ResponseEntity<APICustomResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest createTrainerRequest) throws NoSuchAlgorithmException {
 
         UUID trainerId = personalTrainerService.createTrainer(createTrainerRequest);
         Map<String, UUID> data = new HashMap<>();

@@ -4,9 +4,14 @@ import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.core.registration.EmailValidator;
+import com.project.trackfit.core.util.SaltHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,6 +22,22 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
     private final PersonalTrainerRepo personalTrainerRepo;
     private final EmailValidator emailValidator;
     private final TrainerRetrieveRequestMapper retrieveRequestMapper;
+    private byte [] createSalt(){
+        var random = new SecureRandom();
+        var salt =new byte[128];
+        random.nextBytes(salt);
+        return salt;
+
+    }
+
+    private byte[] createPasswordHash(String password , byte[]salt) throws NoSuchAlgorithmException{
+        var md= MessageDigest.getInstance("SHA-512");
+        md.update(salt);
+        return md.digest(
+                password.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
 
     private PersonalTrainer findOrThrow(final UUID id) {
         return personalTrainerRepo.
@@ -27,15 +48,25 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
 
     //TODO: Preform Create.
     @Override
-    public UUID createTrainer(CreateTrainerRequest createTrainerRequest) {
+    public UUID createTrainer(CreateTrainerRequest createTrainerRequest) throws NoSuchAlgorithmException {
         checkEmailValidity(createTrainerRequest);
         checkEmailExists(createTrainerRequest.email());
+        if(createTrainerRequest.password().isBlank()) throw new IllegalArgumentException(
+                "Password is required"
+        );
+        byte[] salt= createSalt();
+        byte[] hashedPassword=
+                createPasswordHash(createTrainerRequest.password(), salt);
+
         //Add Personal Trainer
         PersonalTrainer personalTrainer = new PersonalTrainer(
                 createTrainerRequest.email(),
                 createTrainerRequest.firstName(),
                 createTrainerRequest.lastName(),
-                createTrainerRequest.phoneNumber()
+                createTrainerRequest.phoneNumber(),
+                salt,
+                hashedPassword
+
         );
 
         personalTrainerRepo.save(personalTrainer);

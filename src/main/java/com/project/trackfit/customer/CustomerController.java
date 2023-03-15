@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,12 +25,12 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/customers/
      */
     @PostMapping
-    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody Customer customer) {
-        Customer savedUserId = customerService.createCustomer(customer);
+    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateCustomerRequest customer) throws NoSuchAlgorithmException {
+        UUID savedUserId = customerService.createCustomer(customer);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())
-                        .data(Map.of("customerId", savedUserId.getId()))
+                        .data(Map.of("customerId", savedUserId))
                         .message("Customer have been created successfully")
                         .status(OK)
                         .statusCode(OK.value())
