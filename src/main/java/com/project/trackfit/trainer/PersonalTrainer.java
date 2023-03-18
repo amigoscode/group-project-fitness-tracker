@@ -16,7 +16,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class PersonalTrainer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
@@ -33,17 +32,11 @@ public class PersonalTrainer {
     private boolean isActivated;
 
     @OneToMany(mappedBy = "personalTrainer")
-
-
     private Set<Subscription> subscribers;
     private boolean isSuspended;
     private boolean isExpired;
 
-
-    public PersonalTrainer(
-            ApplicationUser applicationUser
-    ) {
+    public PersonalTrainer(ApplicationUser applicationUser) {
         this.user=applicationUser;
     }
-
 }

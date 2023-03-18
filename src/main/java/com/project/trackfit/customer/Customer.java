@@ -26,29 +26,19 @@ public class Customer {
     @OneToOne
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
-
     private int age;
-
     private String address;
-
 
     @OneToMany(mappedBy ="customer")
     private Set<Subscription> subscriptions;
 
-    public Customer(
-           ApplicationUser applicationUser
-            ) {
+    public Customer(ApplicationUser applicationUser) {
         this.user=applicationUser;
     }
-
-
     public Set<Subscription> getSubscriptions() {
         return subscriptions;
     }
-
     public void setSubscriptions(Set<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
     }
-
-
 }

@@ -24,11 +24,9 @@ public class SubscriptionController {
 
     @PostMapping
     public ResponseEntity<APICustomResponse> subscribe(@Valid @RequestBody CreateSubscriptionRequest subscriptionRequest) {
-
         UUID subscriptionId = subscriptionService.createSubscription(subscriptionRequest);
         Map<String, UUID> data = new HashMap<>();
         data.put("SubscriptionId", subscriptionId);
-
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())
@@ -58,12 +56,6 @@ public class SubscriptionController {
 
     }
 
-    /*
-        TODO:
-        MAKE CALL TO FETCH THE AUTHENTICATED
-        USER SUBSCRIPTIONS
-
-     */
     @GetMapping("{subId}")
     public ResponseEntity<APICustomResponse> getSubscriptionDetails(@PathVariable("subId") UUID subId) {
         RetrieveSubscriptionRequest subscriptionDetails = subscriptionService.findSubscriptionByID(subId);
@@ -79,5 +71,4 @@ public class SubscriptionController {
                         .build()
         );
     }
-
 }

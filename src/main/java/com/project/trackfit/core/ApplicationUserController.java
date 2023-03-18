@@ -2,7 +2,6 @@ package com.project.trackfit.core;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,13 +21,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 @AllArgsConstructor
 @RequestMapping("/api/v1/auth/register")
 public class ApplicationUserController {
+
     private  final ApplicationUserService applicationUserService;
+
     @PostMapping
-    public ResponseEntity<APICustomResponse>createUser(
-            @Valid
-            @RequestBody
-            CreateUserRequest createUserRequest) throws NoSuchAlgorithmException {
-        UUID userId=applicationUserService.createUser(createUserRequest);
+    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateUserRequest createUserRequest)
+            throws NoSuchAlgorithmException {
+        UUID userId = applicationUserService.createUser(createUserRequest);
         Map<String, UUID> data = new HashMap<>();
         data.put("User_Id", userId);
         return new ResponseEntity(
@@ -41,6 +40,5 @@ public class ApplicationUserController {
                         .build(),
                 CREATED
         );
-
     }
 }

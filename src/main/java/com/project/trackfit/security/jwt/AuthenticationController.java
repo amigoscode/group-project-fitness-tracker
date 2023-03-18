@@ -1,8 +1,6 @@
 package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.trainer.PersonalTrainer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,12 +16,10 @@ class AuthenticateController {
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
 
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public AuthenticationResponse authenticateCustomer(
-            @RequestBody AuthenticationRequest req
-    ) throws Exception {
+    public AuthenticationResponse authenticateCustomer(@RequestBody AuthenticationRequest req)
+            throws Exception {
       ApplicationUser user;
 
         try {
@@ -38,5 +34,4 @@ class AuthenticateController {
 
         return new AuthenticationResponse(jwt);
     }
-
 }

@@ -1,18 +1,10 @@
 package com.project.trackfit.trainer;
 
-import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.core.exception.EmailNotValidException;
+import com.project.trackfit.core.ApplicationUser;;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.registration.EmailValidator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,8 +14,6 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
 
     private final PersonalTrainerRepo personalTrainerRepo;
     private final TrainerRetrieveRequestMapper retrieveRequestMapper;
-
-
 
     private PersonalTrainer findOrThrow(final UUID id) {
         return personalTrainerRepo.
@@ -53,7 +43,6 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
                 findById(trainer_id)
                 .map(retrieveRequestMapper)
                 .orElseThrow(ResourceNotFoundException::new);
-        
     }
 
     @Override
@@ -64,5 +53,4 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
                 .map(retrieveRequestMapper)
                 .collect(Collectors.toList());
     }
-
 }

@@ -1,13 +1,14 @@
 package com.project.trackfit.customer;
 
 import com.project.trackfit.core.APICustomResponse;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,13 +24,8 @@ public class CustomerController {
     private final CustomerService customerService;
 
     /**
-     * Spring Boot REST API creates a User
-     * http://[::1]:8080/api/v1/customers/
-     */
-
-    /**
      * Spring Boot REST API gets a User by Id
-     * http://[::1]:8080/api/v1/users/{id}
+     * http://[::1]:8080/api/v1/customers/{id}
      */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getUserById(@PathVariable("id") UUID customer_id) {

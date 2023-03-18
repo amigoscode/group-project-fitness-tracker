@@ -1,9 +1,9 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.core.exception.EmailNotValidException;
+import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.validation.EmailValidator;
+import com.project.trackfit.core.Role;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,89 +27,114 @@ public class CustomerServiceImplTests {
     private CustomerRepository customerRepository;
 
     @Mock
-    private EmailValidator emailValidator;
+    private CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @InjectMocks
     private CustomerServiceImpl customerService;
 
-    private CreateCustomerRequest testCreateCustomerRequest;
+    private ApplicationUser testApplicationUser;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        testCreateCustomerRequest = new CreateCustomerRequest(
+        testApplicationUser = new ApplicationUser (
+                "andreas.kreouzos@hotmail.com",
                 "Andreas",
                 "Kreouzos",
-                37,
-                "andreas.kreouzos@hotmail.com",
-                "Athens, Greece"
+                new byte[] {},
+                new byte[] {},
+                Role.CUSTOMER
         );
     }
 
     @Test
     @DisplayName("Check createCustomer method with valid Email address")
-    public void testCreateCustomerWithValidEmail() {
-        when(emailValidator.checkMailPattern(anyString())).thenReturn(true);
-        when(customerRepository.existsByEmail(anyString())).thenReturn(false);
+    public void testCreateCustomer() {
+        UUID expectedCustomerId = UUID.randomUUID();
+        when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> {
+            Customer savedCustomer = invocation.getArgument(0);
+            savedCustomer.setId(expectedCustomerId);
+            return savedCustomer;
+        });
 
-        UUID customerId = customerService.createCustomer(testCreateCustomerRequest);
+        UUID actualCustomerId = customerService.createCustomer(testApplicationUser);
 
-        verify(emailValidator).checkMailPattern(anyString());
-        verify(customerRepository).existsByEmail(anyString());
         verify(customerRepository).save(any(Customer.class));
-        assertNotNull(customerId);
-    }
-
-    @Test
-    @DisplayName("Check createCustomer method with invalid Email address")
-    public void testCreateCustomerWithInvalidEmail() {
-        when(emailValidator.checkMailPattern(anyString())).thenReturn(false);
-
-        assertThrows(EmailNotValidException.class, () -> {
-            customerService.createCustomer(testCreateCustomerRequest);
-        });
-
-        verify(emailValidator).checkMailPattern(anyString());
-        verify(customerRepository, never()).existsByEmail(anyString());
-        verify(customerRepository, never()).save(any(Customer.class));
-    }
-
-    @Test
-    @DisplayName("Check createCustomer method with already taken Email address")
-    public void testCreateCustomerWithEmailAlreadyTaken() {
-        when(emailValidator.checkMailPattern(anyString())).thenReturn(true);
-        when(customerRepository.existsByEmail(anyString())).thenReturn(true);
-
-        assertThrows(EmailAlreadyTakenException.class, () -> {
-            customerService.createCustomer(testCreateCustomerRequest);
-        });
-
-        verify(emailValidator).checkMailPattern(anyString());
-        verify(customerRepository).existsByEmail(anyString());
-        verify(customerRepository, never()).save(any(Customer.class));
+        assertNotNull(actualCustomerId);
+        assertEquals(expectedCustomerId, actualCustomerId);
     }
 
     @Test
     @DisplayName("Check getCustomerById method with valid Id")
     public void testGetCustomerByIdWithValidId() {
         UUID customerId = UUID.randomUUID();
-        Customer expectedCustomer = new Customer(customerId, "John", "Doe", 30, "johndoe@example.com", "123 Main St");
+        Customer expectedCustomer = new Customer();
+        expectedCustomer.setId(customerId);
+        expectedCustomer.setUser(testApplicationUser);
+
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(expectedCustomer));
 
-        Customer result = customerService.getID(customerId);
+        Customer result = customerService.getCustomerById(customerId);
 
         verify(customerRepository).findById(customerId);
         assertEquals(expectedCustomer, result);
     }
 
     @Test
-    @DisplayName("Check createCustomer method with invalid Id")
+    @DisplayName("Check getCustomerById method with invalid Id")
     public void testGetCustomerByIdWithInvalidId() {
         UUID invalidCustomerId = UUID.randomUUID();
         when(customerRepository.findById(invalidCustomerId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            customerService.getID(invalidCustomerId);
+            customerService.getCustomerById(invalidCustomerId);
+        });
+
+        verify(customerRepository).findById(invalidCustomerId);
+    }
+
+    @Test
+    @DisplayName("Check RetrieveCustomerById method with valid Id")
+    public void testRetrieveCustomerByIdWithValidId() {
+        UUID customerId = UUID.randomUUID();
+        ApplicationUser testApplicationUser = new ApplicationUser(
+                "andreas.kreouzos@hotmail.com",
+                "Andreas",
+                "Kreouzos",
+                new byte[]{},
+                new byte[]{},
+                Role.CUSTOMER
+        );
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        customer.setUser(testApplicationUser);
+
+        RetrieveCustomerRequest expectedRetrieveCustomerRequest = new RetrieveCustomerRequest(
+                customerId,
+                "Andreas",
+                "Kreouzos",
+                0,
+                "andreas.kreouzos@hotmail.com",
+                null
+        );
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(customerRetrieveRequestMapper.apply(customer)).thenReturn(expectedRetrieveCustomerRequest);
+
+        RetrieveCustomerRequest result = customerService.RetrieveCustomerById(customerId);
+
+        verify(customerRepository).findById(customerId);
+        verify(customerRetrieveRequestMapper).apply(customer);
+        assertEquals(expectedRetrieveCustomerRequest, result);
+    }
+
+    @Test
+    @DisplayName("Check RetrieveCustomerById method with invalid Id")
+    public void testRetrieveCustomerByIdWithInvalidId() {
+        UUID invalidCustomerId = UUID.randomUUID();
+        when(customerRepository.findById(invalidCustomerId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            customerService.RetrieveCustomerById(invalidCustomerId);
         });
 
         verify(customerRepository).findById(invalidCustomerId);

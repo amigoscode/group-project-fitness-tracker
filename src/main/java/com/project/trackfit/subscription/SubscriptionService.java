@@ -1,6 +1,5 @@
 package com.project.trackfit.subscription;
 
-
 import java.util.UUID;
 
 public interface SubscriptionService {

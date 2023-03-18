@@ -23,7 +23,6 @@ import java.util.function.Function;
 public class JwtService {
     final String SECRET_KEY="6E5A7234753778214125442A472D4B614E645267556B58703273357638792F42";
     private String createToken( Map<String,Object> claims, String subject){
-
                 return Jwts
                         .builder()
                         .setClaims(claims)
@@ -34,16 +33,18 @@ public class JwtService {
                         .signWith(SignatureAlgorithm.HS256, String.valueOf(SECRET_KEY))
                         .compact();
     }
+
     public String generateToken(String email, Role role){
         Map<String,Object> claims=new HashMap<>();
         claims.put("role", role.name());
         return createToken(claims,email);
     }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
         final Claims claims= extractAllClaims(token);
         return claimsResolver.apply(claims);
-
     }
+
     private Claims extractAllClaims(String token){
         return Jwts
                 .parserBuilder()
@@ -52,31 +53,33 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     private Key getSignInKey(){
         byte [] keyBytes= Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
     public String extractUserType(String token) {
        return extractAllClaims(token).get("role").toString();
-
     }
 
     public Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
     }
+
     private Boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
+
     public String extractUsername(String token){
         return extractClaim(token,Claims::getSubject);
     }
+
     public Boolean validateToken(String token,UserDetails userDetails){
-        final String username=extractUsername(token);
+        final String username = extractUsername(token);
         System.out.println("THIS IS THE USER NAME");
         System.out.println(userDetails.getUsername());
         System.out.println(  username.equals(userDetails.getUsername())&&!isTokenExpired((token)));
-        return (
-                username.equals(userDetails.getUsername())&&!isTokenExpired((token))
-                );
+        return (username.equals(userDetails.getUsername())&&!isTokenExpired((token)));
     }
 }

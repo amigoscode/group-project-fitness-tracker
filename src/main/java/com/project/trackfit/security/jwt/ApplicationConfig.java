@@ -38,13 +38,16 @@ public class ApplicationConfig implements UserDetailsService {
 
     public ApplicationUser authenticate(String email, String password)
             throws NoSuchAlgorithmException {
-        if (
-                email.isEmpty() || password.isEmpty()
-        ) throw new BadCredentialsException("Unauthorized");
+
+        if (email.isEmpty() || password.isEmpty()) {
+            throw new BadCredentialsException("Unauthorized");
+        }
 
         var userEntity = applicationUserRepo.findByEmail(email);
 
-        if (userEntity == null) throw new BadCredentialsException("Unauthorized");
+        if (userEntity == null) {
+            throw new BadCredentialsException("Unauthorized");
+        }
 
         var verified = verifyPasswordHash(
                 password,
@@ -52,28 +55,26 @@ public class ApplicationConfig implements UserDetailsService {
                 userEntity.get().getStoredSalt()
         );
 
-        if (!verified) throw new BadCredentialsException("Unauthorized");
+        if (!verified) {
+            throw new BadCredentialsException("Unauthorized");
+        }
 
         return userEntity.get();
     }
-    private Boolean verifyPasswordHash(
-            String password,
-            byte[] storedHash,
-            byte[] storedSalt
-    ) throws NoSuchAlgorithmException {
-        if (
-                password.isBlank() || password.isEmpty()
-        ) throw new IllegalArgumentException(
-                "Password cannot be empty or whitespace only string."
-        );
 
-        if (storedHash.length != 64) throw new IllegalArgumentException(
-                "Invalid length of password hash (64 bytes expected)"
-        );
+    private Boolean verifyPasswordHash(String password, byte[] storedHash, byte[] storedSalt)
+            throws NoSuchAlgorithmException {
 
-        if (storedSalt.length != 128) throw new IllegalArgumentException(
-                "Invalid length of password salt (64 bytes expected)."
-        );
+        if (password.isBlank() || password.isEmpty())
+            throw new IllegalArgumentException("Password cannot be empty or whitespace only string.");
+
+        if (storedHash.length != 64) {
+            throw new IllegalArgumentException("Invalid length of password hash (64 bytes expected)");
+        }
+
+        if (storedSalt.length != 128) {
+            throw new IllegalArgumentException("Invalid length of password salt (64 bytes expected).");
+        }
 
         var md = MessageDigest.getInstance("SHA-512");
         md.update(storedSalt);
