@@ -9,9 +9,9 @@ public class CustomerRetrieveRequestMapper  implements Function<Customer,Retriev
     public RetrieveCustomerRequest apply(Customer customer) {
         return new RetrieveCustomerRequest(
                 customer.getId(),
-                customer.getFirstName(),
-                customer.getLastName(),
-                customer.getEmail(),
+                customer.getUser().getFirstName(),
+                customer.getUser().getLastName(),
+                customer.getUser().getEmail(),
                 customer.getAge()
         );
     }

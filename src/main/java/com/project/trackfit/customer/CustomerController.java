@@ -1,9 +1,10 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.model.APICustomResponse;
+import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/customers")
 public class CustomerController {
 
@@ -24,19 +26,6 @@ public class CustomerController {
      * Spring Boot REST API creates a User
      * http://[::1]:8080/api/v1/customers/
      */
-    @PostMapping
-    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateCustomerRequest customer) throws NoSuchAlgorithmException {
-        UUID savedUserId = customerService.createCustomer(customer);
-        return ResponseEntity.ok(
-                APICustomResponse.builder()
-                        .timeStamp(now())
-                        .data(Map.of("customerId", savedUserId))
-                        .message("Customer have been created successfully")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build()
-        );
-    }
 
     /**
      * Spring Boot REST API gets a User by Id

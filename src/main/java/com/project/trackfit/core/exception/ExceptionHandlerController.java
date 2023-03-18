@@ -1,6 +1,6 @@
 package com.project.trackfit.core.exception;
 
-import com.project.trackfit.core.model.APICustomResponse;
+import com.project.trackfit.core.APICustomResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,5 +1,8 @@
 package com.project.trackfit.security.jwt;
 
+import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.core.ApplicationUserRepo;
+import com.project.trackfit.core.ApplicationUserService;
 import com.project.trackfit.customer.Customer;
 import com.project.trackfit.customer.CustomerRepository;
 import com.project.trackfit.trainer.PersonalTrainer;
@@ -10,7 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -21,59 +26,35 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 @AllArgsConstructor
-public class ApplicationConfig {
-    private final CustomerRepository customerRepository;
-    private final PersonalTrainerRepo personalTrainerRepo;
+public class ApplicationConfig implements UserDetailsService {
 
-    public UserDetails customerDetailsService(String username){
-        return customerRepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("Customer not found"));
+    private final ApplicationUserRepo applicationUserRepo;
+
+    @Override
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+        return applicationUserRepo.findByEmail(email).get();
     }
 
-
-    public UserDetails trainerDetailsService(String username){
-        return  personalTrainerRepo.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("Personal Trainer not found"));
-    }
-    public Customer authenticateCustomer(String email, String password)
+    public ApplicationUser authenticate(String email, String password)
             throws NoSuchAlgorithmException {
         if (
                 email.isEmpty() || password.isEmpty()
         ) throw new BadCredentialsException("Unauthorized");
 
-        var customerEntity = customerRepository.findByEmail(email);
+        var userEntity = applicationUserRepo.findByEmail(email);
 
-        if (customerEntity == null) throw new BadCredentialsException("Unauthorized");
+        if (userEntity == null) throw new BadCredentialsException("Unauthorized");
 
         var verified = verifyPasswordHash(
                 password,
-                customerEntity.get().getStoredHash(),
-                customerEntity.get().getStoredSalt()
+                userEntity.get().getStoredHash(),
+                userEntity.get().getStoredSalt()
         );
 
         if (!verified) throw new BadCredentialsException("Unauthorized");
 
-        return customerEntity.get();
-    }
-    public PersonalTrainer authenticateTrainer(String email, String password)
-            throws NoSuchAlgorithmException {
-        if (
-                email.isEmpty() || password.isEmpty()
-        ) throw new BadCredentialsException("Unauthorized");
-
-        var trainerEntity = personalTrainerRepo.findByEmail(email);
-
-        if (trainerEntity == null) throw new BadCredentialsException("Unauthorized");
-
-        var verified = verifyPasswordHash(
-                password,
-                trainerEntity.get().getStoredHash(),
-                trainerEntity.get().getStoredSalt()
-        );
-
-        if (!verified) throw new BadCredentialsException("Unauthorized");
-
-        return trainerEntity.get();
+        return userEntity.get();
     }
     private Boolean verifyPasswordHash(
             String password,
@@ -102,8 +83,6 @@ public class ApplicationConfig {
         for (int i = 0; i < computedHash.length; i++) {
             if (computedHash[i] != storedHash[i]) return false;
         }
-
-        // The above for loop is the same as below
 
         return MessageDigest.isEqual(computedHash, storedHash);
     }

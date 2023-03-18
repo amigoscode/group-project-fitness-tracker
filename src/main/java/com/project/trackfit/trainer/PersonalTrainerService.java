@@ -1,11 +1,13 @@
 package com.project.trackfit.trainer;
 
+import com.project.trackfit.core.ApplicationUser;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 
 public interface PersonalTrainerService {
-    UUID createTrainer(CreateTrainerRequest createTrainerRequest) throws NoSuchAlgorithmException;
+    UUID createTrainer(ApplicationUser applicationUser);
 
     PersonalTrainer getTrainerByID(UUID trainer_id);
 

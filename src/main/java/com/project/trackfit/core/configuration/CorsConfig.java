@@ -19,7 +19,7 @@ public class CorsConfig {
                 new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         //TODO set this to our permitted origin/domain
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+//        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 "Origins",
                 "Access-Control-Allow-Origins",

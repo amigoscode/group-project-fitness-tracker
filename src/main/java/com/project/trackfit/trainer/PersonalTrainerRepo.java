@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 @Repository
 public interface PersonalTrainerRepo  extends JpaRepository<PersonalTrainer, UUID> {
-        boolean existsByEmail(String email);
+        Optional<PersonalTrainer> findByUser_Email(String email);
 
-        Optional<PersonalTrainer> findByEmail(String email);
+
 
 
 

@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
 
-import com.project.trackfit.core.model.UserProfile;
+import com.project.trackfit.core.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,10 +34,9 @@ public class JwtService {
                         .signWith(SignatureAlgorithm.HS256, String.valueOf(SECRET_KEY))
                         .compact();
     }
-    public String generateToken(String email, UserProfile userProfile){
+    public String generateToken(String email, Role role){
         Map<String,Object> claims=new HashMap<>();
-        claims.put("userProfile",userProfile.name());
-//        System.out.println(claims.get("userProfile").toString());
+        claims.put("role", role.name());
         return createToken(claims,email);
     }
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
@@ -58,11 +57,11 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     public String extractUserType(String token) {
-       return extractAllClaims(token).get("userProfile").toString();
+       return extractAllClaims(token).get("role").toString();
 
     }
 
-        public Date extractExpiration(String token){
+    public Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
     }
     private Boolean isTokenExpired(String token){
@@ -73,6 +72,9 @@ public class JwtService {
     }
     public Boolean validateToken(String token,UserDetails userDetails){
         final String username=extractUsername(token);
+        System.out.println("THIS IS THE USER NAME");
+        System.out.println(userDetails.getUsername());
+        System.out.println(  username.equals(userDetails.getUsername())&&!isTokenExpired((token)));
         return (
                 username.equals(userDetails.getUsername())&&!isTokenExpired((token))
                 );

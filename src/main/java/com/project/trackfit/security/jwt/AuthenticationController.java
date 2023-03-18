@@ -1,65 +1,42 @@
 package com.project.trackfit.security.jwt;
 
-import com.project.trackfit.core.model.UserProfile;
+import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.RetrieveCustomerRequest;
 import com.project.trackfit.trainer.PersonalTrainer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.project.trackfit.core.model.UserProfile.*;
+import static com.project.trackfit.core.Role.*;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping(value = "api/v1/auth/token")
 class AuthenticateController {
 
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
 
-    @RequestMapping(value = "api/v1/customers/token")
+
     @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
     public AuthenticationResponse authenticateCustomer(
             @RequestBody AuthenticationRequest req
     ) throws Exception {
-        Customer customer;
+      ApplicationUser user;
 
         try {
-            customer = applicationConfig.authenticateCustomer(req.email(), req.password());
+            user = applicationConfig.authenticate(req.email(), req.password());
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
-        var customerDetails = applicationConfig.customerDetailsService(customer.getEmail());
+        var userDetails = applicationConfig.loadUserByUsername(user.getEmail());
 
-        var jwt = jwtService.generateToken(customer.getEmail(), CUSTOMER);
-
-        return new AuthenticationResponse(jwt);
-    }
-
-    @RequestMapping(value = "api/v1/trainers/token")
-    @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponse authenticateTrainer(
-            @RequestBody AuthenticationRequest req
-    ) throws Exception {
-        PersonalTrainer personalTrainer;
-
-        try {
-            personalTrainer = applicationConfig.authenticateTrainer(req.email(), req.password());
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        var customerDetails = applicationConfig.trainerDetailsService(personalTrainer.getEmail());
-
-        System.out.println(customerDetails);
-        var jwt = jwtService.generateToken(personalTrainer.getEmail(), TRAINER);
+        var jwt = jwtService.generateToken(user.getEmail(), CUSTOMER);
 
         return new AuthenticationResponse(jwt);
     }
+
 }

@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
 
-import com.project.trackfit.core.model.UserProfile;
+import com.project.trackfit.core.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,14 +35,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String token = null;
-        String userProfile= null;
 
         if (
                 authorizationHeader != null && authorizationHeader.startsWith("Bearer ")
         ) {
             token = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(token);
-            userProfile= jwtUtil.extractUserType(token);
 
 
         }
@@ -51,15 +49,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 username != null &&
                         SecurityContextHolder.getContext().getAuthentication() == null
         ) {
-            //TODO: UPDATE THE CLAIMS TO HAVE PROFILE TYPE
-            UserDetails userDetails;
-            if(Objects.equals(userProfile, UserProfile.CUSTOMER.toString())){
-              userDetails=
-                        this.userDetailsService.customerDetailsService(username);
-            }else{
-                userDetails=
-                        this.userDetailsService.trainerDetailsService(username);
-            }
+            UserDetails userDetails =
+                    this.userDetailsService.loadUserByUsername(username);
 
 
             if (jwtUtil.validateToken(token, userDetails)) {
