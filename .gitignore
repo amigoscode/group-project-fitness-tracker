@@ -2,6 +2,7 @@ HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 application.yml
+docker-compose.yml
 
 ### STS ###
 .apt_generated
