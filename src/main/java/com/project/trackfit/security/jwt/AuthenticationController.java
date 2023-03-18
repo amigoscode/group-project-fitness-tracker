@@ -1,12 +1,9 @@
 package com.project.trackfit.security.jwt;
 
-import com.project.trackfit.core.model.UserProfile;
 import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.RetrieveCustomerRequest;
 import com.project.trackfit.trainer.PersonalTrainer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

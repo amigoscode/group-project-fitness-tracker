@@ -47,20 +47,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         }
 
-        if (
-                username != null &&
-                        SecurityContextHolder.getContext().getAuthentication() == null
-        ) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             //TODO: UPDATE THE CLAIMS TO HAVE PROFILE TYPE
             UserDetails userDetails;
-            if(Objects.equals(userProfile, UserProfile.CUSTOMER.toString())){
-              userDetails=
-                        this.userDetailsService.customerDetailsService(username);
-            }else{
-                userDetails=
-                        this.userDetailsService.trainerDetailsService(username);
-            }
 
+            if(Objects.equals(userProfile, UserProfile.CUSTOMER.toString())) {
+              userDetails = this.userDetailsService.customerDetailsService(username);
+            }
+            else {
+                userDetails = this.userDetailsService.trainerDetailsService(username);
+            }
 
             if (jwtUtil.validateToken(token, userDetails)) {
                 var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
