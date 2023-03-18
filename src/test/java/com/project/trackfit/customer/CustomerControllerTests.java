@@ -24,11 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class CustomerControllerIntegrationTest {
+class CustomerControllerTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -83,7 +82,6 @@ class CustomerControllerIntegrationTest {
     @Test
     @DisplayName("Given existing CustomerId when GetCustomerById then returns customer details")
     void givenExistingCustomerId_whenGetCustomerById_thenReturnsCustomerDetails() {
-        // Given
         Customer customer = customerRepository.save(new Customer(
                 UUID.randomUUID(),
                 "John",
@@ -93,11 +91,9 @@ class CustomerControllerIntegrationTest {
                 "123 Main St"
         ));
 
-        // When
         ResponseEntity<APICustomResponse> response =
                 restTemplate.getForEntity("/api/v1/customers/" + customer.getId(), APICustomResponse.class);
 
-        // Then
         assertEquals(response.getStatusCode(),HttpStatus.OK);
         assertEquals(response.getBody().getMessage(),"Fetched Customer");
         assertNotNull(response.getBody().getData());
@@ -122,11 +118,9 @@ class CustomerControllerIntegrationTest {
     @Test
     @DisplayName("Given non existing CustomerId when GetCustomerById then returns not found")
     void givenNonExistingCustomerId_whenGetCustomerById_thenReturnsNotFound() {
-        // When
         ResponseEntity<APICustomResponse> response =
                 restTemplate.getForEntity("/api/v1/customers/" + UUID.randomUUID(), APICustomResponse.class);
 
-        // Then
         assertEquals(response.getStatusCode(),HttpStatus.NOT_FOUND);
         assertEquals(response.getBody().getMessage(),"User Doesn't Exist");
         assertNull(response.getBody().getData());
