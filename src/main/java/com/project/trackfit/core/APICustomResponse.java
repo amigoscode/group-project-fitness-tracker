@@ -1,4 +1,4 @@
-package com.project.trackfit.core.model;
+package com.project.trackfit.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

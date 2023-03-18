@@ -1,11 +1,13 @@
 package com.project.trackfit.trainer;
 
-import com.project.trackfit.core.model.APICustomResponse;
+import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,25 +18,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/trainers")
+@PreAuthorize("isAuthenticated()")
 public class PersonalTrainerController {
-
     private final PersonalTrainerService personalTrainerService;
-
-    @PostMapping
-    public ResponseEntity<APICustomResponse> createTrainer(@Valid @RequestBody CreateTrainerRequest createTrainerRequest) {
-        UUID trainerId = personalTrainerService.createTrainer(createTrainerRequest);
-        Map<String, UUID> data = new HashMap<>();
-        data.put("Trainer_ID", trainerId);
-        return ResponseEntity.ok(
-                APICustomResponse.builder()
-                        .timeStamp(now())
-                        .data(data)
-                        .message("Personal Trainer have been Created Successfully")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build()
-        );
-    }
 
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
@@ -51,11 +37,16 @@ public class PersonalTrainerController {
                         .statusCode(OK.value())
                         .build()
         );
+
     }
+
 
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
+
         RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
+
+
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())
@@ -67,3 +58,4 @@ public class PersonalTrainerController {
         );
     }
 }
+

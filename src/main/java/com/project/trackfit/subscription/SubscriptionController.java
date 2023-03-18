@@ -1,9 +1,10 @@
 package com.project.trackfit.subscription;
 
-import com.project.trackfit.core.model.APICustomResponse;
+import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/subscription")
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;

@@ -1,12 +1,17 @@
 package com.project.trackfit.customer;
 
+import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.validation.EmailValidator;
+import com.project.trackfit.core.registration.EmailValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -14,49 +19,31 @@ import java.util.UUID;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final EmailValidator emailValidator;
-    private final CustomerRetrieveRequestMapper retrieveRequestMapper;
-
+    private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
     @Override
-    public UUID createCustomer(CreateCustomerRequest createCustomerRequest) {
-        checkEmailValidity(createCustomerRequest);
-        checkEmailExists(createCustomerRequest.email());
-        Customer customer = new Customer(
-                UUID.randomUUID(),
-                createCustomerRequest.firstName(),
-                createCustomerRequest.lastName(),
-                createCustomerRequest.age(),
-                createCustomerRequest.email(),
-                createCustomerRequest.address()
+    public UUID createCustomer(ApplicationUser applicationUser){
+        Customer customer= new Customer(
+                applicationUser
         );
+        System.out.println(customer.getUser().getEmail());
         customerRepository.save(customer);
+
         return customer.getId();
     }
 
     @Override
-    public Customer getID(UUID customer_id) {
+    public Customer getCustomerById(UUID userId) {
         return customerRepository
-                .findById(customer_id)
+                .findById(userId)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
-    public RetrieveCustomerRequest getCustomerById(UUID userId) {
+    public RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id) {
         return customerRepository
-                .findById(userId)
-                .map(retrieveRequestMapper)
+                .findById(customer_id)
+                .map(customerRetrieveRequestMapper)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    private void checkEmailValidity(CreateCustomerRequest customer) {
-        if (!(emailValidator.checkMailPattern(customer.email()))){
-            throw new EmailNotValidException();
-        }
-    }
-
-    private void checkEmailExists(String email){
-        if (customerRepository.existsByEmail(email)){
-            throw new EmailAlreadyTakenException();
-        }
-    }
 }

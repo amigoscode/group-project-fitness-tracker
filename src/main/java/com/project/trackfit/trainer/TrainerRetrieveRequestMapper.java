@@ -10,7 +10,7 @@ public class TrainerRetrieveRequestMapper implements Function<PersonalTrainer,Re
     public RetrieveTrainerRequest apply(PersonalTrainer trainer) {
         return new RetrieveTrainerRequest(
                 trainer.getId(),
-                trainer.getEmail(),
+                trainer.getUser().getEmail(),
                 trainer.getFirstName(),
                 trainer.getLastName(),
                 trainer.getPhoneNumber()
