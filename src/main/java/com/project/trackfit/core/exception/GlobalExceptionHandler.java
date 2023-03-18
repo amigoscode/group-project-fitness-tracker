@@ -12,10 +12,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleUserDoesNotExistException(ResourceNotFoundException exception) {
+    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException exception) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage("User Doesn't Exist");
         errorResponse.setEx(exception);
+        errorResponse.setHttpStatus(HttpStatus.NOT_FOUND);
         return errorResponse;
     }
 
@@ -26,6 +27,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage("Email not valid");
         errorResponse.setEx(exception);
+        errorResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
         return errorResponse;
     }
 
@@ -36,6 +38,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage("Email already taken");
         errorResponse.setEx(exception);
+        errorResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
         return errorResponse;
     }
 }

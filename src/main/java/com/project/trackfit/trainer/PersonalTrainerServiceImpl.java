@@ -3,7 +3,7 @@ package com.project.trackfit.trainer;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.registration.EmailValidator;
+import com.project.trackfit.core.validation.EmailValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +24,10 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-
-    //TODO: Preform Create.
     @Override
     public UUID createTrainer(CreateTrainerRequest createTrainerRequest) {
         checkEmailValidity(createTrainerRequest);
         checkEmailExists(createTrainerRequest.email());
-        //Add Personal Trainer
         PersonalTrainer personalTrainer = new PersonalTrainer(
                 createTrainerRequest.email(),
                 createTrainerRequest.firstName(),
