@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+
+    <property name="severity" value="error"/>
+
+<!--    &lt;!&ndash;checks that any line does not contain more than 130 characters &ndash;&gt;
+    <module name="LineLength">
+        <property name="max" value="130"/>
+    </module>-->
+
+    <module name="TreeWalker">
+
+<!--        &lt;!&ndash; Checks that Javadoc comments are placed above anything else (e.g. annotations) &ndash;&gt;
+        <module name="InvalidJavadocPosition"/>
+
+        &lt;!&ndash; Checks for missing javadocs in methods except @Override methods (default behavior) and constructors &ndash;&gt;
+        <module name="MissingJavadocMethod">
+            <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF "/>
+        </module>-->
+
+        <!-- Checks for unused imports -->
+        <module name="UnusedImports"/>
+
+        <!--checks variable names and ensures that they start with a lowercase letter -->
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/>
+            <message key="name.invalidPattern"
+                     value="Local variable names must begin with a lowercase letter."
+            />
+        </module>
+
+        <!--checks that packages start with a lowercase letter and only contains lowercase letters or numbers is -->
+        <module name="PackageName">
+            <property name="format"
+                      value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+            <message key="name.invalidPattern"
+                     value="Package names must contain only lowercase letters or numbers."
+            />
+        </module>
+
+        <!--checks that parameter names should begin with a lower case letter -->
+        <module name="ParameterName">
+            <property name="format" value="^[a-z][_a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+                     value="Parameter names must begin with a lowercase letter."
+            />
+        </module>
+
+        <!--checks that classes names should begin with an upper case letter, followed by letters, digits, and underscores. -->
+        <module name="TypeName">
+            <property name="format" value="^[A-Z](_?[a-zA-Z0-9]+)*$"/>
+            <message key="name.invalidPattern"
+                     value="Class names must begin with an uppercase letter."
+            />
+        </module>
+
+        <!--checks that classes that override the equals method, also override the hashCode method -->
+        <module name="EqualsHashCode"/>
+
+        <!--checks that static variables come first, then instance variables, then constructors, then methods -->
+        <module name="DeclarationOrder"/>
+
+        <!--Checks that any combination of String literals is on the left side of an equals() comparison
+         Also checks for String literals assigned to some field (such as someString.equals(anotherString = "text"))-->
+        <module name="EqualsAvoidNull"/>
+
+        <!--Checks for multiple occurrences of the same string literal within a single file. -->
+        <module name="MultipleStringLiterals">
+            <property name="allowedDuplicates" value="2"/>
+        </module>
+
+        <!--Checks that no print statements have remained in the project. -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="System\.out\.println"/>
+        </module>
+
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="printStackTrace"/>
+        </module>
+
+
+    </module>
+
+
+</module>

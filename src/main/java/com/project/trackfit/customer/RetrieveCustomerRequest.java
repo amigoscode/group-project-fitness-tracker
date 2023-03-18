@@ -5,8 +5,9 @@ import java.util.UUID;
 public record RetrieveCustomerRequest(
         UUID id,
         String firstName,
-        String LastName,
+        String lastName,
+        Integer age,
         String email,
-        Integer age
+        String address
 ) {
 }

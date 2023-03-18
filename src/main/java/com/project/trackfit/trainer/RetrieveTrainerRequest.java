@@ -8,7 +8,5 @@ public record RetrieveTrainerRequest(
         String firstName,
         String lastName,
         String phoneNumber
-
-
 ) {
 }
