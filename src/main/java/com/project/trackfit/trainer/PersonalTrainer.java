@@ -37,6 +37,6 @@ public class PersonalTrainer {
     private boolean isExpired;
 
     public PersonalTrainer(ApplicationUser applicationUser) {
-        this.user=applicationUser;
+        this.user = applicationUser;
     }
 }

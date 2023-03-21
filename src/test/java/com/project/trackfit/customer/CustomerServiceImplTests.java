@@ -57,7 +57,16 @@ public class CustomerServiceImplTests {
             return savedCustomer;
         });
 
-        UUID actualCustomerId = customerService.createCustomer(testApplicationUser);
+        CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(
+                "John",
+                "Doe",
+                30,
+                "john.doe@example.com",
+                "123 Main St",
+                "securePassword"
+        );
+
+        UUID actualCustomerId = customerService.createCustomer(testApplicationUser, createCustomerRequest);
 
         verify(customerRepository).save(any(Customer.class));
         assertNotNull(actualCustomerId);

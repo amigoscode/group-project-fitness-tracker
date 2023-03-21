@@ -2,18 +2,8 @@ package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.core.ApplicationUserRepo;
-import com.project.trackfit.core.ApplicationUserService;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerRepository;
-import com.project.trackfit.trainer.PersonalTrainer;
-import com.project.trackfit.trainer.PersonalTrainerRepo;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,13 +21,14 @@ public class ApplicationConfig implements UserDetailsService {
     private final ApplicationUserRepo applicationUserRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
-        return applicationUserRepo.findByEmail(email).get();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return applicationUserRepo.findByEmail(email)
+                .orElseThrow(
+                        () -> new UsernameNotFoundException("User not found with email: " + email)
+                );
     }
 
-    public ApplicationUser authenticate(String email, String password)
-            throws NoSuchAlgorithmException {
+    public ApplicationUser authenticate(String email, String password) throws NoSuchAlgorithmException {
 
         if (email.isEmpty() || password.isEmpty()) {
             throw new BadCredentialsException("Unauthorized");
@@ -45,7 +36,7 @@ public class ApplicationConfig implements UserDetailsService {
 
         var userEntity = applicationUserRepo.findByEmail(email);
 
-        if (userEntity == null) {
+        if (userEntity.isEmpty()) {
             throw new BadCredentialsException("Unauthorized");
         }
 
@@ -87,5 +78,4 @@ public class ApplicationConfig implements UserDetailsService {
 
         return MessageDigest.isEqual(computedHash, storedHash);
     }
-
 }

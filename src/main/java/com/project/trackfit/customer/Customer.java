@@ -1,6 +1,7 @@
 package com.project.trackfit.customer;
 
 import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.measurements.Measurements;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,15 +31,24 @@ public class Customer {
     private String address;
 
     @OneToMany(mappedBy ="customer")
+    private Set<Measurements> measurements;
+
+    @OneToMany(mappedBy ="customer")
     private Set<Subscription> subscriptions;
 
     public Customer(ApplicationUser applicationUser) {
-        this.user=applicationUser;
+        this.user = applicationUser;
     }
     public Set<Subscription> getSubscriptions() {
         return subscriptions;
     }
     public void setSubscriptions(Set<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+    public Set<Measurements> getMeasurements() {
+        return measurements;
+    }
+    public void setMeasurements(Set<Measurements> measurements) {
+        this.measurements = measurements;
     }
 }

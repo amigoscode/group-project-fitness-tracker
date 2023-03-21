@@ -1,5 +1,6 @@
 package com.project.trackfit.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public class APICustomResponse {
     protected LocalDateTime timeStamp;
     protected int statusCode;
+    @JsonIgnore
     protected HttpStatus status;
     protected String reason;
     protected String message;

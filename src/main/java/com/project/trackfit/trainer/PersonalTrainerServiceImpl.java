@@ -23,7 +23,6 @@ public class PersonalTrainerServiceImpl implements PersonalTrainerService {
 
     @Override
     public UUID createTrainer(ApplicationUser applicationUser) {
-        //Add Personal Trainer
         PersonalTrainer personalTrainer = new PersonalTrainer(
               applicationUser
         );

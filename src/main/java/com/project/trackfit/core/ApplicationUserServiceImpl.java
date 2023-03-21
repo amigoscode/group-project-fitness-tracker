@@ -4,6 +4,7 @@ import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.validation.EmailValidator;
 
+import com.project.trackfit.customer.CreateCustomerRequest;
 import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.trainer.PersonalTrainerService;
 import lombok.AllArgsConstructor;
@@ -19,10 +20,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ApplicationUserServiceImpl implements ApplicationUserService {
 
-    final private ApplicationUserRepo applicationUserRepo;
-    final private CustomerService customerService;
-    final private PersonalTrainerService trainerService;
-    private  final EmailValidator emailValidator;
+    private final ApplicationUserRepo applicationUserRepo;
+    private final CustomerService customerService;
+    private final PersonalTrainerService trainerService;
+    private final EmailValidator emailValidator;
 
     private void checkEmailValidity(CreateUserRequest user) {
         if (!(emailValidator.checkMailPattern(user.email()))) {
@@ -38,7 +39,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 
     private byte[] createSalt() {
         var random = new SecureRandom();
-        var salt =new byte[128];
+        var salt = new byte[128];
         random.nextBytes(salt);
         return salt;
     }
@@ -55,18 +56,20 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     public UUID createUser(CreateUserRequest createUserRequest) throws NoSuchAlgorithmException {
         checkEmailValidity(createUserRequest);
         checkEmailExists(createUserRequest.email());
-        if(createUserRequest.password().isBlank())throw  new IllegalArgumentException(
+        if(createUserRequest.password().isBlank())
+            throw  new IllegalArgumentException(
                 "Password is required"
         );
-        if(createUserRequest.role().isBlank())throw new IllegalArgumentException(
+        if(createUserRequest.role().isBlank())
+            throw new IllegalArgumentException(
                 "role is required"
         );
-        byte[] salt= createSalt();
-        byte[] hashedPassword=
+        byte[] salt = createSalt();
+        byte[] hashedPassword =
                 createPasswordHash(createUserRequest.password(), salt);
 
         //CREATE THE USER
-        ApplicationUser applicationUser= new ApplicationUser(
+        ApplicationUser applicationUser = new ApplicationUser(
                 createUserRequest.email(),
                 createUserRequest.firstName(),
                 createUserRequest.lastName(),
@@ -78,7 +81,15 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
 
         //CHECK THE USER ROLE
         if(applicationUser.getRole() == Role.CUSTOMER){
-            return customerService.createCustomer(applicationUser);
+            CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(
+                    createUserRequest.firstName(),
+                    createUserRequest.lastName(),
+                    createUserRequest.age(),
+                    createUserRequest.email(),
+                    createUserRequest.address(),
+                    createUserRequest.password()
+            );
+            return customerService.createCustomer(applicationUser, createCustomerRequest); // Pass createCustomerRequest
         } else {
             return trainerService.createTrainer(applicationUser);
         }

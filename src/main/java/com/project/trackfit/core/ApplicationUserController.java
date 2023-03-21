@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/api/v1/auth/register")
 public class ApplicationUserController {
 
-    private  final ApplicationUserService applicationUserService;
+    private final ApplicationUserService applicationUserService;
 
     @PostMapping
     public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateUserRequest createUserRequest)

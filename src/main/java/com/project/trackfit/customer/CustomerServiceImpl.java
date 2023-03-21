@@ -15,10 +15,13 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @Override
-    public UUID createCustomer(ApplicationUser applicationUser){
-        Customer customer= new Customer(
+    public UUID createCustomer(ApplicationUser applicationUser, CreateCustomerRequest createCustomerRequest){
+        Customer customer = new Customer(
                 applicationUser
         );
+        customer.setUser(applicationUser);
+        customer.setAge(createCustomerRequest.age());
+        customer.setAddress(createCustomerRequest.address());
         customerRepository.save(customer);
         return customer.getId();
     }
