@@ -28,7 +28,7 @@ public class CustomerController {
      * http://[::1]:8080/api/v1/customers/{id}
      */
     @GetMapping("{id}")
-    public ResponseEntity<APICustomResponse> getUserById(@PathVariable("id") UUID customer_id) {
+    public ResponseEntity<APICustomResponse> getCustomerById(@PathVariable("id") UUID customer_id) {
         RetrieveCustomerRequest customerRequest = customerService.RetrieveCustomerById(customer_id);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
