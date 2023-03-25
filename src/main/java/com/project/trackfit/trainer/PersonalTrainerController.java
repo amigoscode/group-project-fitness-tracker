@@ -21,11 +21,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("api/v1/trainers")
 @PreAuthorize("isAuthenticated()")
 public class PersonalTrainerController {
-    private final PersonalTrainerService personalTrainerService;
+
+    private final IPersonalTrainerService IPersonalTrainerService;
 
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
-        Iterable<RetrieveTrainerRequest> trainers = personalTrainerService.findAllTrainers();
+        Iterable<RetrieveTrainerRequest> trainers = IPersonalTrainerService.findAllTrainers();
         Map<String, Iterable<RetrieveTrainerRequest>> data = new HashMap<>();
         data.put("Personal Trainers", trainers);
         return ResponseEntity.ok(
@@ -42,7 +43,7 @@ public class PersonalTrainerController {
 
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
-        RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
+        RetrieveTrainerRequest trainer = IPersonalTrainerService.retrieveTrainerByID(trainerId);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())

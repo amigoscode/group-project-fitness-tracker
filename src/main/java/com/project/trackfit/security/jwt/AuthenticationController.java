@@ -4,14 +4,19 @@ import com.project.trackfit.core.ApplicationUser;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import static com.project.trackfit.core.Role.*;
+import static com.project.trackfit.core.Role.CUSTOMER;
+
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "api/v1/auth/token")
-class AuthenticateController {
+public class AuthenticationController {
 
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;

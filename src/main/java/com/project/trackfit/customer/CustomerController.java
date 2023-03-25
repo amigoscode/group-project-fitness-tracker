@@ -21,7 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("api/v1/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final ICustomerService ICustomerService;
 
     /**
      * Spring Boot REST API gets a User by Id
@@ -29,7 +29,7 @@ public class CustomerController {
      */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getCustomerById(@PathVariable("id") UUID customer_id) {
-        RetrieveCustomerRequest customerRequest = customerService.RetrieveCustomerById(customer_id);
+        RetrieveCustomerRequest customerRequest = ICustomerService.RetrieveCustomerById(customer_id);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(now())

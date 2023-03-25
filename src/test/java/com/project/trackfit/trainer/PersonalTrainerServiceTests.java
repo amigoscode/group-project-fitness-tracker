@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PersonalTrainerServiceImplTests {
+public class PersonalTrainerServiceTests {
 
     @Mock
     private PersonalTrainerRepo personalTrainerRepo;
@@ -29,7 +29,7 @@ public class PersonalTrainerServiceImplTests {
     private TrainerRetrieveRequestMapper trainerRetrieveRequestMapper;
 
     @InjectMocks
-    private PersonalTrainerServiceImpl personalTrainerService;
+    private PersonalTrainerService personalTrainerService;
 
     private ApplicationUser testApplicationUser;
 

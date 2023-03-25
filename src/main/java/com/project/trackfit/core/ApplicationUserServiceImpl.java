@@ -5,8 +5,8 @@ import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.validation.EmailValidator;
 
 import com.project.trackfit.customer.CreateCustomerRequest;
-import com.project.trackfit.customer.CustomerService;
-import com.project.trackfit.trainer.PersonalTrainerService;
+import com.project.trackfit.customer.ICustomerService;
+import com.project.trackfit.trainer.IPersonalTrainerService;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,8 @@ import java.util.UUID;
 public class ApplicationUserServiceImpl implements ApplicationUserService {
 
     private final ApplicationUserRepo applicationUserRepo;
-    private final CustomerService customerService;
-    private final PersonalTrainerService trainerService;
+    private final ICustomerService ICustomerService;
+    private final IPersonalTrainerService trainerService;
     private final EmailValidator emailValidator;
 
     @Override
@@ -98,7 +98,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
                     createUserRequest.address(),
                     createUserRequest.password()
             );
-            return customerService.createCustomer(applicationUser, createCustomerRequest);
+            return ICustomerService.createCustomer(applicationUser, createCustomerRequest);
         } else {
             return trainerService.createTrainer(applicationUser);
         }

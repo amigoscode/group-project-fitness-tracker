@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CustomerServiceImplTests {
+public class CustomerServiceTests {
 
     @Mock
     private CustomerRepository customerRepository;
@@ -30,7 +30,7 @@ public class CustomerServiceImplTests {
     private CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @InjectMocks
-    private CustomerServiceImpl customerService;
+    private CustomerService customerService;
 
     private ApplicationUser testApplicationUser;
 
