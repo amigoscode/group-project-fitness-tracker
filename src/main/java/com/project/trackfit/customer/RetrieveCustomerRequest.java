@@ -9,5 +9,4 @@ public record RetrieveCustomerRequest(
         Integer age,
         String email,
         String address
-) {
-}
+) { }
