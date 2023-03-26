@@ -1,7 +1,5 @@
 package com.project.trackfit.core.configuration;
 
-
-import com.project.trackfit.core.ApplicationUserService;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -5,7 +5,7 @@ public record CreateUserRequest(
         String password,
         String firstName,
         String lastName,
-        String role,
+        Role role,
         Integer age,
         String address
 ) { }
