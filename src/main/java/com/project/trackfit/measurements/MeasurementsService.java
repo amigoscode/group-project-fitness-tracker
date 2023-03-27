@@ -29,7 +29,7 @@ public class MeasurementsService implements IMeasurementsService {
         Measurements measurements = new Measurements();
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.getParsedDate());
+        measurements.setDate(createMeasurementsRequest.date());
         measurements.setCustomer(customer);
         measurementsRepository.save(measurements);
         return measurements.getId();
@@ -71,7 +71,7 @@ public class MeasurementsService implements IMeasurementsService {
 
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.getParsedDate());
+        measurements.setDate(createMeasurementsRequest.date());
 
         measurementsRepository.save(measurements);
     }

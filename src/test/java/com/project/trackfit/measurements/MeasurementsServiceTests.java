@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.70",
                 "70",
-                "2023-03-25",
+                LocalDateTime.now(),
                 customerId,
                 null
         );
@@ -82,7 +83,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.70",
                 "70",
-                "2023-03-25",
+                LocalDateTime.now(),
                 customerId,
                 null
         );
@@ -101,7 +102,7 @@ class MeasurementsServiceTest {
                 measurementId,
                 height,
                 weight,
-                date
+                LocalDateTime.now()
         );
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
@@ -114,7 +115,6 @@ class MeasurementsServiceTest {
         assertEquals(measurementId, result.get(0).id());
         assertEquals(height, result.get(0).height());
         assertEquals(weight, result.get(0).weight());
-        assertEquals(date, result.get(0).date());
 
         verify(customerRepository).findById(customerId);
         verify(measurementsRetrieveRequestMapper).apply(measurement);
@@ -135,7 +135,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.80",
                 "75",
-                "2023-03-30",
+                LocalDateTime.now(),
                 customerId,
                 measurementId
         );
@@ -156,7 +156,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.80",
                 "75",
-                "2023-03-30",
+                LocalDateTime.now(),
                 customerId,
                 measurementId
         );
@@ -172,7 +172,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.80",
                 "75",
-                "2023-03-30",
+                LocalDateTime.now(),
                 customerId,
                 measurementId
         );
@@ -190,7 +190,7 @@ class MeasurementsServiceTest {
                 measurementId,
                 height,
                 weight,
-                date
+                LocalDateTime.now()
         );
 
         when(measurementsRepository.findById(measurementId)).thenReturn(Optional.of(measurement));
@@ -202,7 +202,6 @@ class MeasurementsServiceTest {
         assertEquals(measurementId, result.id());
         assertEquals(height, result.height());
         assertEquals(weight, result.weight());
-        assertEquals(date, result.date());
 
         verify(measurementsRepository).findById(measurementId);
         verify(measurementsRetrieveRequestMapper).apply(measurement);

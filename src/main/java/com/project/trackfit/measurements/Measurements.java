@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class Measurements {
     @Column(nullable = false)
     private String weight;
     @Column(nullable = false)
-    private Date date;
+    private LocalDateTime date;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

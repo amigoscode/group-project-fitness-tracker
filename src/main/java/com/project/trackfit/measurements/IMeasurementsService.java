@@ -1,7 +1,5 @@
 package com.project.trackfit.measurements;
 
-import com.project.trackfit.customer.Customer;
-
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
