@@ -40,6 +40,8 @@ public class DailyStepsServiceTests {
     @Mock
     private CustomerRepository customerRepository;
 
+    private CreateDailyStepsRequest createDailyStepsRequest;
+    private RetrieveDailyStepsRequest retrieveDailyStepsRequest;
     private UUID customerId;
     private UUID dailyStepsId;
     private Customer customer;
@@ -51,21 +53,28 @@ public class DailyStepsServiceTests {
         dailyStepsId = UUID.randomUUID();
         customer = new Customer();
         dailySteps = new DailySteps();
-    }
 
-    @Test
-    @DisplayName("Should create daily steps with the given request")
-    void testCreateDailySteps() {
-        CreateDailyStepsRequest request = new CreateDailyStepsRequest(
+        createDailyStepsRequest = new CreateDailyStepsRequest(
                 "10000",
                 LocalDateTime.now(),
                 customerId,
                 null
         );
+
+        retrieveDailyStepsRequest = new RetrieveDailyStepsRequest(
+                dailyStepsId,
+                "10000",
+                LocalDateTime.now()
+        );
+    }
+
+    @Test
+    @DisplayName("Should create daily steps with the given request")
+    void testCreateDailySteps() {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(dailyStepsRepository.save(any(DailySteps.class))).thenReturn(dailySteps);
 
-        dailyStepsService.createDailySteps(request);
+        dailyStepsService.createDailySteps(createDailyStepsRequest);
 
         verify(customerRepository).findById(customerId);
         verify(dailyStepsRepository).save(any(DailySteps.class));
@@ -74,18 +83,10 @@ public class DailyStepsServiceTests {
     @Test
     @DisplayName("Should return exception when customer doesn't exist")
     void testCreateDailySteps_customerNotFound() {
-        CreateDailyStepsRequest request = new CreateDailyStepsRequest(
-                "10000",
-                LocalDateTime.now(),
-                customerId,
-                null
-        );
-
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> dailyStepsService.createDailySteps(request)
+                () -> dailyStepsService.createDailySteps(createDailyStepsRequest)
         );
     }
 
@@ -95,12 +96,6 @@ public class DailyStepsServiceTests {
         Set<DailySteps> dailyStepsSet = new HashSet<>();
         dailyStepsSet.add(dailySteps);
         customer.setSteps(dailyStepsSet);
-
-        RetrieveDailyStepsRequest retrieveDailyStepsRequest = new RetrieveDailyStepsRequest(
-                dailyStepsId,
-                "10000",
-                LocalDateTime.now()
-        );
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(dailyStepsRetrieveRequestMapper.apply(dailySteps)).thenReturn(retrieveDailyStepsRequest);
@@ -130,12 +125,6 @@ public class DailyStepsServiceTests {
     @Test
     @DisplayName("Should retrieve daily steps by id")
     void testRetrieveDailyStepsById() {
-        RetrieveDailyStepsRequest retrieveDailyStepsRequest = new RetrieveDailyStepsRequest(
-                dailyStepsId,
-                "10000",
-                LocalDateTime.now()
-        );
-
         when(dailyStepsRepository.findById(dailyStepsId)).thenReturn(Optional.of(dailySteps));
         when(dailyStepsRetrieveRequestMapper.apply(dailySteps)).thenReturn(retrieveDailyStepsRequest);
 
