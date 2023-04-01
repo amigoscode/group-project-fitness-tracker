@@ -38,7 +38,7 @@ public class MeasurementsController {
      * http://[::1]:8080/api/v1/measurements
      */
     @PostMapping
-    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) throws ParseException {
+    public ResponseEntity<APICustomResponse> createMeasurements(@Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
         UUID measurementsId = measurementsService.createMeasurements(createMeasurementsRequest);
         Map<String, UUID> data = new HashMap<>();
         data.put("Measurements_Id", measurementsId);
