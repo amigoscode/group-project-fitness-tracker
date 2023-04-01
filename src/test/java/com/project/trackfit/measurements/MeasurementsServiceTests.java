@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MeasurementsServiceTest {
+class MeasurementsServiceTests {
 
     @InjectMocks
     private MeasurementsService measurementsService;
@@ -43,6 +44,7 @@ class MeasurementsServiceTest {
     private CustomerRepository customerRepository;
 
     private RetrieveMeasurementsRequest retrieveMeasurementsRequest;
+    private CreateMeasurementsRequest createMeasurementsRequest;
     private UUID customerId;
     private UUID measurementId;
     private Customer customer;
@@ -58,20 +60,28 @@ class MeasurementsServiceTest {
         measurementId = UUID.randomUUID();
         customer = new Customer();
         measurement = new Measurements();
+
+        retrieveMeasurementsRequest = new RetrieveMeasurementsRequest(
+                measurementId,
+                height,
+                weight,
+                LocalDateTime.now()
+        );
+
+        createMeasurementsRequest = new CreateMeasurementsRequest(
+                "1.70",
+                "70",
+                LocalDateTime.now(),
+                customerId,
+                null
+        );
     }
 
     @Test
     @DisplayName("Should create measurements with the given request")
     void testCreateMeasurements() throws ParseException {
-        CreateMeasurementsRequest request = new CreateMeasurementsRequest(
-                "1.70",
-                "70",
-                "2023-03-25",
-                customerId,
-                null
-        );
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        measurementsService.createMeasurements(request);
+        measurementsService.createMeasurements(createMeasurementsRequest);
         verify(customerRepository).findById(customerId);
         verify(measurementsRepository).save(any(Measurements.class));
     }
@@ -79,15 +89,10 @@ class MeasurementsServiceTest {
     @Test
     @DisplayName("Should return exception when customer doesn't exist")
     void testCreateMeasurements_customerNotFound() throws ParseException {
-        CreateMeasurementsRequest request = new CreateMeasurementsRequest(
-                "1.70",
-                "70",
-                "2023-03-25",
-                customerId,
-                null
-        );
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> measurementsService.createMeasurements(request));
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> measurementsService.createMeasurements(createMeasurementsRequest));
     }
 
     @Test
@@ -96,13 +101,6 @@ class MeasurementsServiceTest {
         Set<Measurements> measurementsSet = new HashSet<>();
         measurementsSet.add(measurement);
         customer.setMeasurements(measurementsSet);
-
-        RetrieveMeasurementsRequest retrieveMeasurementsRequest = new RetrieveMeasurementsRequest(
-                measurementId,
-                height,
-                weight,
-                date
-        );
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(measurementsRetrieveRequestMapper.apply(measurement)).thenReturn(retrieveMeasurementsRequest);
@@ -114,7 +112,6 @@ class MeasurementsServiceTest {
         assertEquals(measurementId, result.get(0).id());
         assertEquals(height, result.get(0).height());
         assertEquals(weight, result.get(0).weight());
-        assertEquals(date, result.get(0).date());
 
         verify(customerRepository).findById(customerId);
         verify(measurementsRetrieveRequestMapper).apply(measurement);
@@ -135,7 +132,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.80",
                 "75",
-                "2023-03-30",
+                LocalDateTime.now(),
                 customerId,
                 measurementId
         );
@@ -153,17 +150,11 @@ class MeasurementsServiceTest {
     @Test
     @DisplayName("Should throw exception when customer not found")
     void testUpdateCustomerMeasurements_customerNotFound() throws ParseException {
-        CreateMeasurementsRequest request = new CreateMeasurementsRequest(
-                "1.80",
-                "75",
-                "2023-03-30",
-                customerId,
-                measurementId
-        );
-
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> measurementsService.updateCustomerMeasurements(customerId, request));
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> measurementsService.updateCustomerMeasurements(customerId, createMeasurementsRequest)
+        );
     }
 
     @Test
@@ -172,7 +163,7 @@ class MeasurementsServiceTest {
         CreateMeasurementsRequest request = new CreateMeasurementsRequest(
                 "1.80",
                 "75",
-                "2023-03-30",
+                LocalDateTime.now(),
                 customerId,
                 measurementId
         );
@@ -180,19 +171,15 @@ class MeasurementsServiceTest {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(measurementsRepository.findById(measurementId)).thenReturn(Optional.empty());
 
-        assertThrows(MeasurementNotFoundException.class, () -> measurementsService.updateCustomerMeasurements(customerId, request));
+        assertThrows(
+                MeasurementNotFoundException.class,
+                () -> measurementsService.updateCustomerMeasurements(customerId, request)
+        );
     }
 
     @Test
     @DisplayName("Should retrieve measurement by Id")
     void testRetrieveMeasurementsById() {
-        RetrieveMeasurementsRequest retrieveMeasurementsRequest = new RetrieveMeasurementsRequest(
-                measurementId,
-                height,
-                weight,
-                date
-        );
-
         when(measurementsRepository.findById(measurementId)).thenReturn(Optional.of(measurement));
         when(measurementsRetrieveRequestMapper.apply(measurement)).thenReturn(retrieveMeasurementsRequest);
 
@@ -202,7 +189,6 @@ class MeasurementsServiceTest {
         assertEquals(measurementId, result.id());
         assertEquals(height, result.height());
         assertEquals(weight, result.weight());
-        assertEquals(date, result.date());
 
         verify(measurementsRepository).findById(measurementId);
         verify(measurementsRetrieveRequestMapper).apply(measurement);
@@ -212,7 +198,10 @@ class MeasurementsServiceTest {
     @DisplayName("Should return exception when measurement doesn't exist")
     void testRetrieveMeasurementsById_notFound() {
         when(measurementsRepository.findById(measurementId)).thenReturn(Optional.empty());
-        assertThrows(MeasurementNotFoundException.class, () -> measurementsService.retrieveMeasurementsById(measurementId));
+        assertThrows(
+                MeasurementNotFoundException.class,
+                () -> measurementsService.retrieveMeasurementsById(measurementId)
+        );
     }
 
     @Test
@@ -228,6 +217,9 @@ class MeasurementsServiceTest {
     @DisplayName("Should return exception when measurement doesn't exist")
     void testDeleteMeasurementById_notFound() {
         when(measurementsRepository.findById(measurementId)).thenReturn(Optional.empty());
-        assertThrows(MeasurementNotFoundException.class, () -> measurementsService.deleteMeasurementById(measurementId));
+        assertThrows(
+                MeasurementNotFoundException.class,
+                () -> measurementsService.deleteMeasurementById(measurementId)
+        );
     }
 }

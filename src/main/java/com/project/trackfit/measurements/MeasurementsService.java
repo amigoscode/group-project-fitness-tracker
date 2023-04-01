@@ -7,7 +7,6 @@ import com.project.trackfit.customer.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -22,14 +21,14 @@ public class MeasurementsService implements IMeasurementsService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public UUID createMeasurements(CreateMeasurementsRequest createMeasurementsRequest) throws ParseException {
+    public UUID createMeasurements(CreateMeasurementsRequest createMeasurementsRequest) {
         Customer customer = customerRepository.findById(createMeasurementsRequest.customerId())
                 .orElseThrow(ResourceNotFoundException::new);
 
         Measurements measurements = new Measurements();
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.getParsedDate());
+        measurements.setDate(createMeasurementsRequest.date());
         measurements.setCustomer(customer);
         measurementsRepository.save(measurements);
         return measurements.getId();
@@ -56,7 +55,7 @@ public class MeasurementsService implements IMeasurementsService {
     }
 
     @Override
-    public void updateCustomerMeasurements(UUID customerId, CreateMeasurementsRequest createMeasurementsRequest) throws ParseException {
+    public void updateCustomerMeasurements(UUID customerId, CreateMeasurementsRequest createMeasurementsRequest) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -71,7 +70,7 @@ public class MeasurementsService implements IMeasurementsService {
 
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.getParsedDate());
+        measurements.setDate(createMeasurementsRequest.date());
 
         measurementsRepository.save(measurements);
     }

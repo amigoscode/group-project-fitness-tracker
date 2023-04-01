@@ -2,6 +2,7 @@ package com.project.trackfit.customer;
 
 import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.measurements.Measurements;
+import com.project.trackfit.steps.DailySteps;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,19 +44,10 @@ public class Customer {
     @OneToMany(mappedBy ="customer")
     private Set<Subscription> subscriptions;
 
+    @OneToMany(mappedBy ="customer")
+    private Set<DailySteps> steps;
+
     public Customer(ApplicationUser applicationUser) {
         this.user = applicationUser;
-    }
-    public Set<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-    public void setSubscriptions(Set<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-    public Set<Measurements> getMeasurements() {
-        return measurements;
-    }
-    public void setMeasurements(Set<Measurements> measurements) {
-        this.measurements = measurements;
     }
 }

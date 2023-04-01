@@ -31,6 +31,17 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
+    @ExceptionHandler(DailyStepsNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleDailyStepsNotFoundException(DailyStepsNotFoundException exception) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage("Daily Steps Not Found");
+        errorResponse.setEx(exception);
+        errorResponse.setHttpStatus(HttpStatus.NOT_FOUND);
+        return errorResponse;
+    }
+
     @ExceptionHandler(EmailNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
