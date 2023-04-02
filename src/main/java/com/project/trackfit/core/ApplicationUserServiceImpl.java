@@ -2,9 +2,7 @@ package com.project.trackfit.core;
 
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
-import com.project.trackfit.core.registration.EmailValidator;
-
-import com.project.trackfit.customer.CustomerRepository;
+import com.project.trackfit.core.validation.EmailValidator;
 import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.trainer.PersonalTrainerService;
 import lombok.AllArgsConstructor;

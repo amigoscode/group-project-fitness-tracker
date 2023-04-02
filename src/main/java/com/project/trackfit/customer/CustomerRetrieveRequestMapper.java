@@ -11,8 +11,10 @@ public class CustomerRetrieveRequestMapper  implements Function<Customer,Retriev
                 customer.getId(),
                 customer.getUser().getFirstName(),
                 customer.getUser().getLastName(),
+                customer.getAge(),
                 customer.getUser().getEmail(),
-                customer.getAge()
+                customer.getAddress()
+
         );
     }
 }

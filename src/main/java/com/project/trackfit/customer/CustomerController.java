@@ -3,8 +3,12 @@ package com.project.trackfit.customer;
 import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -23,11 +27,6 @@ public class CustomerController {
     private final CustomerService customerService;
 
     /**
-     * Spring Boot REST API creates a User
-     * http://[::1]:8080/api/v1/customers/
-     */
-
-    /**
      * Spring Boot REST API gets a User by Id
      * http://[::1]:8080/api/v1/users/{id}
      */
@@ -42,6 +41,25 @@ public class CustomerController {
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
+        );
+    }
+    @PatchMapping("{id}")
+    public ResponseEntity<APICustomResponse>updateUser(
+            @PathVariable("id")UUID customerId,
+            @Valid @RequestBody UpdateCustomerRequest updateCustomerRequest)
+            throws NoSuchAlgorithmException{
+        RetrieveCustomerRequest customerRequest=customerService.updateCustomer(customerId,updateCustomerRequest);
+
+
+        return new ResponseEntity(
+                APICustomResponse.builder()
+                        .timeStamp(now())
+                        .data(Map.of("customer", customerRequest))
+                        .message("Customer have been updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build(),
+                OK
         );
     }
 }

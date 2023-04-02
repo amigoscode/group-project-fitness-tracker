@@ -1,17 +1,12 @@
 package com.project.trackfit.customer;
 
 import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.core.exception.EmailNotValidException;
+
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.registration.EmailValidator;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -20,6 +15,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
+    private Customer findOrThrow(final UUID id) {
+        return customerRepository.
+                findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
     @Override
     public UUID createCustomer(ApplicationUser applicationUser){
         Customer customer= new Customer(
@@ -33,9 +33,24 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerById(UUID userId) {
-        return customerRepository
-                .findById(userId)
-                .orElseThrow(ResourceNotFoundException::new);
+        return findOrThrow(userId);
+    }
+
+    @Override
+    public RetrieveCustomerRequest updateCustomer(
+            UUID customerId,
+            UpdateCustomerRequest updateCustomerRequest) {
+
+        var customer=findOrThrow(customerId);
+        if(updateCustomerRequest.age() !=null) {
+            customer.setAge(updateCustomerRequest.age());
+        }
+        if(updateCustomerRequest.address() !=null) {
+            customer.setAddress(updateCustomerRequest.address());
+        }
+        customerRepository.save(customer);
+
+        return  customerRetrieveRequestMapper.apply(customer);
     }
 
     @Override

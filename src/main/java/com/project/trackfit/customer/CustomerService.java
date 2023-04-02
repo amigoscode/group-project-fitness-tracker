@@ -10,5 +10,7 @@ public interface CustomerService {
 
     Customer getCustomerById(UUID customer_id);
 
+    RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest) throws NoSuchAlgorithmException;
+
     RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id);
 }

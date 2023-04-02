@@ -30,7 +30,7 @@ public class SubscriptionServiceImplementation implements SubscriptionService {
     @Override
     public UUID createSubscription(CreateSubscriptionRequest subscriptionRequest) {
         PersonalTrainer trainer = personalTrainerService.getTrainerByID(subscriptionRequest.personalTrainerId());
-        Customer currentCustomer = customerService.getID(subscriptionRequest.customerId());
+        Customer currentCustomer = customerService.getCustomerById(subscriptionRequest.customerId());
 
         Subscription subscribe = new Subscription(
                 subscriptionRequest.subscribedAt(),

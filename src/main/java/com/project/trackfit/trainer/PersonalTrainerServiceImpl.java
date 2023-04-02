@@ -4,7 +4,6 @@ import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.core.exception.EmailNotValidException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.registration.EmailValidator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
