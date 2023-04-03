@@ -1,4 +1,4 @@
-package com.project.trackfit.measurements;
+package com.project.trackfit.steps;
 
 import com.project.trackfit.customer.Customer;
 import jakarta.persistence.Column;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Measurements {
+public class DailySteps {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
@@ -30,9 +30,7 @@ public class Measurements {
     @Column(nullable = false, updatable = false)
     private UUID id;
     @Column(nullable = false)
-    private String height;
-    @Column(nullable = false)
-    private String weight;
+    private String steps;
     @Column(nullable = false)
     private LocalDateTime date;
     @ManyToOne
