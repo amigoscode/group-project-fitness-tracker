@@ -44,7 +44,7 @@ public class SubscriptionType {
 
     public SubscriptionType(String title,
                             PersonalTrainer personalTrainer,
-                            List<Subscription> subscriptions,
+
                             LocalDateTime createdAt,
                             int periodInDays) {
         this.title = title;
