@@ -1,6 +1,7 @@
 package com.project.trackfit.subscriptionType;
 
 import com.project.trackfit.customer.Customer;
+import com.project.trackfit.subscription.Subscription;
 import com.project.trackfit.trainer.PersonalTrainer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,13 +25,15 @@ public class SubscriptionType {
     )
     @Column(nullable = false, updatable = false)
     private UUID id;
+    @Column(nullable = false, updatable = false)
+    private String title;
 
     @OneToOne
     @JoinColumn(name="trainer_id")
     private PersonalTrainer personalTrainer;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Customer> customers;
+    @OneToMany(mappedBy = "subscriptionType")
+    private List<Subscription> subscriptions;
 
     private LocalDateTime createdAt;
 
@@ -39,4 +42,15 @@ public class SubscriptionType {
     private String description;
 
 
+    public SubscriptionType(String title,
+                            PersonalTrainer personalTrainer,
+                            List<Subscription> subscriptions,
+                            LocalDateTime createdAt,
+                            int periodInDays) {
+        this.title = title;
+        this.personalTrainer = personalTrainer;
+        this.subscriptions = subscriptions;
+        this.createdAt = createdAt;
+        this.periodInDays = periodInDays;
+    }
 }
