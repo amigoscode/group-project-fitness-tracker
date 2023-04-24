@@ -8,5 +8,4 @@ public record CreateSubscriptionRequest(
          UUID personalTrainerId,
          UUID customerId,
          LocalDateTime subscribedAt
-) {
-}
+) { }

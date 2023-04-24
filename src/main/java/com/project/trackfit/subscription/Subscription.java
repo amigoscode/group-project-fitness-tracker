@@ -2,8 +2,15 @@ package com.project.trackfit.subscription;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.trackfit.customer.Customer;
+import com.project.trackfit.subscriptionType.SubscriptionType;
 import com.project.trackfit.trainer.PersonalTrainer;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,6 +50,9 @@ public class Subscription {
     @JoinColumn(name="customer_id",nullable = false)
     private Customer customer;
 
+    @ManyToOne
+    @JoinColumn(name="subscription_type_id",nullable = false)
+    private SubscriptionType subscriptionType;
     public Subscription(
             LocalDateTime subscribedAt,
             LocalDateTime expiredOn,

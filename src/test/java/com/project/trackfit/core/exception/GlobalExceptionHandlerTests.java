@@ -18,6 +18,9 @@ public class GlobalExceptionHandlerTests {
     private ResourceNotFoundException resourceNotFoundException;
 
     @Mock
+    private MeasurementNotFoundException measurementNotFoundException;
+
+    @Mock
     private EmailNotValidException emailNotValidException;
 
     @Mock
@@ -34,6 +37,16 @@ public class GlobalExceptionHandlerTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
         assertEquals("User Doesn't Exist", response.getMessage());
         assertEquals("User Doesn't Exist", response.getEx().getMessage());
+    }
+
+    @Test
+    @DisplayName("Check that MeasurementNotFoundException returns corresponding error response")
+    public void handleMeasurementNotFoundException_shouldReturnErrorResponse() {
+        when(measurementNotFoundException.getMessage()).thenReturn("Measurement Doesn't Exist");
+        ErrorResponse response = globalExceptionHandler.handleMeasurementNotFoundException(measurementNotFoundException);
+        assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
+        assertEquals("Measurement Doesn't Exist", response.getMessage());
+        assertEquals("Measurement Doesn't Exist", response.getEx().getMessage());
     }
 
     @Test
