@@ -4,9 +4,8 @@ import com.project.trackfit.core.ApplicationUser;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
-
 @Service
-public class CustomerRetrieveRequestMapper implements Function<Customer,RetrieveCustomerRequest> {
+public class CustomerRetrieveRequestMapper  implements Function<Customer,RetrieveCustomerRequest> {
     @Override
     public RetrieveCustomerRequest apply(Customer customer) {
         ApplicationUser user = customer.getUser();
