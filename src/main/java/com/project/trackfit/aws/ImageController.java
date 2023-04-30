@@ -23,8 +23,8 @@ import java.util.UUID;
 @RequestMapping("api/v1/images")
 public class ImageController {
 
-    private ImageService imageService;
-    private CustomerService customerService;
+    private final ImageService imageService;
+    private final CustomerService customerService;
 
     @PostMapping("{customerId}/upload")
     public ResponseEntity<Media> uploadImage(
