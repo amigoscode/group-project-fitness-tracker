@@ -1,8 +1,6 @@
 package com.project.trackfit.aws;
 
 import com.amazonaws.services.s3.model.S3Object;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.media.Media;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,21 +26,17 @@ public class ImageControllerTests {
 
     private ImageController imageController;
     private ImageService imageService;
-    private CustomerService customerService;
 
     @BeforeEach
     public void setUp() {
         imageService = mock(ImageService.class);
-        customerService = mock(CustomerService.class);
-        imageController = new ImageController(imageService, customerService);
+        imageController = new ImageController(imageService);
     }
 
     @Test
     @DisplayName("Unit test for uploading an image")
     public void testUploadImage() throws IOException {
         UUID customerId = UUID.randomUUID();
-        Customer customer = new Customer();
-        customer.setId(customerId);
 
         MultipartFile image = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[0]);
 
@@ -50,18 +44,15 @@ public class ImageControllerTests {
         media.setId(UUID.randomUUID());
         media.setType("image/jpeg");
         media.setDate(LocalDateTime.now());
-        media.setCustomer(customer);
 
-        when(customerService.getCustomerById(customerId)).thenReturn(customer);
-        when(imageService.uploadImage(image, customer)).thenReturn(media);
+        when(imageService.uploadImageForCustomer(customerId, image)).thenReturn(media);
 
         ResponseEntity<Media> response = imageController.uploadImage(customerId, image);
 
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         assertEquals(response.getBody(), media);
 
-        verify(customerService).getCustomerById(customerId);
-        verify(imageService).uploadImage(image, customer);
+        verify(imageService).uploadImageForCustomer(customerId, image);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.project.trackfit.customer.Customer;
+import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.media.MediaRepository;
 import lombok.AllArgsConstructor;
@@ -20,11 +21,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ImageService {
 
-    private AmazonS3 s3Client;
-    private MediaRepository mediaRepository;
+    private final AmazonS3 s3Client;
+    private final MediaRepository mediaRepository;
+    private final CustomerService customerService;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+
+    public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
+        Customer customer = customerService.getCustomerById(customerId);
+        return uploadImage(image, customer);
+    }
 
     public Media uploadImage(MultipartFile image, Customer customer) throws IOException {
         String key = generateKey(image.getOriginalFilename());

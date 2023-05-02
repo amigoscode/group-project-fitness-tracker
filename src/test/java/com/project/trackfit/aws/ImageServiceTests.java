@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.project.trackfit.customer.Customer;
+import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.media.MediaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,9 @@ public class ImageServiceTests {
     @Mock
     private MediaRepository mediaRepository;
 
+    @Mock
+    private CustomerService customerService;
+
     @InjectMocks
     private ImageService imageService;
 
@@ -42,7 +46,7 @@ public class ImageServiceTests {
 
     @BeforeEach
     void setUp() {
-        imageService = new ImageService(s3Client, mediaRepository, bucketName);
+        imageService = new ImageService(s3Client, mediaRepository, customerService, bucketName);
     }
 
     @Test
