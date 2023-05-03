@@ -8,35 +8,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
 
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/auth/register")
-public class ApplicationUserController {
+public class ApplicationUserController extends GenericController {
 
     private final IApplicationUserService IApplicationUserService;
 
+    /**
+     * Creates a User
+     * http://[::1]:8080/api/v1/auth/register
+     */
     @PostMapping
-    public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<APICustomResponse> createUser(
+            @Valid @RequestBody CreateUserRequest createUserRequest) {
         UUID userId = IApplicationUserService.createUser(createUserRequest);
-        Map<String, UUID> data = new HashMap<>();
-        data.put("User_Id", userId);
-        return new ResponseEntity(
-                APICustomResponse.builder()
-                        .timeStamp(now())
-                        .data(data)
-                        .message("Application user has been created successfully")
-                        .status(CREATED)
-                        .statusCode(CREATED.value())
-                        .build(),
-                CREATED
-        );
+        return createResponse(
+                Map.of("User_Id", userId),
+                "Application user has been created successfully",
+                CREATED);
     }
 }
