@@ -16,26 +16,33 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SubscriptionTypeService implements ISubscriptionTypeService{
     private  final SubscriptionTypeRepository subscriptionTypeRepository;
-    private  final SubscriptionRepository subscriptionRepository;
     private  final PersonalTrainerService personalTrainerService;
+    private  final RetrieveSubscriptionTypeMapper retrieveSubscriptionTypeMapper;
+
+    private SubscriptionType findOrThrow(UUID subscriptionTypeId){
+        return subscriptionTypeRepository
+                .findById(subscriptionTypeId)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
     @Override
     public UUID createSubscriptionType(CreateSubscriptionTypeRequest createSubscriptionTypeRequest) {
         PersonalTrainer trainerInstance=personalTrainerService.
                 getTrainerByID(createSubscriptionTypeRequest.trainer_id());
-        Subscription subscriptionInstance=subscriptionRepository
-                .findById(createSubscriptionTypeRequest.subscription_id())
-                .orElseThrow(ResourceNotFoundException::new);
 
         SubscriptionType subscriptionType=
                 new SubscriptionType(
-
+                        createSubscriptionTypeRequest.subscription_type_title(),
+                        trainerInstance,
+                        createSubscriptionTypeRequest.created_at(),
+                        createSubscriptionTypeRequest.period_in_days()
                 );
-
-        return null;
+        subscriptionTypeRepository.save(subscriptionType);
+        return subscriptionType.getId();
     }
 
     @Override
     public RetrieveSubscriptionTypeRequest getSubscriptionTypeById(UUID subscriptionTypeId) {
-        return null;
+        SubscriptionType instance= findOrThrow(subscriptionTypeId);
+        return retrieveSubscriptionTypeMapper.apply(instance);
     }
 }

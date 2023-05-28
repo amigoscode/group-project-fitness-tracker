@@ -30,7 +30,7 @@ public class CustomerServiceTests {
     private CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @InjectMocks
-    private CustomerService customerService;
+    private ICustomerService customerService;
 
     private ApplicationUser testApplicationUser;
 

@@ -2,6 +2,7 @@ package com.project.trackfit.customer;
 
 import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.measurements.Measurements;
+import com.project.trackfit.media.Media;
 import com.project.trackfit.steps.DailySteps;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.Column;
@@ -13,15 +14,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Set;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -46,6 +45,9 @@ public class Customer {
 
     @OneToMany(mappedBy ="customer")
     private Set<DailySteps> steps;
+
+    @OneToMany(mappedBy ="customer")
+    private Set<Media> media;
 
     public Customer(ApplicationUser applicationUser) {
         this.user = applicationUser;
