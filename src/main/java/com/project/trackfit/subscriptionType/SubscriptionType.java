@@ -18,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "subscription_type")
 public class SubscriptionType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
@@ -50,6 +51,17 @@ public class SubscriptionType {
         this.title = title;
         this.personalTrainer = personalTrainer;
         this.subscriptions = subscriptions;
+        this.createdAt = createdAt;
+        this.periodInDays = periodInDays;
+    }
+    public SubscriptionType(String title,
+                            PersonalTrainer personalTrainer,
+
+                            LocalDateTime createdAt,
+                            int periodInDays) {
+        this.title = title;
+        this.personalTrainer = personalTrainer;
+
         this.createdAt = createdAt;
         this.periodInDays = periodInDays;
     }
