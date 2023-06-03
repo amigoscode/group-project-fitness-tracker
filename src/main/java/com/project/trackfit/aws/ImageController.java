@@ -1,8 +1,6 @@
 package com.project.trackfit.aws;
 
 import com.amazonaws.services.s3.model.S3Object;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerService;
 import com.project.trackfit.media.Media;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

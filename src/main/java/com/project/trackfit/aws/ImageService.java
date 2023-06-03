@@ -5,10 +5,10 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerService;
+import com.project.trackfit.customer.CustomerServiceImpl;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.media.MediaRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,15 +18,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ImageService {
-
-    private final AmazonS3 s3Client;
-    private final MediaRepository mediaRepository;
-    private final CustomerService customerService;
-
+    @Autowired
+    private  AmazonS3 s3Client;
+    @Autowired
+    private  MediaRepository mediaRepository;
+    @Autowired
+    private  CustomerServiceImpl customerService;
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+
 
     public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
         Customer customer = customerService.getCustomerById(customerId);

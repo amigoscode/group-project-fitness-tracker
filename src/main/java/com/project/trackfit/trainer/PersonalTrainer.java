@@ -2,14 +2,7 @@ package com.project.trackfit.trainer;
 
 import com.project.trackfit.core.ApplicationUser;
 import com.project.trackfit.subscription.Subscription;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "personal_trainer")
 public class PersonalTrainer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
