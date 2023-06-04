@@ -58,25 +58,12 @@ public class MeasurementsController extends GenericController {
                 OK);
     }
 
-    /**
-     * Gets all measurements by customerId
-     * http://[::1]:8080/api/v1/measurements/customer/{customerId}
-     */
-    @GetMapping("customer/{customerId}")
-    public ResponseEntity<APICustomResponse> getCustomerMeasurements(
-            @PathVariable("customerId") UUID customerId) {
-        List<RetrieveMeasurementsRequest> customerMeasurements = measurementsService.getCustomerMeasurements(customerId);
-        return createResponse(
-                Map.of("customerMeasurements", customerMeasurements),
-                "Customer measurements have been retrieved successfully",
-                OK);
-    }
 
     /**
      * Updates a measurement by Id
      * http://[::1]:8080/api/v1/measurements/customer/{customerId}
      */
-    @PutMapping("/customer/{customerId}")
+    @PutMapping("{customerId}")
     public ResponseEntity<APICustomResponse> updateCustomerMeasurements(
             @PathVariable("customerId") UUID customerId,
             @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {

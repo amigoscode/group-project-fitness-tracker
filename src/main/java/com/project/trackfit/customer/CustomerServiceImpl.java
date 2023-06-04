@@ -66,6 +66,9 @@ public class CustomerServiceImpl implements ICustomerService {
         if(updateCustomerRequest.address() !=null) {
             customer.setAddress(updateCustomerRequest.address());
         }
+        if(updateCustomerRequest.role()!=null){
+            customer.getUser().setRole(updateCustomerRequest.role());
+        }
         customerRepository.save(customer);
 
         return  customerRetrieveRequestMapper.apply(customer);
