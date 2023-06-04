@@ -74,4 +74,9 @@ public class CustomerServiceImpl implements ICustomerService {
         return  customerRetrieveRequestMapper.apply(customer);
     }
 
+    @Override
+    public Customer getCustomerByUserId(UUID user_id) {
+      return  customerRepository.findByUser_Id(user_id).orElseThrow(ResourceNotFoundException::new);
+    }
+
 }

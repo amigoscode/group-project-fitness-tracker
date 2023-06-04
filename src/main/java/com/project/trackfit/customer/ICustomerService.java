@@ -10,5 +10,6 @@ public interface ICustomerService {
     Customer getCustomerById(UUID customer_id);
     RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id);
     RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest);
+    Customer getCustomerByUserId(UUID user_id);
 
 }
