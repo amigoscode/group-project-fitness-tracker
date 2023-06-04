@@ -9,6 +9,6 @@ public interface ICustomerService {
     UUID createCustomer(ApplicationUser applicationUser, CreateCustomerRequest createCustomerRequest);
     Customer getCustomerById(UUID customer_id);
     RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id);
-    RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest) throws NoSuchAlgorithmException;
+    RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest);
 
 }

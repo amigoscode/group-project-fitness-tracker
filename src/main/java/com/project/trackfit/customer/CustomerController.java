@@ -5,10 +5,7 @@ import com.project.trackfit.core.GenericController;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,10 +20,6 @@ public class CustomerController extends GenericController {
 
     private final ICustomerService service;
 
-    /**
-     * Gets a Customer by Id
-     * http://[::1]:8080/api/v1/customers/{id}
-     */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getCustomerById(
             @PathVariable("id") UUID customer_id) {
@@ -35,5 +28,16 @@ public class CustomerController extends GenericController {
                 Map.of("customer", customerRequest),
                 "Customer has been fetched successfully",
                 OK);
+    }
+    @PatchMapping("{id}")
+    public  ResponseEntity<APICustomResponse>updateCustomerById(
+            @PathVariable("id") UUID customerID,
+            @RequestBody UpdateCustomerRequest updateCustomerRequest){
+        RetrieveCustomerRequest customerRequest=service.updateCustomer(customerID,updateCustomerRequest);
+        return createResponse(
+                Map.of("customer",customerRequest),
+                "Customer has been updated successfully",
+                OK
+        );
     }
 }

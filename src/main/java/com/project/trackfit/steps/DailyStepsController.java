@@ -57,17 +57,4 @@ public class DailyStepsController extends GenericController {
                 OK);
     }
 
-    /**
-     * Gets all Daily Steps by customerId
-     * http://[::1]:8080/api/v1/dailysteps/customer/{customerId}
-     */
-    @GetMapping("customer/{customerId}")
-    public ResponseEntity<APICustomResponse> getCustomerDailySteps(
-            @PathVariable("customerId") UUID customerId) {
-        List<RetrieveDailyStepsRequest> customerDailySteps = dailyStepsService.getCustomerDailySteps(customerId);
-        return createResponse(
-                Map.of("customerDailySteps", customerDailySteps),
-                "Customer Daily Steps have been retrieved successfully",
-                OK);
-    }
 }
