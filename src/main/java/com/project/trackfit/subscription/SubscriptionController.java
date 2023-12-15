@@ -1,7 +1,6 @@
 package com.project.trackfit.subscription;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.GenericController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,9 +23,9 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/subscription")
-public class SubscriptionController extends GenericController {
+public class SubscriptionController {
 
-    private final ISubscriptionService ISubscriptionService;
+    private final ISubscriptionService service;
 
     /**
      * Creates Subscriptions
@@ -34,11 +34,17 @@ public class SubscriptionController extends GenericController {
     @PostMapping
     public ResponseEntity<APICustomResponse> subscribe(
             @Valid @RequestBody CreateSubscriptionRequest subscriptionRequest) {
-        UUID subscriptionId = ISubscriptionService.createSubscription(subscriptionRequest);
-        return createResponse(
-                Map.of("SubscriptionId", subscriptionId),
-                "Personal Trainer have been Created Successfully",
-                CREATED);
+        UUID subscriptionId = service.createSubscription(subscriptionRequest);
+
+        return ResponseEntity.status(CREATED)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("SubscriptionId", subscriptionId))
+                        .message("Subscription added Successfully")
+                        .status(CREATED)
+                        .statusCode(CREATED.value())
+                        .build()
+                );
     }
 
     /**
@@ -47,11 +53,17 @@ public class SubscriptionController extends GenericController {
      */
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllSubscriptions() {
-        Iterable<RetrieveSubscriptionRequest> subscriptionRequests = ISubscriptionService.findAllSubscription();
-        return createResponse(
-                Map.of("Subscription", subscriptionRequests),
-                "Fetched All Subscription",
-                OK);
+        Iterable<RetrieveSubscriptionRequest> subscriptionRequests = service.findAllSubscription();
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("Subscription", subscriptionRequests))
+                        .message("Fetched all subscriptions")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 
     /**
@@ -61,10 +73,16 @@ public class SubscriptionController extends GenericController {
     @GetMapping("{subId}")
     public ResponseEntity<APICustomResponse> getSubscriptionDetails(
             @PathVariable("subId") UUID subId) {
-        RetrieveSubscriptionRequest subscriptionDetails = ISubscriptionService.findSubscriptionByID(subId);
-        return createResponse(
-                Map.of("SubscriptionDetails", subscriptionDetails),
-                "Fetched All Personal Trainers",
-                OK);
+        RetrieveSubscriptionRequest subscriptionDetails = service.findSubscriptionByID(subId);
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("SubscriptionDetails", subscriptionDetails))
+                        .message("Fetched All Personal Trainers")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 }

@@ -1,7 +1,6 @@
 package com.project.trackfit.steps;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.GenericController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/dailysteps")
-public class DailyStepsController extends GenericController {
+public class DailyStepsController {
 
     private final DailyStepsService dailyStepsService;
 
@@ -37,10 +36,16 @@ public class DailyStepsController extends GenericController {
     public ResponseEntity<APICustomResponse> createDailySteps(
             @Valid @RequestBody CreateDailyStepsRequest createDailyStepsRequest) {
         UUID dailyStepsId = dailyStepsService.createDailySteps(createDailyStepsRequest);
-        return createResponse(
-                Map.of("DailySteps_Id", dailyStepsId),
-                "Daily Steps have been created successfully",
-                CREATED);
+
+        return ResponseEntity.status(CREATED)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("DailySteps_Id", dailyStepsId))
+                        .message("Daily Steps have been created successfully")
+                        .status(CREATED)
+                        .statusCode(CREATED.value())
+                        .build()
+                );
     }
 
     /**
@@ -51,10 +56,15 @@ public class DailyStepsController extends GenericController {
     public ResponseEntity<APICustomResponse> getDailyStepsById(
             @PathVariable("id") UUID dailyStepsId) {
         RetrieveDailyStepsRequest dailyStepsRequest = dailyStepsService.retrieveDailyStepsById(dailyStepsId);
-        return createResponse(
-                Map.of("dailySteps", dailyStepsRequest),
-                "Daily Steps have been fetched successfully",
-                OK);
-    }
 
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("dailySteps", dailyStepsRequest))
+                        .message("Daily Steps have been fetched successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
+    }
 }

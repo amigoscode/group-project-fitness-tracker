@@ -1,17 +1,11 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.core.exception.EmailNotValidException;
+import com.project.trackfit.user.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -20,12 +14,12 @@ public class CustomerServiceImpl implements ICustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
+
     private Customer findOrThrow(final UUID id) {
         return customerRepository.
                 findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
     }
-
 
     @Override
     public UUID createCustomer(ApplicationUser applicationUser, CreateCustomerRequest createCustomerRequest){

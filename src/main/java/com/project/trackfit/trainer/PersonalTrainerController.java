@@ -1,7 +1,6 @@
 package com.project.trackfit.trainer;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.GenericController;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,16 +9,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/trainers")
 @PreAuthorize("isAuthenticated()")
-public class PersonalTrainerController extends GenericController {
+public class PersonalTrainerController {
 
     private final IPersonalTrainerService IPersonalTrainerService;
 
@@ -30,10 +31,16 @@ public class PersonalTrainerController extends GenericController {
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
         Iterable<RetrieveTrainerRequest> trainers = IPersonalTrainerService.findAllTrainers();
-        return createResponse(
-                Map.of("Personal Trainers", trainers),
-                "Fetched All Personal Trainers",
-                OK);
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("Personal Trainers", trainers))
+                        .message("Fetched All Personal Trainers")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 
     /**
@@ -43,9 +50,15 @@ public class PersonalTrainerController extends GenericController {
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
         RetrieveTrainerRequest trainer = IPersonalTrainerService.retrieveTrainerByID(trainerId);
-        return createResponse(
-                Map.of("trainer", trainer),
-                "Trainer has been fetched successfully",
-                OK);
+
+        return ResponseEntity.status(CREATED)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("trainer", trainer))
+                        .message("Trainer has been fetched successfully")
+                        .status(CREATED)
+                        .statusCode(CREATED.value())
+                        .build()
+                );
     }
 }

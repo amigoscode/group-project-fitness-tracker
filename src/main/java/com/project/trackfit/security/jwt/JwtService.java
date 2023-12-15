@@ -21,23 +21,24 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     final String SECRET_KEY="6E5A7234753778214125442A472D4B614E645267556B58703273357638792F42";
-    private String createToken( Map<String,Object> claims, String subject) {
-        Key key = getSignInKey();
-                return Jwts
-                        .builder()
-                        .setClaims(claims)
-                        .setSubject(subject)
-                        .setIssuedAt(new Date(System.currentTimeMillis()))
-                        .setExpiration(new Date(System.currentTimeMillis()+
-                                        1000 * 60 * 60 * 10))
-                        .signWith(key)
-                        .compact();
-    }
 
     public String generateToken(String email, Role role){
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role.name());
         return createToken(claims, email);
+    }
+
+    private String createToken( Map<String,Object> claims, String subject) {
+        Key key = getSignInKey();
+        return Jwts
+                .builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+
+                        1000 * 60 * 60 * 10))
+                .signWith(key)
+                .compact();
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){

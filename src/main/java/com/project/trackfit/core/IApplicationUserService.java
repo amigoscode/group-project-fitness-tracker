@@ -1,6 +1,7 @@
 package com.project.trackfit.core;
 
-import java.security.NoSuchAlgorithmException;
+import com.project.trackfit.user.CreateUserRequest;
+
 import java.util.UUID;
 
 public interface IApplicationUserService {

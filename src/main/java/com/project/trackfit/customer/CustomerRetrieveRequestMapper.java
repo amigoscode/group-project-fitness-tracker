@@ -1,6 +1,6 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.user.ApplicationUser;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

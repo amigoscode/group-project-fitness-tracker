@@ -19,15 +19,28 @@ import java.util.UUID;
 
 @Service
 public class ImageService {
+
     @Autowired
     private  AmazonS3 s3Client;
+
     @Autowired
     private  MediaRepository mediaRepository;
+
     @Autowired
     private  CustomerServiceImpl customerService;
+
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
+    public ImageService(AmazonS3 s3Client,
+                        MediaRepository mediaRepository,
+                        CustomerServiceImpl customerService,
+                        String bucketName) {
+        this.s3Client = s3Client;
+        this.mediaRepository = mediaRepository;
+        this.customerService = customerService;
+        this.bucketName = bucketName;
+    }
 
     public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
         Customer customer = customerService.getCustomerById(customerId);

@@ -1,5 +1,6 @@
-package com.project.trackfit.core;
+package com.project.trackfit.user;
 
+import com.project.trackfit.core.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

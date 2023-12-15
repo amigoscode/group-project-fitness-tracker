@@ -1,6 +1,6 @@
 package com.project.trackfit.trainer;
 
-import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.user.ApplicationUser;
 
 import java.util.UUID;
 

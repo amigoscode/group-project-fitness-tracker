@@ -1,6 +1,6 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.user.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.core.Role;
 

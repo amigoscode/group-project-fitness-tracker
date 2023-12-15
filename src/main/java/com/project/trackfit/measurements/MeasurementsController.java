@@ -1,7 +1,6 @@
 package com.project.trackfit.measurements;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.GenericController;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/measurements")
-public class MeasurementsController extends GenericController {
+public class MeasurementsController {
 
     private final MeasurementsService measurementsService;
 
@@ -38,10 +37,16 @@ public class MeasurementsController extends GenericController {
     public ResponseEntity<APICustomResponse> createMeasurements(
             @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
         UUID measurementsId = measurementsService.createMeasurements(createMeasurementsRequest);
-        return createResponse(
-                Map.of("Measurements_Id", measurementsId),
-                "Measurements have been created successfully",
-                CREATED);
+
+        return ResponseEntity.status(CREATED)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("Measurements_Id", measurementsId))
+                        .message("Measurements have been created successfully")
+                        .status(CREATED)
+                        .statusCode(CREATED.value())
+                        .build()
+                );
     }
 
     /**
@@ -52,10 +57,16 @@ public class MeasurementsController extends GenericController {
     public ResponseEntity<APICustomResponse> getMeasurementsById(
             @PathVariable("id") UUID measurementsId) {
         RetrieveMeasurementsRequest measurementsRequest = measurementsService.retrieveMeasurementsById(measurementsId);
-        return createResponse(
-                Map.of("measurements", measurementsRequest),
-                "Measurements have been fetched successfully",
-                OK);
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("measurements", measurementsRequest))
+                        .message("Measurements have been fetched successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 
 
@@ -68,10 +79,16 @@ public class MeasurementsController extends GenericController {
             @PathVariable("customerId") UUID customerId,
             @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
         measurementsService.updateCustomerMeasurements(customerId, createMeasurementsRequest);
-        return createResponse(
-                null,
-                "Measurements have been updated successfully",
-                OK);
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(null)
+                        .message("Measurements have been updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 
     /**
@@ -82,9 +99,15 @@ public class MeasurementsController extends GenericController {
     public ResponseEntity<APICustomResponse> deleteMeasurementById(
             @PathVariable("measurementId") UUID measurementId) {
         measurementsService.deleteMeasurementById(measurementId);
-        return createResponse(
-                null,
-                "Measurement has been deleted successfully",
-                OK);
+
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(null)
+                        .message("Measurement has been deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 }

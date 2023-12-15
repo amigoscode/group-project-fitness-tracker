@@ -1,8 +1,8 @@
-package com.project.trackfit.core;
+package com.project.trackfit.user;
 
+import com.project.trackfit.core.IApplicationUserService;
+import com.project.trackfit.core.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.core.exception.EmailNotValidException;
-import com.project.trackfit.core.validation.EmailValidator;
 
 import com.project.trackfit.customer.CreateCustomerRequest;
 import com.project.trackfit.customer.ICustomerService;
@@ -24,33 +24,14 @@ public class ApplicationUserService implements IApplicationUserService {
     private final ApplicationUserRepo applicationUserRepo;
     private final ICustomerService ICustomerService;
     private final IPersonalTrainerService trainerService;
-    private final EmailValidator emailValidator;
 
     @Override
     public UUID createUser(CreateUserRequest createUserRequest) {
-        checkEmailValidity(createUserRequest);
-        checkEmailExists(createUserRequest.email());
-        if (createUserRequest.password().isBlank())
-            throw new IllegalArgumentException(
-                    "Password is required"
-            );
-        if (createUserRequest.role() == null)
-            throw new IllegalArgumentException(
-                    "role is required"
-            );
+        checkEmailExists(createUserRequest.getEmail());
         byte[] salt = createSalt();
-        byte[] hashedPassword =
-                createPasswordHash(createUserRequest.password(), salt);
-
+        byte[] hashedPassword = createPasswordHash(createUserRequest.getPassword(), salt);
         ApplicationUser applicationUser = createUser(createUserRequest, salt, hashedPassword);
-
         return assignUserRole(createUserRequest, applicationUser);
-    }
-
-    private void checkEmailValidity(CreateUserRequest user) {
-        if (!(emailValidator.checkMailPattern(user.email()))) {
-            throw new EmailNotValidException();
-        }
     }
 
     private void checkEmailExists(String email) {
@@ -67,7 +48,7 @@ public class ApplicationUserService implements IApplicationUserService {
     }
 
     private byte[] createPasswordHash(String password, byte[] salt) {
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
@@ -82,12 +63,12 @@ public class ApplicationUserService implements IApplicationUserService {
     @NotNull
     private ApplicationUser createUser(CreateUserRequest createUserRequest, byte[] salt, byte[] hashedPassword) {
         ApplicationUser applicationUser = new ApplicationUser(
-                createUserRequest.email(),
-                createUserRequest.firstName(),
-                createUserRequest.lastName(),
+                createUserRequest.getEmail(),
+                createUserRequest.getFirstName(),
+                createUserRequest.getLastName(),
                 salt,
                 hashedPassword,
-                createUserRequest.role()
+                createUserRequest.getRole()
         );
         applicationUserRepo.save(applicationUser);
         return applicationUser;
@@ -96,12 +77,12 @@ public class ApplicationUserService implements IApplicationUserService {
     private UUID assignUserRole(CreateUserRequest createUserRequest, ApplicationUser applicationUser) {
         if (applicationUser.getRole() == Role.CUSTOMER) {
             CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(
-                    createUserRequest.firstName(),
-                    createUserRequest.lastName(),
-                    createUserRequest.age(),
-                    createUserRequest.email(),
-                    createUserRequest.address(),
-                    createUserRequest.password()
+                    createUserRequest.getFirstName(),
+                    createUserRequest.getLastName(),
+                    createUserRequest.getAge(),
+                    createUserRequest.getEmail(),
+                    createUserRequest.getAddress(),
+                    createUserRequest.getPassword()
             );
             return ICustomerService.createCustomer(applicationUser, createCustomerRequest);
         } else {
