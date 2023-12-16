@@ -1,4 +1,4 @@
-package com.project.trackfit.user;
+package com.project.trackfit.user.service;
 
 import com.project.trackfit.core.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
@@ -6,6 +6,9 @@ import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.customer.CreateCustomerRequest;
 import com.project.trackfit.customer.ICustomerService;
 import com.project.trackfit.trainer.IPersonalTrainerService;
+import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.repository.ApplicationUserRepo;
+import com.project.trackfit.user.dto.CreateUserRequest;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;

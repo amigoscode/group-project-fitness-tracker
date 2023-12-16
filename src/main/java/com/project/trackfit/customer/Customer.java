@@ -1,6 +1,6 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.user.ApplicationUser;
+import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.measurements.Measurements;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.steps.DailySteps;

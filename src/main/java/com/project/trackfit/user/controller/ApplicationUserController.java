@@ -1,6 +1,8 @@
-package com.project.trackfit.user;
+package com.project.trackfit.user.controller;
 
 import com.project.trackfit.core.APICustomResponse;
+import com.project.trackfit.user.dto.CreateUserRequest;
+import com.project.trackfit.user.service.IApplicationUserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.user.ApplicationUser;
+import com.project.trackfit.user.dto.ApplicationUser;
 
 import java.util.UUID;
 

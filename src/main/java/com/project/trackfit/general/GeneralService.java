@@ -1,6 +1,6 @@
 package com.project.trackfit.general;
 
-import com.project.trackfit.user.ApplicationUser;
+import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.customer.Customer;
 import com.project.trackfit.customer.CustomerServiceImpl;
 import lombok.AllArgsConstructor;

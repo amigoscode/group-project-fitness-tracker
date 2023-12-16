@@ -1,4 +1,4 @@
-package com.project.trackfit.user;
+package com.project.trackfit.user.dto;
 
 import com.project.trackfit.core.Role;
 import jakarta.validation.constraints.Email;

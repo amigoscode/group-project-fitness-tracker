@@ -2,6 +2,9 @@ package com.project.trackfit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
+import com.project.trackfit.user.controller.ApplicationUserController;
+import com.project.trackfit.user.dto.CreateUserRequest;
+import com.project.trackfit.user.service.IApplicationUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

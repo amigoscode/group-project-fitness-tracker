@@ -1,6 +1,6 @@
 package com.project.trackfit.trainer;
 
-import com.project.trackfit.user.ApplicationUser;
+import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

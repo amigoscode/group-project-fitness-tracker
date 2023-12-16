@@ -1,7 +1,7 @@
 package com.project.trackfit.general;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.user.ApplicationUser;
+import com.project.trackfit.user.dto.ApplicationUser;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

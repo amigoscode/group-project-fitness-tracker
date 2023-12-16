@@ -2,8 +2,8 @@ package com.project.trackfit.trainer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.user.ApplicationUser;
-import com.project.trackfit.user.ApplicationUserRepo;
+import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.repository.ApplicationUserRepo;
 import com.project.trackfit.core.Role;
 import com.project.trackfit.utils.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;

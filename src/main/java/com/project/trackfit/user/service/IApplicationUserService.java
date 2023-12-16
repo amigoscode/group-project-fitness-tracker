@@ -1,4 +1,6 @@
-package com.project.trackfit.user;
+package com.project.trackfit.user.service;
+
+import com.project.trackfit.user.dto.CreateUserRequest;
 
 import java.util.UUID;
 

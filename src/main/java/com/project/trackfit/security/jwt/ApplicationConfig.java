@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
-import com.project.trackfit.user.ApplicationUser;
-import com.project.trackfit.user.ApplicationUserRepo;
+import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.repository.ApplicationUserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
