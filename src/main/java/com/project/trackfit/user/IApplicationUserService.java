@@ -1,6 +1,4 @@
-package com.project.trackfit.core;
-
-import com.project.trackfit.user.CreateUserRequest;
+package com.project.trackfit.user;
 
 import java.util.UUID;
 

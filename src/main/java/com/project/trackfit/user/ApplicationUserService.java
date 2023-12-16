@@ -1,6 +1,5 @@
 package com.project.trackfit.user;
 
-import com.project.trackfit.core.IApplicationUserService;
 import com.project.trackfit.core.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 
@@ -22,7 +21,7 @@ import java.util.UUID;
 public class ApplicationUserService implements IApplicationUserService {
 
     private final ApplicationUserRepo applicationUserRepo;
-    private final ICustomerService ICustomerService;
+    private final ICustomerService customerService;
     private final IPersonalTrainerService trainerService;
 
     @Override
@@ -35,9 +34,10 @@ public class ApplicationUserService implements IApplicationUserService {
     }
 
     private void checkEmailExists(String email) {
-        if (applicationUserRepo.existsByEmail(email)) {
-            throw new EmailAlreadyTakenException();
-        }
+        applicationUserRepo.findByEmail(email)
+                .ifPresent(u -> {
+                    throw new EmailAlreadyTakenException();
+                });
     }
 
     private byte[] createSalt() {
@@ -84,7 +84,7 @@ public class ApplicationUserService implements IApplicationUserService {
                     createUserRequest.getAddress(),
                     createUserRequest.getPassword()
             );
-            return ICustomerService.createCustomer(applicationUser, createCustomerRequest);
+            return customerService.createCustomer(applicationUser, createCustomerRequest);
         } else {
             return trainerService.createTrainer(applicationUser);
         }
