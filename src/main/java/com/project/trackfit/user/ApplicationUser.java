@@ -33,12 +33,18 @@ public class ApplicationUser implements UserDetails {
     )
     @Column(nullable = false, updatable = false)
     private UUID id;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     private String firstName;
+
     private  String lastName;
+
     private byte[] storedHash;
+
     private byte[] storedSalt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;

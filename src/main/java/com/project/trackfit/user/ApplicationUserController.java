@@ -1,7 +1,6 @@
 package com.project.trackfit.user;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.IApplicationUserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
