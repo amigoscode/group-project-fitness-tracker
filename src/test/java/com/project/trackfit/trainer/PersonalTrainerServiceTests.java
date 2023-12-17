@@ -6,9 +6,10 @@ import com.project.trackfit.core.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class PersonalTrainerServiceTests {
 
     @Mock
@@ -35,14 +37,15 @@ public class PersonalTrainerServiceTests {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         testApplicationUser = new ApplicationUser (
                 "andreas.kreouzos@hotmail.com",
                 "Andreas",
                 "Kreouzos",
-                new byte[] {},
-                new byte[] {},
-                Role.TRAINER
+                new byte[128],
+                new byte[64],
+                Role.TRAINER,
+                38,
+                "Athens, Greece"
         );
     }
 
@@ -100,9 +103,11 @@ public class PersonalTrainerServiceTests {
                 "andreas.kreouzos@hotmail.com",
                 "Andreas",
                 "Kreouzos",
-                new byte[]{},
-                new byte[]{},
-                Role.CUSTOMER
+                new byte[128],
+                new byte[64],
+                Role.CUSTOMER,
+                38,
+                "Athens, Greece"
         );
         PersonalTrainer personalTrainer = new PersonalTrainer();
         personalTrainer.setId(trainerId);

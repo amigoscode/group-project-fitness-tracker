@@ -48,7 +48,9 @@ public class ApplicationUserService implements IApplicationUserService {
                 createUserRequest.getLastName(),
                 salt,
                 hashedPassword,
-                createUserRequest.getRole()
+                createUserRequest.getRole(),
+                createUserRequest.getAge(),
+                createUserRequest.getAddress()
         );
         applicationUserRepo.save(applicationUser);
         return applicationUser;

@@ -8,10 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,10 +16,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class ApplicationUser implements UserDetails {
     
@@ -39,7 +31,7 @@ public class ApplicationUser implements UserDetails {
 
     private String firstName;
 
-    private  String lastName;
+    private String lastName;
 
     private byte[] storedHash;
 
@@ -49,18 +41,57 @@ public class ApplicationUser implements UserDetails {
     @Column(name = "role")
     private Role role;
 
+    private Integer age;
+
+    private String address;
+
+    public ApplicationUser() {
+    }
+
+    public ApplicationUser(UUID id,
+                           String email,
+                           String firstName,
+                           String lastName,
+                           byte[] storedHash,
+                           byte[] storedSalt,
+                           Role role,
+                           Integer age,
+                           String address) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.storedHash = storedHash;
+        this.storedSalt = storedSalt;
+        this.role = role;
+        this.age = age;
+        this.address = address;
+    }
+
     public ApplicationUser(String email,
                            String firstName,
                            String lastName,
                            byte[] salt,
                            byte[] hashedPassword,
-                           Role role) {
-        this.email=email;
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.storedSalt=salt;
-        this.storedHash=hashedPassword;
-        this.role=role;
+                           Role role,
+                           Integer age,
+                           String address) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.storedSalt = salt;
+        this.storedHash = hashedPassword;
+        this.role = role;
+        this.age = age;
+        this.address = address;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public byte[] getStoredHash() {
@@ -145,5 +176,21 @@ public class ApplicationUser implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -42,9 +42,11 @@ public class CustomerServiceTests {
                 "andreas.kreouzos@hotmail.com",
                 "Andreas",
                 "Kreouzos",
-                new byte[] {},
-                new byte[] {},
-                Role.CUSTOMER
+                new byte[128],
+                new byte[64],
+                Role.CUSTOMER,
+                38,
+                "Athens, Greece"
         );
     }
 
@@ -102,9 +104,11 @@ public class CustomerServiceTests {
                 "andreas.kreouzos@hotmail.com",
                 "Andreas",
                 "Kreouzos",
-                new byte[]{},
-                new byte[]{},
-                Role.CUSTOMER
+                new byte[128],
+                new byte[64],
+                Role.CUSTOMER,
+                38,
+                "Athens, Greece"
         );
         Customer customer = new Customer();
         customer.setId(customerId);

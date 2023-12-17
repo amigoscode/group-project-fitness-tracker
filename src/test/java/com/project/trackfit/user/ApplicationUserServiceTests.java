@@ -62,7 +62,9 @@ public class ApplicationUserServiceTests {
                 "Kreouzos",
                 new byte[128],
                 new byte[64],
-                Role.CUSTOMER
+                Role.CUSTOMER,
+                38,
+                "Athens, Greece"
         );
 
         //and: the user doesn't exist already with this email
@@ -108,7 +110,9 @@ public class ApplicationUserServiceTests {
                 "Kreouzos",
                 new byte[128],
                 new byte[64],
-                Role.TRAINER
+                Role.TRAINER,
+                38,
+                "Athens, Greece"
         );
 
         //and: the user doesn't exist already with this email
