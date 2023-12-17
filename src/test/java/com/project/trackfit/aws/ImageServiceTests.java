@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class ImageServiceTests {
 
     @BeforeEach
     void setUp() {
-        imageService = new ImageService(s3Client, mediaRepository, customerService, bucketName);
+        ReflectionTestUtils.setField(imageService, "bucketName", "test-bucket");
     }
 
     @Test
