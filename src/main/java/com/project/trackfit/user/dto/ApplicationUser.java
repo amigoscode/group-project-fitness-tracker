@@ -48,26 +48,6 @@ public class ApplicationUser implements UserDetails {
     public ApplicationUser() {
     }
 
-    public ApplicationUser(UUID id,
-                           String email,
-                           String firstName,
-                           String lastName,
-                           byte[] storedHash,
-                           byte[] storedSalt,
-                           Role role,
-                           Integer age,
-                           String address) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.storedHash = storedHash;
-        this.storedSalt = storedSalt;
-        this.role = role;
-        this.age = age;
-        this.address = address;
-    }
-
     public ApplicationUser(String email,
                            String firstName,
                            String lastName,

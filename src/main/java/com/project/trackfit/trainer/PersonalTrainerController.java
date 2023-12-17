@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 @PreAuthorize("isAuthenticated()")
 public class PersonalTrainerController {
 
-    private final IPersonalTrainerService IPersonalTrainerService;
+    private final IPersonalTrainerService personalTrainerService;
 
     /**
      * Gets all Personal Trainers
@@ -30,7 +30,7 @@ public class PersonalTrainerController {
      */
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
-        Iterable<RetrieveTrainerRequest> trainers = IPersonalTrainerService.findAllTrainers();
+        Iterable<RetrieveTrainerRequest> trainers = personalTrainerService.findAllTrainers();
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
@@ -49,7 +49,7 @@ public class PersonalTrainerController {
      */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
-        RetrieveTrainerRequest trainer = IPersonalTrainerService.retrieveTrainerByID(trainerId);
+        RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
 
         return ResponseEntity.status(CREATED)
                 .body(APICustomResponse.builder()

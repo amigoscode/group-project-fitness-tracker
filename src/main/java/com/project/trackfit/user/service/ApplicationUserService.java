@@ -10,7 +10,6 @@ import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
 import com.project.trackfit.user.dto.CreateUserRequest;
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -40,7 +39,6 @@ public class ApplicationUserService implements IApplicationUserService {
                 });
     }
 
-    @NotNull
     private ApplicationUser createUser(CreateUserRequest createUserRequest, byte[] salt, byte[] hashedPassword) {
         ApplicationUser applicationUser = new ApplicationUser(
                 createUserRequest.getEmail(),
