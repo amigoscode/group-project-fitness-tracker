@@ -6,6 +6,7 @@ import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 import com.project.trackfit.customer.CreateCustomerRequest;
 import com.project.trackfit.customer.ICustomerService;
 import com.project.trackfit.trainer.IPersonalTrainerService;
+import com.project.trackfit.user.component.PasswordCreation;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
 import com.project.trackfit.user.dto.CreateUserRequest;
@@ -13,10 +14,6 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -26,12 +23,13 @@ public class ApplicationUserService implements IApplicationUserService {
     private final ApplicationUserRepo applicationUserRepo;
     private final ICustomerService customerService;
     private final IPersonalTrainerService trainerService;
+    private final PasswordCreation password;
 
     @Override
     public UUID createUser(CreateUserRequest createUserRequest) {
         checkEmailExists(createUserRequest.getEmail());
-        byte[] salt = createSalt();
-        byte[] hashedPassword = createPasswordHash(createUserRequest.getPassword(), salt);
+        byte[] salt = password.createSalt();
+        byte[] hashedPassword = password.createPasswordHash(createUserRequest.getPassword(), salt);
         ApplicationUser applicationUser = createUser(createUserRequest, salt, hashedPassword);
         return assignUserRole(createUserRequest, applicationUser);
     }
@@ -41,26 +39,6 @@ public class ApplicationUserService implements IApplicationUserService {
                 .ifPresent(u -> {
                     throw new EmailAlreadyTakenException();
                 });
-    }
-
-    private byte[] createSalt() {
-        var random = new SecureRandom();
-        var salt = new byte[128];
-        random.nextBytes(salt);
-        return salt;
-    }
-
-    private byte[] createPasswordHash(String password, byte[] salt) {
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        md.update(salt);
-        return md.digest(
-                password.getBytes(StandardCharsets.UTF_8)
-        );
     }
 
     @NotNull
