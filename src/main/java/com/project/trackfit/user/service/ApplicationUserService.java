@@ -3,7 +3,6 @@ package com.project.trackfit.user.service;
 import com.project.trackfit.core.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 
-import com.project.trackfit.customer.CreateCustomerRequest;
 import com.project.trackfit.customer.ICustomerService;
 import com.project.trackfit.trainer.IPersonalTrainerService;
 import com.project.trackfit.user.component.PasswordCreation;
@@ -31,7 +30,7 @@ public class ApplicationUserService implements IApplicationUserService {
         byte[] salt = password.createSalt();
         byte[] hashedPassword = password.createPasswordHash(createUserRequest.getPassword(), salt);
         ApplicationUser applicationUser = createUser(createUserRequest, salt, hashedPassword);
-        return assignUserRole(createUserRequest, applicationUser);
+        return assignUserRole(applicationUser);
     }
 
     private void checkEmailExists(String email) {
@@ -55,17 +54,9 @@ public class ApplicationUserService implements IApplicationUserService {
         return applicationUser;
     }
 
-    private UUID assignUserRole(CreateUserRequest createUserRequest, ApplicationUser applicationUser) {
+    private UUID assignUserRole(ApplicationUser applicationUser) {
         if (applicationUser.getRole() == Role.CUSTOMER) {
-            CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(
-                    createUserRequest.getFirstName(),
-                    createUserRequest.getLastName(),
-                    createUserRequest.getAge(),
-                    createUserRequest.getEmail(),
-                    createUserRequest.getAddress(),
-                    createUserRequest.getPassword()
-            );
-            return customerService.createCustomer(applicationUser, createCustomerRequest);
+            return customerService.createCustomer(applicationUser);
         } else {
             return trainerService.createTrainer(applicationUser);
         }

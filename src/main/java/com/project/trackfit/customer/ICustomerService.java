@@ -5,7 +5,7 @@ import com.project.trackfit.user.dto.ApplicationUser;
 import java.util.UUID;
 
 public interface ICustomerService {
-    UUID createCustomer(ApplicationUser applicationUser, CreateCustomerRequest createCustomerRequest);
+    UUID createCustomer(ApplicationUser applicationUser);
     Customer getCustomerById(UUID customer_id);
     RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id);
     RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest);

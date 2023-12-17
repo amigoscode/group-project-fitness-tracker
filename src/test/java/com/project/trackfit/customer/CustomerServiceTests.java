@@ -7,9 +7,10 @@ import com.project.trackfit.core.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CustomerServiceTests {
 
     @Mock
@@ -30,13 +32,12 @@ public class CustomerServiceTests {
     private CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @InjectMocks
-    private ICustomerService customerService;
+    private CustomerServiceImpl customerService;
 
     private ApplicationUser testApplicationUser;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         testApplicationUser = new ApplicationUser (
                 "andreas.kreouzos@hotmail.com",
                 "Andreas",
@@ -57,16 +58,7 @@ public class CustomerServiceTests {
             return savedCustomer;
         });
 
-        CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest(
-                "John",
-                "Doe",
-                30,
-                "john.doe@example.com",
-                "123 Main St",
-                "securePassword"
-        );
-
-        UUID actualCustomerId = customerService.createCustomer(testApplicationUser, createCustomerRequest);
+        UUID actualCustomerId = customerService.createCustomer(testApplicationUser);
 
         verify(customerRepository).save(any(Customer.class));
         assertNotNull(actualCustomerId);
