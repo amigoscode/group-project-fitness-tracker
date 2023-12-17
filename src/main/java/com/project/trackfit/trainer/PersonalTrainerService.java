@@ -1,6 +1,6 @@
 package com.project.trackfit.trainer;
 
-import com.project.trackfit.user.dto.ApplicationUser;;
+import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
@@ -23,9 +23,7 @@ public class PersonalTrainerService implements IPersonalTrainerService {
 
     @Override
     public UUID createTrainer(ApplicationUser applicationUser) {
-        PersonalTrainer personalTrainer = new PersonalTrainer(
-              applicationUser
-        );
+        PersonalTrainer personalTrainer = new PersonalTrainer(applicationUser);
 
         personalTrainerRepo.save(personalTrainer);
         return personalTrainer.getId();

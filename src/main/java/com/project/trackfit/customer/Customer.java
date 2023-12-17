@@ -19,16 +19,20 @@ import java.util.UUID;
 @Entity
 @Table(name = "customer")
 public class Customer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
             generator = "UUID"
     )
     @Column(nullable = false, updatable = false)
     private UUID id;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
+
     private int age;
+
     private String address;
 
     @OneToMany(mappedBy ="customer")
