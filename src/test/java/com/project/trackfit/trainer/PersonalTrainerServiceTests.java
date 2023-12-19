@@ -1,7 +1,7 @@
 package com.project.trackfit.trainer;
 
 import com.project.trackfit.user.dto.ApplicationUser;
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,8 +1,8 @@
 package com.project.trackfit.user.service;
 
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
-import com.project.trackfit.customer.ICustomerService;
+import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.trainer.IPersonalTrainerService;
 import com.project.trackfit.user.component.PasswordCreation;
 import com.project.trackfit.user.dto.ApplicationUser;
@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.project.trackfit.core.Role.CUSTOMER;
-import static com.project.trackfit.core.Role.TRAINER;
+import static com.project.trackfit.user.component.Role.CUSTOMER;
+import static com.project.trackfit.user.component.Role.TRAINER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;

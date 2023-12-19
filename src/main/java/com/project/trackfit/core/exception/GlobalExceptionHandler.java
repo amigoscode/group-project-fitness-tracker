@@ -83,4 +83,15 @@ public class GlobalExceptionHandler {
         });
         return errors;
     }
+
+    @ExceptionHandler(RequestValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleEmailAlreadyTakenException(RequestValidationException exception) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage("No data changes found");
+        errorResponse.setEx(exception);
+        errorResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
+        return errorResponse;
+    }
 }

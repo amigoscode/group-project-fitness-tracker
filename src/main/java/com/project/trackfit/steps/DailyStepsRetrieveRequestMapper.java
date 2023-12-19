@@ -1,6 +1,6 @@
 package com.project.trackfit.steps;
 
-import com.project.trackfit.customer.Customer;
+import com.project.trackfit.customer.dto.Customer;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

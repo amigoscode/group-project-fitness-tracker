@@ -2,9 +2,11 @@ package com.project.trackfit.customer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.trackfit.core.APICustomResponse;
+import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import com.project.trackfit.utils.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

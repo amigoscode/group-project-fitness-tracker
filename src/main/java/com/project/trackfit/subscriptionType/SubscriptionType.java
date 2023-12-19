@@ -1,6 +1,5 @@
 package com.project.trackfit.subscriptionType;
 
-import com.project.trackfit.customer.Customer;
 import com.project.trackfit.subscription.Subscription;
 import com.project.trackfit.trainer.PersonalTrainer;
 import jakarta.persistence.*;

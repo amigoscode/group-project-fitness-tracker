@@ -1,9 +1,9 @@
 package com.project.trackfit.user.service;
 
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 
-import com.project.trackfit.customer.ICustomerService;
+import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.trainer.IPersonalTrainerService;
 import com.project.trackfit.user.component.PasswordCreation;
 import com.project.trackfit.user.dto.ApplicationUser;

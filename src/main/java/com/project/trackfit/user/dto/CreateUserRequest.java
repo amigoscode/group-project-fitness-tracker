@@ -1,6 +1,6 @@
 package com.project.trackfit.user.dto;
 
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

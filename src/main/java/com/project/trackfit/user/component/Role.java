@@ -1,4 +1,4 @@
-package com.project.trackfit.core;
+package com.project.trackfit.user.component;
 
 public enum Role {
     CUSTOMER,

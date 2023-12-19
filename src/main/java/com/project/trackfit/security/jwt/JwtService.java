@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
 
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 

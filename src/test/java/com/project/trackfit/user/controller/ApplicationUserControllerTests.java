@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.project.trackfit.core.Role.CUSTOMER;
+import static com.project.trackfit.user.component.Role.CUSTOMER;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

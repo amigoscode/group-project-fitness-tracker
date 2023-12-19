@@ -1,7 +1,7 @@
 package com.project.trackfit.subscription;
 
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.ICustomerService;
+import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.trainer.PersonalTrainer;
 import com.project.trackfit.trainer.IPersonalTrainerService;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.project.trackfit.general;
 
 import com.project.trackfit.user.dto.ApplicationUser;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerServiceImpl;
+import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class GeneralService implements IGeneralService {
 
-    final CustomerServiceImpl customerService;
+    final CustomerService customerService;
 
     @Override
     public RetrieveGeneralRequest RetrieveHome(ApplicationUser user) {
