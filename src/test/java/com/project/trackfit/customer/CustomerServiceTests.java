@@ -1,8 +1,11 @@
 package com.project.trackfit.customer;
 
+import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.repository.CustomerRepository;
+import com.project.trackfit.customer.service.CustomerService;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.core.Role;
+import com.project.trackfit.user.component.Role;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +35,7 @@ public class CustomerServiceTests {
     private CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     @InjectMocks
-    private CustomerServiceImpl customerService;
+    private CustomerService customerService;
 
     private ApplicationUser testApplicationUser;
 
@@ -91,55 +94,6 @@ public class CustomerServiceTests {
 
         assertThrows(ResourceNotFoundException.class, () -> {
             customerService.getCustomerById(invalidCustomerId);
-        });
-
-        verify(customerRepository).findById(invalidCustomerId);
-    }
-
-    @Test
-    @DisplayName("Check RetrieveCustomerById method with valid Id")
-    public void testRetrieveCustomerByIdWithValidId() {
-        UUID customerId = UUID.randomUUID();
-        ApplicationUser testApplicationUser = new ApplicationUser(
-                "andreas.kreouzos@hotmail.com",
-                "Andreas",
-                "Kreouzos",
-                new byte[128],
-                new byte[64],
-                Role.CUSTOMER,
-                38,
-                "Athens, Greece"
-        );
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        customer.setUser(testApplicationUser);
-
-        RetrieveCustomerRequest expectedRetrieveCustomerRequest = new RetrieveCustomerRequest(
-                customerId,
-                "Andreas",
-                "Kreouzos",
-                0,
-                "andreas.kreouzos@hotmail.com",
-                null
-        );
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(customerRetrieveRequestMapper.apply(customer)).thenReturn(expectedRetrieveCustomerRequest);
-
-        RetrieveCustomerRequest result = customerService.RetrieveCustomerById(customerId);
-
-        verify(customerRepository).findById(customerId);
-        verify(customerRetrieveRequestMapper).apply(customer);
-        assertEquals(expectedRetrieveCustomerRequest, result);
-    }
-
-    @Test
-    @DisplayName("Check RetrieveCustomerById method with invalid Id")
-    public void testRetrieveCustomerByIdWithInvalidId() {
-        UUID invalidCustomerId = UUID.randomUUID();
-        when(customerRepository.findById(invalidCustomerId)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            customerService.RetrieveCustomerById(invalidCustomerId);
         });
 
         verify(customerRepository).findById(invalidCustomerId);

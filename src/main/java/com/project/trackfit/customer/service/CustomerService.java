@@ -1,5 +1,9 @@
-package com.project.trackfit.customer;
+package com.project.trackfit.customer.service;
 
+import com.project.trackfit.core.exception.RequestValidationException;
+import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.repository.CustomerRepository;
+import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 
@@ -10,10 +14,9 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class CustomerServiceImpl implements ICustomerService {
+public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
-    private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;
 
     private Customer findOrThrow(final UUID id) {
         return customerRepository.
@@ -38,31 +41,35 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id) {
-        return customerRepository
-                .findById(customer_id)
-                .map(customerRetrieveRequestMapper)
-                .orElseThrow(ResourceNotFoundException::new);
-    }
+    public Customer updateCustomer(UUID customerId,
+                                   UpdateCustomerRequest updateRequest) {
 
-    @Override
-    public RetrieveCustomerRequest updateCustomer(
-            UUID customerId,
-            UpdateCustomerRequest updateCustomerRequest) {
+        Customer customer = findOrThrow(customerId);
 
-        var customer=findOrThrow(customerId);
-        if(updateCustomerRequest.age() !=null) {
-            customer.setAge(updateCustomerRequest.age());
+        boolean changes = false;
+
+        if(updateRequest.age() != null && !updateRequest.age().equals(customer.getAge())) {
+            customer.setAge(updateRequest.age());
+            changes = true;
         }
-        if(updateCustomerRequest.address() !=null) {
-            customer.setAddress(updateCustomerRequest.address());
+
+        if(updateRequest.address() != null && !updateRequest.address().equals(customer.getAddress())) {
+            customer.setAddress(updateRequest.address());
+            changes = true;
         }
-        if(updateCustomerRequest.role()!=null){
-            customer.getUser().setRole(updateCustomerRequest.role());
+
+        if(updateRequest.role() != null && !updateRequest.role().equals(customer.getUser().getRole())) {
+            customer.getUser().setRole(updateRequest.role());
+            changes = true;
         }
+
+        if (!changes) {
+            throw new RequestValidationException();
+        }
+
         customerRepository.save(customer);
 
-        return  customerRetrieveRequestMapper.apply(customer);
+        return customer;
     }
 
     @Override
