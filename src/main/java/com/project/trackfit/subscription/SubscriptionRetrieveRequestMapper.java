@@ -24,7 +24,7 @@ public class SubscriptionRetrieveRequestMapper implements Function<Subscription,
                 subscription.getId(),
                 subscription.getSubscribedAt(),
                 subscription.getExpiredOn(),
-                subscription.getIsActive(),
+                subscription.getActive(),
                 trainerRequest,
                 customerRequest
         );
