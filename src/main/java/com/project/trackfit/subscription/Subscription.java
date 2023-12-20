@@ -1,5 +1,6 @@
 package com.project.trackfit.subscription;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.subscriptionType.SubscriptionType;
@@ -34,14 +35,17 @@ public class Subscription {
     private LocalDateTime expiredOn;
     private Boolean isActive;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "trainer_id",nullable = false)
     private PersonalTrainer personalTrainer;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="customer_id",nullable = false)
     private Customer customer;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="subscription_type_id",nullable = false)
     private SubscriptionType subscriptionType;

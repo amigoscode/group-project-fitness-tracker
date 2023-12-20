@@ -1,5 +1,6 @@
 package com.project.trackfit.steps;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.trackfit.customer.dto.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,6 +31,7 @@ public class DailySteps {
     @Column(nullable = false)
     private LocalDateTime date;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

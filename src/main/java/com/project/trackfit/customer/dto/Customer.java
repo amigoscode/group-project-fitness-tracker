@@ -1,5 +1,6 @@
 package com.project.trackfit.customer.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.measurements.Measurements;
 import com.project.trackfit.media.Media;
@@ -37,15 +38,19 @@ public class Customer {
 
     private String address;
 
+    @JsonManagedReference
     @OneToMany(mappedBy ="customer")
     private Set<Measurements> measurements;
 
+    @JsonManagedReference
     @OneToMany(mappedBy ="customer")
     private Set<Subscription> subscriptions;
 
+    @JsonManagedReference
     @OneToMany(mappedBy ="customer")
     private Set<DailySteps> steps;
 
+    @JsonManagedReference
     @OneToMany(mappedBy ="customer")
     private Set<Media> media;
 

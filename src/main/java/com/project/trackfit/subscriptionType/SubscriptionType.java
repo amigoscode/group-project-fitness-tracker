@@ -1,5 +1,6 @@
 package com.project.trackfit.subscriptionType;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.trackfit.subscription.Subscription;
 import com.project.trackfit.trainer.PersonalTrainer;
 import jakarta.persistence.*;
@@ -19,15 +20,18 @@ import java.util.UUID;
 @Entity
 @Table(name = "subscription_type")
 public class SubscriptionType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO,
             generator = "UUID"
     )
     @Column(nullable = false, updatable = false)
     private UUID id;
+
     @Column(nullable = false, updatable = false)
     private String title;
 
+    @JsonManagedReference
     @OneToOne
     @JoinColumn(name="trainer_id")
     private PersonalTrainer personalTrainer;

@@ -1,5 +1,6 @@
 package com.project.trackfit.trainer;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class PersonalTrainer {
 
     private boolean isActivated;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "personalTrainer")
     private Set<Subscription> subscribers;
 
