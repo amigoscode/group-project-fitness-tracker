@@ -28,6 +28,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.beans.BeanUtils.copyProperties;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -103,11 +104,11 @@ public class CustomerControllerTests {
                 .andExpect(jsonPath("$.message", is("User Doesn't Exist")));
     }
 
-    @DisplayName("Successfully update a customer")
     @Test
+    @DisplayName("Successfully update a customer")
     public void givenSavedCustomer_whenUpdateCustomer_thenReturnUpdatedCustomer() throws Exception {
         //given: a random UUID
-        UUID customer_id = UUID.randomUUID();
+        UUID customerId = UUID.randomUUID();
 
         //and: creating a random customer
         EasyRandom easyRandom = new EasyRandom();
@@ -117,17 +118,17 @@ public class CustomerControllerTests {
         Customer updatedCustomer = easyRandom.nextObject(Customer.class);
 
         //and: mocking the service to create a user with is UUID
-        given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> customer_id);
+        given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> customerId);
 
         //and: mocking the service to return this random customer
-        given(service.getCustomerById(customer_id)).willReturn(savedCustomer);
+        given(service.getCustomerById(customerId)).willReturn(savedCustomer);
 
         //and: mocking the service to update this customer
-        given(service.updateCustomer(eq(customer_id), any(UpdateCustomerRequest.class)))
+        given(service.updateCustomer(eq(customerId), any(UpdateCustomerRequest.class)))
                 .willReturn(updatedCustomer);
 
         //when: sending the request
-        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", customer_id)
+        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", customerId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedCustomer)));
 
@@ -139,4 +140,70 @@ public class CustomerControllerTests {
                 .andExpect(jsonPath("$.message", is("Customer has been updated successfully")))
                 .andExpect(jsonPath("$.data", notNullValue()));
     }
+
+    @Test
+    @DisplayName("Not found status code when updating a non-existing customer")
+    public void givenNonExistingCustomerUUID_whenUpdateCustomer_thenReturnIsNotFound() throws Exception {
+        //given: a random UUID for a non-existing customer
+        UUID nonExistentCustomerId = UUID.randomUUID();
+
+        //and: creating an updated customer object
+        EasyRandom easyRandom = new EasyRandom();
+        Customer updatedCustomer = easyRandom.nextObject(Customer.class);
+
+        //and: mocking the service to return the proper exception
+        given(service.updateCustomer(eq(nonExistentCustomerId), any(UpdateCustomerRequest.class)))
+                .willThrow(new ResourceNotFoundException());
+
+        //when: sending the update request for the non-existing customer
+        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", nonExistentCustomerId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedCustomer)));
+
+        //then: expect a 404 Not Found status
+        response.andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("User Doesn't Exist")));
+    }
+
+    @Test
+    @DisplayName("Successfully update a customer's age and address")
+    public void givenSavedCustomer_whenUpdateCustomerPartially_thenReturnUpdatedCustomer() throws Exception {
+        //given: a random customer
+        EasyRandom easyRandom = new EasyRandom();
+        Customer savedCustomer = easyRandom.nextObject(Customer.class);
+
+        //and: clone this random customer
+        Customer updatedCustomer = new Customer();
+        copyProperties(savedCustomer, updatedCustomer);
+
+        //and: updating the age and the address of the updated customer
+        updatedCustomer.setAge(35);
+        updatedCustomer.setAddress("New Address");
+        updatedCustomer.getUser().setAge(35);
+        updatedCustomer.getUser().setAddress("New Address");
+
+        //and: mocking the service to return this random customer
+        given(service.getCustomerById(savedCustomer.getId())).willReturn(savedCustomer);
+
+        //and: mocking the service to update this customer
+        UpdateCustomerRequest updateRequest = new UpdateCustomerRequest(35, "New Address", null);
+        given(service.updateCustomer(savedCustomer.getId(), updateRequest))
+                .willReturn(updatedCustomer);
+
+        //when: sending the partial update request
+        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", savedCustomer.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedCustomer)));
+
+        //then: status is OK, with proper expected response fields
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.timeStamp", notNullValue()))
+                .andExpect(jsonPath("$.statusCode", is(200)))
+                .andExpect(jsonPath("$.message", is("Customer has been updated successfully")))
+                .andExpect(jsonPath("$.data.age", is(35)))
+                .andExpect(jsonPath("$.data.address", is("New Address")));
+    }
+
 }

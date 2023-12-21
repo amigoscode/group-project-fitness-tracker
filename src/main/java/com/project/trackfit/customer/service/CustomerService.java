@@ -18,12 +18,6 @@ public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
 
-    private Customer findOrThrow(final UUID id) {
-        return customerRepository.
-                findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
-    }
-
     @Override
     public UUID createCustomer(ApplicationUser applicationUser){
         Customer customer = new Customer(applicationUser);
@@ -43,23 +37,26 @@ public class CustomerService implements ICustomerService {
     @Override
     public Customer updateCustomer(UUID customerId,
                                    UpdateCustomerRequest updateRequest) {
-
-        Customer customer = findOrThrow(customerId);
+        Customer customer = getCustomerById(customerId);
+        ApplicationUser user = customer.getUser();
 
         boolean changes = false;
 
         if(updateRequest.age() != null && !updateRequest.age().equals(customer.getAge())) {
             customer.setAge(updateRequest.age());
+            user.setAge(updateRequest.age());
             changes = true;
         }
 
         if(updateRequest.address() != null && !updateRequest.address().equals(customer.getAddress())) {
             customer.setAddress(updateRequest.address());
+            user.setAddress(updateRequest.address());
             changes = true;
         }
 
         if(updateRequest.role() != null && !updateRequest.role().equals(customer.getUser().getRole())) {
             customer.getUser().setRole(updateRequest.role());
+            user.setRole(updateRequest.role());
             changes = true;
         }
 
@@ -68,7 +65,6 @@ public class CustomerService implements ICustomerService {
         }
 
         customerRepository.save(customer);
-
         return customer;
     }
 
