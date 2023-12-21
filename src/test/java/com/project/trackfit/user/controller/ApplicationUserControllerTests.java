@@ -89,7 +89,9 @@ public class ApplicationUserControllerTests {
     @ParameterizedTest
     @MethodSource("wrongInputParameters")
     @DisplayName("Creating a new user fails due to wrong request parameters")
-    public void givenWrongParameters_whenCreateUser_thenUserNotCreated(CreateUserRequest userInput, String expectedEmailError) throws Exception {
+    public void givenWrongParameters_whenCreateUser_thenUserNotCreated(CreateUserRequest userInput,
+                                                                       String emailError,
+                                                                       String ageError) throws Exception {
         //given: the request to create a user with empty and null values
         CreateUserRequest request = new CreateUserRequest(
                 userInput.getEmail(),
@@ -100,8 +102,6 @@ public class ApplicationUserControllerTests {
                 userInput.getAge(),
                 userInput.getAddress());
 
-        //and: mocking the service to return a UUID
-        given(service.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> UUID.randomUUID());
 
         //when: sending the request
         ResultActions response = mockMvc.perform(post("/api/v1/auth/register")
@@ -111,19 +111,19 @@ public class ApplicationUserControllerTests {
         //then: the proper error validation messages are expected
         response.andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.email", containsInAnyOrder(expectedEmailError)))
+                .andExpect(jsonPath("$.email", containsInAnyOrder(emailError)))
                 .andExpect(jsonPath("$.password", containsInAnyOrder("Password is required")))
                 .andExpect(jsonPath("$.firstName", containsInAnyOrder("First Name is required")))
                 .andExpect(jsonPath("$.lastName", containsInAnyOrder("Last Name is required")))
                 .andExpect(jsonPath("$.role", containsInAnyOrder("Role cannot be null")))
-                .andExpect(jsonPath("$.age", containsInAnyOrder("Age cannot be null")))
+                .andExpect(jsonPath("$.age", containsInAnyOrder(ageError)))
                 .andExpect(jsonPath("$.address", containsInAnyOrder("Address is required")));
     }
 
     static Stream<Arguments> wrongInputParameters() {
         return Stream.of(
-                Arguments.of(new CreateUserRequest("", "", "", "", null, null, ""), "Email must not be blank"),
-                Arguments.of(new CreateUserRequest("invalid_email", "", "", "", null, null, ""), "Email is invalid")
+                Arguments.of(new CreateUserRequest("", "", "", "", null, -18, ""), "Email must not be blank", "Age must be at least 18"),
+                Arguments.of(new CreateUserRequest("invalid_email", "", "", "", null, 101, ""), "Email is invalid", "Age must be no more than 100")
         );
     }
 }

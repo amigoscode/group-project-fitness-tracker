@@ -2,6 +2,8 @@ package com.project.trackfit.user.dto;
 
 import com.project.trackfit.user.component.Role;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,6 +21,8 @@ public class CreateUserRequest {
     @NotNull(message = "Role cannot be null")
     private Role role;
     @NotNull(message = "Age cannot be null")
+    @Min(value = 18, message = "Age must be at least 18")
+    @Max(value = 100, message = "Age must be no more than 100")
     private Integer age;
     @NotBlank(message = "Address is required")
     private String address;

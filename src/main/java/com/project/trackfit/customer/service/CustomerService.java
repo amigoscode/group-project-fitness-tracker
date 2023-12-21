@@ -42,21 +42,21 @@ public class CustomerService implements ICustomerService {
 
         boolean changes = false;
 
-        if(updateRequest.age() != null && !updateRequest.age().equals(customer.getAge())) {
-            customer.setAge(updateRequest.age());
-            user.setAge(updateRequest.age());
+        if(updateRequest.getAge() != null && !updateRequest.getAge().equals(customer.getAge())) {
+            customer.setAge(updateRequest.getAge());
+            user.setAge(updateRequest.getAge());
             changes = true;
         }
 
-        if(updateRequest.address() != null && !updateRequest.address().equals(customer.getAddress())) {
-            customer.setAddress(updateRequest.address());
-            user.setAddress(updateRequest.address());
+        if(updateRequest.getAddress() != null && !updateRequest.getAddress().equals(customer.getAddress())) {
+            customer.setAddress(updateRequest.getAddress());
+            user.setAddress(updateRequest.getAddress());
             changes = true;
         }
 
-        if(updateRequest.role() != null && !updateRequest.role().equals(customer.getUser().getRole())) {
-            customer.getUser().setRole(updateRequest.role());
-            user.setRole(updateRequest.role());
+        if(updateRequest.getRole() != null && !updateRequest.getRole().equals(customer.getUser().getRole())) {
+            customer.getUser().setRole(updateRequest.getRole());
+            user.setRole(updateRequest.getRole());
             changes = true;
         }
 

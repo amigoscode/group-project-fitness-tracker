@@ -4,6 +4,7 @@ import com.project.trackfit.core.APICustomResponse;
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,7 +48,7 @@ public class CustomerController {
     @PutMapping("{id}")
     public ResponseEntity<APICustomResponse> updateCustomerById(
             @PathVariable("id") UUID customerID,
-            @RequestBody UpdateCustomerRequest updateCustomerRequest) {
+            @Valid @RequestBody UpdateCustomerRequest updateCustomerRequest) {
         Customer customerRequest = service.updateCustomer(customerID, updateCustomerRequest);
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()

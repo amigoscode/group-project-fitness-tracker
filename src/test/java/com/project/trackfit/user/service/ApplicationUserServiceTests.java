@@ -156,9 +156,7 @@ public class ApplicationUserServiceTests {
                 .willReturn(Optional.of(user));
 
         //when: calling the service we expect to get an EmailAlreadyTakenException
-        assertThrows(EmailAlreadyTakenException.class, () -> {
-            service.createUser(request);
-        });
+        assertThrows(EmailAlreadyTakenException.class, () -> service.createUser(request));
 
         //then: no more interactions are taking place
         verifyNoMoreInteractions(applicationUserRepo, customerService, personalTrainerService, passwordCreation);
