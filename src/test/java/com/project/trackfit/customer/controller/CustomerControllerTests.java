@@ -183,30 +183,31 @@ public class CustomerControllerTests {
     @Test
     @DisplayName("Successfully update a customer's age and address")
     public void givenSavedCustomer_whenUpdateCustomerPartially_thenReturnUpdatedCustomer() throws Exception {
-        // Given: a random UUID for the customer ID
+        //given: a saved customer
         Customer savedCustomer = easyRandom.nextObject(Customer.class);
 
-        // And: an UpdateCustomerRequest with valid age and address
+        //and: a request with valid age and address
         UpdateCustomerRequest updateRequest = new UpdateCustomerRequest(35, "New Address", null);
 
-        // And: a Customer object to be returned by the mocked service
+        //and: a Customer object to be returned by the mocked service
         Customer updatedCustomer = new Customer();
         copyProperties(savedCustomer, updatedCustomer);
 
+        //and: setting the new values for age and address
         updatedCustomer.setAge(35);
         updatedCustomer.setAddress("New Address");
         updatedCustomer.getUser().setAge(35);
         updatedCustomer.getUser().setAddress("New Address");
 
-        // Mock the service method to return the updated customer
+        //and: mock the service method to return the updated customer
         given(service.updateCustomer(eq(savedCustomer.getId()), any(UpdateCustomerRequest.class))).willReturn(updatedCustomer);
 
-        // When: sending the partial update request with valid data
+        //when: sending the partial update request with valid data
         ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", savedCustomer.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateRequest)));
 
-        // Then: expect a successful response with status 200 OK
+        //then: expect a successful response with status 200 OK along with the new values
         response.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timeStamp", notNullValue()))
@@ -216,15 +217,14 @@ public class CustomerControllerTests {
                 .andExpect(jsonPath("$.data.address", is("New Address")));
     }
 
-
     @ParameterizedTest
     @MethodSource("provideInvalidAges")
     @DisplayName("Updating customer with invalid age should fail")
     public void givenInvalidAge_whenUpdateCustomer_thenValidationFails(Integer invalidAge, String expectedErrorMessage) throws Exception {
-        // given: a request with an invalid age inputs
+        //given: a request with an invalid age inputs
         UpdateCustomerRequest updateRequest = new UpdateCustomerRequest(invalidAge, "Valid Address", CUSTOMER);
 
-        // when: calling updateCustomer with invalid age
+        //when: calling the service with invalid age
         ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)));

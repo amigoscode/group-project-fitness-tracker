@@ -77,6 +77,8 @@ public class Customer {
 
     public Customer(ApplicationUser applicationUser) {
         this.user = applicationUser;
+        this.address = applicationUser.getAddress();
+        this.age = applicationUser.getAge();
     }
 
     public UUID getId() {
