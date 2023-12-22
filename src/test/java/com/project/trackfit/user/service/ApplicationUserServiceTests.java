@@ -24,7 +24,6 @@ import static com.project.trackfit.user.component.Role.CUSTOMER;
 import static com.project.trackfit.user.component.Role.TRAINER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -64,10 +63,6 @@ public class ApplicationUserServiceTests {
         //and: the user doesn't exist already with this email
         given(applicationUserRepo.findByEmail(request.getEmail()))
                 .willReturn(Optional.empty());
-
-        //and: creating the password for this new user
-        given(passwordCreation.createSalt()).willReturn(new byte[128]);
-        given(passwordCreation.createPasswordHash(anyString(), any(byte[].class))).willReturn(new byte[64]);
 
         //and: save this new user
         given(applicationUserRepo.save(any(ApplicationUser.class))).willReturn(user);
@@ -109,10 +104,6 @@ public class ApplicationUserServiceTests {
         //and: the user doesn't exist already with this email
         given(applicationUserRepo.findByEmail(request.getEmail()))
                 .willReturn(Optional.empty());
-
-        //and: creating the password for this new user
-        given(passwordCreation.createSalt()).willReturn(new byte[128]);
-        given(passwordCreation.createPasswordHash(anyString(), any(byte[].class))).willReturn(new byte[64]);
 
         //and: save this new user
         given(applicationUserRepo.save(any(ApplicationUser.class))).willReturn(user);

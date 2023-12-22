@@ -75,7 +75,8 @@ public class CustomerControllerTests {
     public void setup() {
         EasyRandomParameters parameters = new EasyRandomParameters()
                 .randomize(FieldPredicates.named("age")
-                                .and(FieldPredicates.inClass(Customer.class).or(FieldPredicates.inClass(ApplicationUser.class))),
+                        .and(FieldPredicates.inClass(Customer.class)
+                                .or(FieldPredicates.inClass(ApplicationUser.class))),
                         () -> new Random().nextInt(83) + 18);
         easyRandom = new EasyRandom(parameters);
     }
