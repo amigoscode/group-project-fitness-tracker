@@ -51,13 +51,13 @@ public class PersonalTrainerController {
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
         RetrieveTrainerRequest trainer = personalTrainerService.retrieveTrainerByID(trainerId);
 
-        return ResponseEntity.status(CREATED)
+        return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
                         .data(Map.of("trainer", trainer))
                         .message("Trainer has been fetched successfully")
-                        .status(CREATED)
-                        .statusCode(CREATED.value())
+                        .status(OK)
+                        .statusCode(OK.value())
                         .build()
                 );
     }

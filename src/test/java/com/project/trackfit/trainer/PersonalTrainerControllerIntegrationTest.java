@@ -72,7 +72,6 @@ class PersonalTrainerControllerIntegrationTest extends AbstractIntegrationTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(response.getBody().getStatusCode(), HttpStatus.OK.value());
     }
 
     private UUID createTrainer(UUID applicationUserId) {

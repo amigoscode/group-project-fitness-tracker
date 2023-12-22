@@ -55,6 +55,7 @@ public abstract class AbstractIntegrationTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(tokenResponse.getBody());
-        return jsonNode.get("token").asText();
+        System.out.println(jsonNode);
+        return jsonNode.get("data").get("accessToken").asText();
     }
 }
