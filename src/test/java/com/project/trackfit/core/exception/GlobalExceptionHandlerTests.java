@@ -21,9 +21,6 @@ public class GlobalExceptionHandlerTests {
     private MeasurementNotFoundException measurementNotFoundException;
 
     @Mock
-    private EmailNotValidException emailNotValidException;
-
-    @Mock
     private EmailAlreadyTakenException emailAlreadyTakenException;
 
     @InjectMocks
@@ -47,16 +44,6 @@ public class GlobalExceptionHandlerTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
         assertEquals("Measurement Doesn't Exist", response.getMessage());
         assertEquals("Measurement Doesn't Exist", response.getEx().getMessage());
-    }
-
-    @Test
-    @DisplayName("Check that EmailNotValidException returns corresponding error response")
-    public void handleEmailNotValidException_shouldReturnErrorResponse() {
-        when(emailNotValidException.getMessage()).thenReturn("Email not valid");
-        ErrorResponse response = globalExceptionHandler.handleEmailNotValidException(emailNotValidException);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getHttpStatus());
-        assertEquals("Email not valid", response.getMessage());
-        assertEquals("Email not valid", response.getEx().getMessage());
     }
 
     @Test

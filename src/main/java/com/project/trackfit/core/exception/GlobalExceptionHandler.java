@@ -49,17 +49,6 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
-    @ExceptionHandler(EmailNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse handleEmailNotValidException(EmailNotValidException exception) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setMessage("Email not valid");
-        errorResponse.setEx(exception);
-        errorResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
-        return errorResponse;
-    }
-
     @ExceptionHandler(EmailAlreadyTakenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
