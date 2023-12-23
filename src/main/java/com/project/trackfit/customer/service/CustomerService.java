@@ -67,10 +67,4 @@ public class CustomerService implements ICustomerService {
         customerRepository.save(customer);
         return customer;
     }
-
-    @Override
-    public Customer getCustomerByUserId(UUID user_id) {
-      return  customerRepository.findByUser_Id(user_id).orElseThrow(ResourceNotFoundException::new);
-    }
-
 }

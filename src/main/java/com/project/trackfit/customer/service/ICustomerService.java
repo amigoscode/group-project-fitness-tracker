@@ -10,5 +10,4 @@ public interface ICustomerService {
     UUID createCustomer(ApplicationUser applicationUser);
     Customer getCustomerById(UUID customer_id);
     Customer updateCustomer(UUID customerId, UpdateCustomerRequest updateCustomerRequest);
-    Customer getCustomerByUserId(UUID user_id);
 }
