@@ -1,11 +1,14 @@
 package com.project.trackfit.customer.service;
 
+import com.project.trackfit.core.exception.RequestValidationException;
 import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.user.component.Role;
 
+import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTests {
@@ -37,6 +40,8 @@ public class CustomerServiceTests {
     private CustomerService customerService;
 
     private ApplicationUser testApplicationUser;
+
+    private EasyRandom easyRandom;
 
     @BeforeEach
     public void setUp() {
@@ -50,6 +55,7 @@ public class CustomerServiceTests {
                 38,
                 "Athens, Greece"
         );
+        easyRandom = new EasyRandom();
     }
 
     @Test
@@ -115,13 +121,55 @@ public class CustomerServiceTests {
         //given: an invalid customer ID
         UUID invalidCustomerId = UUID.randomUUID();
 
-        //and: mocking the repository to return empty optional
+        //and: mocking the repository to simulate that no customer exists with this ID
         given(customerRepository.findById(invalidCustomerId)).willReturn(Optional.empty());
 
         //when: calling the service we expect to receive the proper exception
-        assertThrows(ResourceNotFoundException.class, () -> customerService.getCustomerById(invalidCustomerId));
+        assertThrows(ResourceNotFoundException.class,
+                () -> customerService.getCustomerById(invalidCustomerId));
 
         //then: we verify the repository interaction
         verify(customerRepository).findById(invalidCustomerId);
+    }
+
+    @Test
+    @DisplayName("Update customer age and address but not the role, succeeds")
+    public void givenCustomerObject_whenUpdateCustomer_thenReturnUpdatedCustomer() {
+        //given: a random customer and an update request
+        Customer customer = easyRandom.nextObject(Customer.class);
+        UpdateCustomerRequest request = new UpdateCustomerRequest(39, "New Address", null);
+
+        //and: mocking the service to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //when: updating the customer according to the request
+        Customer updatedCustomer = customerService.updateCustomer(customer.getId(), request);
+
+        //then: the customer's parameters have been updated successfully expect role
+        assertThat(updatedCustomer.getAge()).isEqualTo(request.getAge());
+        assertThat(updatedCustomer.getAddress()).isEqualTo(request.getAddress());
+        assertThat(updatedCustomer.getUser().getRole()).isEqualTo(customer.getUser().getRole());
+    }
+
+
+    @Test
+    @DisplayName("Update customer with same age, address and role fails")
+    public void givenInvalidUpdateRequest_whenUpdateCustomer_thenReturnUpdatedCustomer() {
+        //given: a random customer and an update request with same property values as customer's
+        Customer customer = easyRandom.nextObject(Customer.class);
+        UpdateCustomerRequest request = new UpdateCustomerRequest(
+                customer.getAge(),
+                customer.getAddress(),
+                customer.getUser().getRole());
+
+        //and: mocking the service to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //when: trying to update the customer's properties, an exception is thrown
+        assertThrows(RequestValidationException.class,
+                () -> customerService.updateCustomer(customer.getId(), request));
+
+        //then: no interactions with the repository take place
+        verify(customerRepository, never()).save(customer);
     }
 }
