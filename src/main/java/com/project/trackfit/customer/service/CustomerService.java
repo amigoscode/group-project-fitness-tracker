@@ -7,22 +7,22 @@ import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
 
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
     @Override
     public UUID createCustomer(ApplicationUser applicationUser){
         Customer customer = new Customer(applicationUser);
-
-        customer.setUser(applicationUser);
         customerRepository.save(customer);
         return customer.getId();
     }

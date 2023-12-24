@@ -1,13 +1,14 @@
-package com.project.trackfit.trainer;
+package com.project.trackfit.trainer.service;
 
+import com.project.trackfit.trainer.dto.PersonalTrainer;
 import com.project.trackfit.user.dto.ApplicationUser;
 
+import java.util.List;
 import java.util.UUID;
 
 
 public interface IPersonalTrainerService {
     UUID createTrainer(ApplicationUser applicationUser);
     PersonalTrainer getTrainerByID(UUID trainer_id);
-    RetrieveTrainerRequest retrieveTrainerByID(UUID trainer_id);
-    Iterable<RetrieveTrainerRequest> findAllTrainers();
+    List<PersonalTrainer> findAllTrainers();
 }

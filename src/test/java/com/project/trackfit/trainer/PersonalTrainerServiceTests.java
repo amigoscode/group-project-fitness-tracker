@@ -1,5 +1,8 @@
 package com.project.trackfit.trainer;
 
+import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
+import com.project.trackfit.trainer.service.PersonalTrainerService;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
@@ -25,10 +28,7 @@ import static org.mockito.Mockito.when;
 public class PersonalTrainerServiceTests {
 
     @Mock
-    private PersonalTrainerRepo personalTrainerRepo;
-
-    @Mock
-    private TrainerRetrieveRequestMapper trainerRetrieveRequestMapper;
+    private PersonalTrainerRepository personalTrainerRepository;
 
     @InjectMocks
     private PersonalTrainerService personalTrainerService;
@@ -53,7 +53,7 @@ public class PersonalTrainerServiceTests {
     @DisplayName("Check createTrainer method with valid Email address")
     public void testCreateTrainer() {
         UUID expectedTrainerId = UUID.randomUUID();
-        when(personalTrainerRepo.save(any(PersonalTrainer.class))).thenAnswer(invocation -> {
+        when(personalTrainerRepository.save(any(PersonalTrainer.class))).thenAnswer(invocation -> {
             PersonalTrainer savedTrainer = invocation.getArgument(0);
             savedTrainer.setId(expectedTrainerId);
             return savedTrainer;
@@ -61,7 +61,7 @@ public class PersonalTrainerServiceTests {
 
         UUID actualTrainerId = personalTrainerService.createTrainer(testApplicationUser);
 
-        verify(personalTrainerRepo).save(any(PersonalTrainer.class));
+        verify(personalTrainerRepository).save(any(PersonalTrainer.class));
         assertNotNull(actualTrainerId);
         assertEquals(expectedTrainerId, actualTrainerId);
     }
@@ -74,11 +74,11 @@ public class PersonalTrainerServiceTests {
         expectedPersonalTrainer.setId(customerId);
         expectedPersonalTrainer.setUser(testApplicationUser);
 
-        when(personalTrainerRepo.findById(customerId)).thenReturn(Optional.of(expectedPersonalTrainer));
+        when(personalTrainerRepository.findById(customerId)).thenReturn(Optional.of(expectedPersonalTrainer));
 
         PersonalTrainer result = personalTrainerService.getTrainerByID(customerId);
 
-        verify(personalTrainerRepo).findById(customerId);
+        verify(personalTrainerRepository).findById(customerId);
         assertEquals(expectedPersonalTrainer, result);
     }
 
@@ -86,60 +86,12 @@ public class PersonalTrainerServiceTests {
     @DisplayName("Check getCustomerById method with invalid Id")
     public void testGetCustomerByIdWithInvalidId() {
         UUID invalidCustomerId = UUID.randomUUID();
-        when(personalTrainerRepo.findById(invalidCustomerId)).thenReturn(Optional.empty());
+        when(personalTrainerRepository.findById(invalidCustomerId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
             personalTrainerService.getTrainerByID(invalidCustomerId);
         });
 
-        verify(personalTrainerRepo).findById(invalidCustomerId);
-    }
-
-    @Test
-    @DisplayName("Check RetrieveCustomerById method with valid Id")
-    public void testRetrieveCustomerByIdWithValidId() {
-        UUID trainerId = UUID.randomUUID();
-        ApplicationUser testApplicationUser = new ApplicationUser(
-                "andreas.kreouzos@hotmail.com",
-                "Andreas",
-                "Kreouzos",
-                new byte[128],
-                new byte[64],
-                Role.CUSTOMER,
-                38,
-                "Athens, Greece"
-        );
-        PersonalTrainer personalTrainer = new PersonalTrainer();
-        personalTrainer.setId(trainerId);
-        personalTrainer.setUser(testApplicationUser);
-
-        RetrieveTrainerRequest expectedRetrieveTrainerRequest = new RetrieveTrainerRequest(
-                trainerId,
-                "andreas.kreouzos@hotmail.com",
-                "Andreas",
-                "Kreouzos",
-                "0"
-        );
-        when(personalTrainerRepo.findById(trainerId)).thenReturn(Optional.of(personalTrainer));
-        when(trainerRetrieveRequestMapper.apply(personalTrainer)).thenReturn(expectedRetrieveTrainerRequest);
-
-        RetrieveTrainerRequest result = personalTrainerService.retrieveTrainerByID(trainerId);
-
-        verify(personalTrainerRepo).findById(trainerId);
-        verify(trainerRetrieveRequestMapper).apply(personalTrainer);
-        assertEquals(expectedRetrieveTrainerRequest, result);
-    }
-
-    @Test
-    @DisplayName("Check RetrieveCustomerById method with invalid Id")
-    public void testRetrieveCustomerByIdWithInvalidId() {
-        UUID invalidTrainerId = UUID.randomUUID();
-        when(personalTrainerRepo.findById(invalidTrainerId)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-            personalTrainerService.retrieveTrainerByID(invalidTrainerId);
-        });
-
-        verify(personalTrainerRepo).findById(invalidTrainerId);
+        verify(personalTrainerRepository).findById(invalidCustomerId);
     }
 }

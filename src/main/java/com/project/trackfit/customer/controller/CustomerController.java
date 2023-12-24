@@ -5,7 +5,6 @@ import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +22,15 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/customers")
 public class CustomerController {
 
     private final ICustomerService service;
+
+    public CustomerController(ICustomerService service) {
+        this.service = service;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getCustomerById(
