@@ -151,7 +151,6 @@ public class CustomerServiceTests {
         assertThat(updatedCustomer.getUser().getRole()).isEqualTo(customer.getUser().getRole());
     }
 
-
     @Test
     @DisplayName("Update customer with same age, address and role fails")
     public void givenInvalidUpdateRequest_whenUpdateCustomer_thenReturnUpdatedCustomer() {

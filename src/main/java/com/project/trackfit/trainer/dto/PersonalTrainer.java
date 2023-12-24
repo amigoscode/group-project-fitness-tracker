@@ -1,4 +1,4 @@
-package com.project.trackfit.trainer;
+package com.project.trackfit.trainer.dto;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.trackfit.user.dto.ApplicationUser;

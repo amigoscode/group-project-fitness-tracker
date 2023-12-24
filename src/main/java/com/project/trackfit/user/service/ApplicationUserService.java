@@ -4,7 +4,7 @@ import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.EmailAlreadyTakenException;
 
 import com.project.trackfit.customer.service.ICustomerService;
-import com.project.trackfit.trainer.IPersonalTrainerService;
+import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import com.project.trackfit.user.component.PasswordCreation;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;

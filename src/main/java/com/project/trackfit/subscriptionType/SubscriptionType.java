@@ -2,7 +2,7 @@ package com.project.trackfit.subscriptionType;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.trackfit.subscription.Subscription;
-import com.project.trackfit.trainer.PersonalTrainer;
+import com.project.trackfit.trainer.dto.PersonalTrainer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,6 +2,8 @@ package com.project.trackfit.trainer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.trackfit.core.APICustomResponse;
+import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
 import com.project.trackfit.user.dto.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
 import com.project.trackfit.user.component.Role;
@@ -29,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PersonalTrainerControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
-    private PersonalTrainerRepo personalTrainerRepo;
+    private PersonalTrainerRepository personalTrainerRepository;
 
     @Autowired
     private ApplicationUserRepo applicationUserRepo;
@@ -83,7 +85,7 @@ class PersonalTrainerControllerIntegrationTest extends AbstractIntegrationTest {
                 .orElseThrow(() -> new IllegalStateException("User not found in the database"));
         trainer.setUser(applicationUser);
 
-        PersonalTrainer savedTrainer = personalTrainerRepo.save(trainer);
+        PersonalTrainer savedTrainer = personalTrainerRepository.save(trainer);
         return savedTrainer.getId();
     }
 }

@@ -2,7 +2,7 @@ package com.project.trackfit.subscription;
 
 import com.project.trackfit.customer.RetrieveCustomerRequest;
 
-import com.project.trackfit.trainer.RetrieveTrainerRequest;
+import com.project.trackfit.trainer.dto.RetrieveTrainerRequest;
 
 import java.time.LocalDateTime;
 

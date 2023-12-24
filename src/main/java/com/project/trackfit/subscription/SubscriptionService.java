@@ -2,8 +2,8 @@ package com.project.trackfit.subscription;
 
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.customer.service.ICustomerService;
-import com.project.trackfit.trainer.PersonalTrainer;
-import com.project.trackfit.trainer.IPersonalTrainerService;
+import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

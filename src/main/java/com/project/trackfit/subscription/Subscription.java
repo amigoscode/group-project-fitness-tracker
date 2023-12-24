@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.subscriptionType.SubscriptionType;
-import com.project.trackfit.trainer.PersonalTrainer;
+import com.project.trackfit.trainer.dto.PersonalTrainer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
