@@ -13,6 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -172,5 +174,16 @@ public class ApplicationUser implements UserDetails {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public static Map<String, Object> mapData(UUID id, ApplicationUser user) {
+        Map<String, Object> trainerData = new HashMap<>();
+        trainerData.put("id", id);
+        trainerData.put("firstName", user.getFirstName());
+        trainerData.put("lastName", user.getLastName());
+        trainerData.put("age", user.getAge());
+        trainerData.put("email", user.getEmail());
+        trainerData.put("address", user.getAddress());
+        return trainerData;
     }
 }

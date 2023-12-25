@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.project.trackfit.user.dto.ApplicationUser.mapData;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -64,13 +64,6 @@ public class CustomerController {
     }
 
     private Map<String, Object> mapCustomerData(Customer customerRequest) {
-        Map<String, Object> customerData = new HashMap<>();
-        customerData.put("id", customerRequest.getId());
-        customerData.put("firstName", customerRequest.getUser().getFirstName());
-        customerData.put("lastName", customerRequest.getUser().getLastName());
-        customerData.put("age", customerRequest.getUser().getAge());
-        customerData.put("email", customerRequest.getUser().getEmail());
-        customerData.put("address", customerRequest.getUser().getAddress());
-        return customerData;
+        return mapData(customerRequest.getId(), customerRequest.getUser());
     }
 }

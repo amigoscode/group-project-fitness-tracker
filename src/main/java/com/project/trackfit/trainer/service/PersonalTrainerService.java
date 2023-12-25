@@ -7,10 +7,7 @@ import com.project.trackfit.core.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -39,25 +36,5 @@ public class PersonalTrainerService implements IPersonalTrainerService {
     @Override
     public List<PersonalTrainer> findAllTrainers() {
         return personalTrainerRepository.findAll();
-    }
-
-    //TODO: Investigate the creation of an abstract class for common functionalities between this class and CustomerService
-    public List<Map<String, Object>> mapPersonalTrainerDataList(List<PersonalTrainer> trainers) {
-        List<Map<String, Object>> trainersData = new ArrayList<>();
-        for (PersonalTrainer trainer : trainers) {
-            trainersData.add(mapPersonalTrainerData(trainer));
-        }
-        return trainersData;
-    }
-
-    public Map<String, Object> mapPersonalTrainerData(PersonalTrainer trainerRequest) {
-        Map<String, Object> trainerData = new HashMap<>();
-        trainerData.put("id", trainerRequest.getId());
-        trainerData.put("firstName", trainerRequest.getUser().getFirstName());
-        trainerData.put("lastName", trainerRequest.getUser().getLastName());
-        trainerData.put("age", trainerRequest.getUser().getAge());
-        trainerData.put("email", trainerRequest.getUser().getEmail());
-        trainerData.put("address", trainerRequest.getUser().getAddress());
-        return trainerData;
     }
 }
