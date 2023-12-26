@@ -3,7 +3,6 @@ package com.project.trackfit.trainer.controller;
 import com.project.trackfit.core.APICustomResponse;
 import com.project.trackfit.trainer.dto.PersonalTrainer;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
-import com.project.trackfit.trainer.service.PersonalTrainerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,7 @@ public class PersonalTrainerController {
 
     private final IPersonalTrainerService personalTrainerService;
 
-    public PersonalTrainerController(PersonalTrainerService personalTrainerService) {
+    public PersonalTrainerController(IPersonalTrainerService personalTrainerService) {
         this.personalTrainerService = personalTrainerService;
     }
 
