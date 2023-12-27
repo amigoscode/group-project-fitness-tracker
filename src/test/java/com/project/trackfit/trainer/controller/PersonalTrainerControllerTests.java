@@ -1,6 +1,7 @@
 package com.project.trackfit.trainer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.controller.CustomerController;
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Random;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -72,7 +74,7 @@ public class PersonalTrainerControllerTests {
 
     @Test
     @DisplayName("Successfully get a trainer by his unique Id")
-    public void givenPersonalTrainer_whenGetPersonalTrainerById_thenReturnPersonalTrainer() throws Exception {
+    public void givenTrainer_whenGetTrainerById_thenReturnTrainer() throws Exception {
         //given: a random personal trainer
         PersonalTrainer randomTrainer = easyRandom.nextObject(PersonalTrainer.class);
 
@@ -92,5 +94,23 @@ public class PersonalTrainerControllerTests {
                 .andExpect(jsonPath("$.statusCode", is(200)))
                 .andExpect(jsonPath("$.message", is("Trainer has been fetched successfully")))
                 .andExpect(jsonPath("$.data", notNullValue()));
+    }
+
+    @Test
+    @DisplayName("Getting a trainer fails because he doesn't exist")
+    public void givenNonExistingTrainerUUID_whenGetTrainerById_thenReturnIsNotFound() throws Exception {
+        //given: a non-existent trainer id
+        UUID nonExistentTrainerId = UUID.randomUUID();
+
+        //and: mocking the service to return the proper exception
+        given(service.getTrainerByID(nonExistentTrainerId)).willThrow(new ResourceNotFoundException());
+
+        //when: trying to fetch this customer
+        ResultActions response = mockMvc.perform(get("/api/v1/trainers/{id}", nonExistentTrainerId));
+
+        //then: the response is Not Found
+        response.andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("User Doesn't Exist")));
     }
 }
