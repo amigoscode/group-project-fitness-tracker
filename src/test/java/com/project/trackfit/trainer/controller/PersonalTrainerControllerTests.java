@@ -1,15 +1,11 @@
 package com.project.trackfit.trainer.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.controller.CustomerController;
 import com.project.trackfit.customer.dto.Customer;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
 import com.project.trackfit.trainer.dto.PersonalTrainer;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import com.project.trackfit.user.dto.ApplicationUser;
-import com.project.trackfit.user.dto.CreateUserRequest;
-import com.project.trackfit.user.service.IApplicationUserService;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
@@ -25,12 +21,13 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -54,12 +51,6 @@ public class PersonalTrainerControllerTests {
     @MockBean
     private IPersonalTrainerService service;
 
-    @MockBean
-    private IApplicationUserService userService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private EasyRandom easyRandom;
 
     @BeforeEach
@@ -79,7 +70,7 @@ public class PersonalTrainerControllerTests {
         PersonalTrainer randomTrainer = easyRandom.nextObject(PersonalTrainer.class);
 
         //and: mocking the service to create a user with is UUID
-        given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> randomTrainer.getId());
+        //given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> randomTrainer.getId());
 
         //and: mocking the service to return this random personal trainer
         given(service.getTrainerByID(randomTrainer.getId())).willReturn(randomTrainer);
@@ -105,12 +96,41 @@ public class PersonalTrainerControllerTests {
         //and: mocking the service to return the proper exception
         given(service.getTrainerByID(nonExistentTrainerId)).willThrow(new ResourceNotFoundException());
 
-        //when: trying to fetch this customer
+        //when: trying to fetch this trainer
         ResultActions response = mockMvc.perform(get("/api/v1/trainers/{id}", nonExistentTrainerId));
 
         //then: the response is Not Found
         response.andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("User Doesn't Exist")));
+    }
+
+    @Test
+    @DisplayName("Successfully get a list of trainers")
+    public void givenTrainers_whenGetTrainers_thenReturnListOfTrainers() throws Exception {
+        //given: a list of random personal trainers
+        List<PersonalTrainer> trainers = new ArrayList<>();
+
+        //and: a pair of trainers
+        PersonalTrainer firstTrainer = easyRandom.nextObject(PersonalTrainer.class);
+        PersonalTrainer secondTrainer = easyRandom.nextObject(PersonalTrainer.class);
+
+        //and: adding these trainers into this list
+        trainers.add(firstTrainer);
+        trainers.add(secondTrainer);
+
+        //and: mocking the service to return this list
+        given(service.findAllTrainers()).willReturn(trainers);
+
+        //when: trying to fetch these personal trainers
+        ResultActions response = mockMvc.perform(get("/api/v1/trainers"));
+
+        //then: the response is OK with expected values
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.timeStamp", notNullValue()))
+                .andExpect(jsonPath("$.statusCode", is(200)))
+                .andExpect(jsonPath("$.message", is("Fetched All Personal Trainers")))
+                .andExpect(jsonPath("$.data", notNullValue()));
     }
 }
