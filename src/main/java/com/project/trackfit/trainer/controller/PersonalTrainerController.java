@@ -33,12 +33,13 @@ public class PersonalTrainerController {
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
         List<PersonalTrainer> trainers = personalTrainerService.findAllTrainers();
+        String message = trainers.isEmpty() ? "No trainers available" : "Fetched All Personal Trainers";
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
                         .data(convertTo(trainers))
-                        .message("Fetched All Personal Trainers")
+                        .message(message)
                         .status(OK)
                         .statusCode(OK.value())
                         .build()

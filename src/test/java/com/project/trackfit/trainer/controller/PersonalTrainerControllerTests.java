@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -132,5 +133,26 @@ public class PersonalTrainerControllerTests {
                 .andExpect(jsonPath("$.statusCode", is(200)))
                 .andExpect(jsonPath("$.message", is("Fetched All Personal Trainers")))
                 .andExpect(jsonPath("$.data", notNullValue()));
+    }
+
+    @Test
+    @DisplayName("Get an empty list of trainers succeeds with correct message")
+    public void givenNoTrainers_whenGetTrainers_thenReturnEmptyList() throws Exception {
+        //given: an empty list of personal trainers
+        List<PersonalTrainer> trainers = new ArrayList<>();
+
+        //and: mocking the service to return this empty list
+        given(service.findAllTrainers()).willReturn(trainers);
+
+        //when: sending this request
+        ResultActions response = mockMvc.perform(get("/api/v1/trainers"));
+
+        //then: the response is OK but with a message indicating no trainers are available
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.timeStamp", notNullValue()))
+                .andExpect(jsonPath("$.statusCode", is(200)))
+                .andExpect(jsonPath("$.message", is("No trainers available")))
+                .andExpect(jsonPath("$.data", hasSize(0)));
     }
 }
