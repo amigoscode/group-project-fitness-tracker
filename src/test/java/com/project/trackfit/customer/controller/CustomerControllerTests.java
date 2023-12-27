@@ -7,8 +7,6 @@ import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
 import com.project.trackfit.user.dto.ApplicationUser;
-import com.project.trackfit.user.dto.CreateUserRequest;
-import com.project.trackfit.user.service.IApplicationUserService;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
@@ -63,9 +61,6 @@ public class CustomerControllerTests {
     @MockBean
     private ICustomerService service;
 
-    @MockBean
-    private IApplicationUserService userService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -86,9 +81,6 @@ public class CustomerControllerTests {
     public void givenCustomer_whenGetCustomerById_thenReturnCustomer() throws Exception {
         //given: a random customer
         Customer randomCustomer = easyRandom.nextObject(Customer.class);
-
-        //and: mocking the service to create a user with is UUID
-        given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> randomCustomer.getId());
 
         //and: mocking the service to return this random customer
         given(service.getCustomerById(randomCustomer.getId())).willReturn(randomCustomer);
@@ -131,9 +123,6 @@ public class CustomerControllerTests {
 
         //and: an updated customer
         Customer updatedCustomer = easyRandom.nextObject(Customer.class);
-
-        //and: mocking the service to create a user with is UUID
-        given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> savedCustomer.getId());
 
         //and: mocking the service to return this random customer
         given(service.getCustomerById(savedCustomer.getId())).willReturn(savedCustomer);
