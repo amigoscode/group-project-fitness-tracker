@@ -33,7 +33,7 @@ public class PersonalTrainerController {
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
         List<PersonalTrainer> trainers = personalTrainerService.findAllTrainers();
-        String message = trainers.isEmpty() ? "No trainers available" : "Fetched All Personal Trainers";
+        String message = trainers.isEmpty() ? "No trainers available" : "Fetched all personal trainers";
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()

@@ -109,10 +109,10 @@ public class PersonalTrainerControllerTests {
     @Test
     @DisplayName("Successfully get a list of trainers")
     public void givenTrainers_whenGetTrainers_thenReturnListOfTrainers() throws Exception {
-        //given: a list of random personal trainers
+        //given: a list of personal trainers
         List<PersonalTrainer> trainers = new ArrayList<>();
 
-        //and: a pair of trainers
+        //and: a pair of random trainers
         PersonalTrainer firstTrainer = easyRandom.nextObject(PersonalTrainer.class);
         PersonalTrainer secondTrainer = easyRandom.nextObject(PersonalTrainer.class);
 
