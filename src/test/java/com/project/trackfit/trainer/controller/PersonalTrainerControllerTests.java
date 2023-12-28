@@ -131,7 +131,7 @@ public class PersonalTrainerControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.timeStamp", notNullValue()))
                 .andExpect(jsonPath("$.statusCode", is(200)))
-                .andExpect(jsonPath("$.message", is("Fetched All Personal Trainers")))
+                .andExpect(jsonPath("$.message", is("Fetched all personal trainers")))
                 .andExpect(jsonPath("$.data", notNullValue()));
     }
 
