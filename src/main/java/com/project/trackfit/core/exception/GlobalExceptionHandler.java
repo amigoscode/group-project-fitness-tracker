@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
         }
 
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setMessage("Bad Request");
+        errorResponse.setMessage("Invalid Field Input");
         errorResponse.setDetails(errorDetails);
         errorResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
         return errorResponse;

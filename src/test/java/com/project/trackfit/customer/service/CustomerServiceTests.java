@@ -78,10 +78,10 @@ public class CustomerServiceTests {
         ArgumentCaptor<Customer> customerCaptor = ArgumentCaptor.forClass(Customer.class);
         verify(customerRepository).save(customerCaptor.capture());
 
-        //and: retrieve the captured Customer object
+        //and: retrieve the captured customer
         Customer capturedCustomer = customerCaptor.getValue();
 
-        //and: Assert the Customer's properties match the ApplicationUser's properties
+        //and: assert the customer's properties match the application user's properties
         assertNotNull(capturedCustomer);
         assertEquals(testApplicationUser.getEmail(), capturedCustomer.getUser().getEmail());
         assertEquals(testApplicationUser.getFirstName(), capturedCustomer.getUser().getFirstName());
@@ -117,7 +117,7 @@ public class CustomerServiceTests {
 
     @Test
     @DisplayName("Getting a customer by invalid ID fails")
-    public void givenInvalidCustomerId_whenGetCustomerById_thenReturnCustomer() {
+    public void givenInvalidCustomerId_whenGetCustomerById_thenReturnCustomerNotFound() {
         //given: an invalid customer ID
         UUID invalidCustomerId = UUID.randomUUID();
 

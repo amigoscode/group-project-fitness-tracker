@@ -138,13 +138,7 @@ public class PersonalTrainerControllerTests {
     @Test
     @DisplayName("Get an empty list of trainers succeeds with correct message")
     public void givenNoTrainers_whenGetTrainers_thenReturnEmptyList() throws Exception {
-        //given: an empty list of personal trainers
-        List<PersonalTrainer> trainers = new ArrayList<>();
-
-        //and: mocking the service to return this empty list
-        given(service.findAllTrainers()).willReturn(trainers);
-
-        //when: sending this request
+        //when: sending a request to the endpoint
         ResultActions response = mockMvc.perform(get("/api/v1/trainers"));
 
         //then: the response is OK but with a message indicating no trainers are available
