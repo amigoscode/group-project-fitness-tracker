@@ -35,7 +35,7 @@ public class ApplicationUserService implements IApplicationUserService {
     private void checkEmailExists(String email) {
         applicationUserRepo.findByEmail(email)
                 .ifPresent(u -> {
-                    throw new EmailAlreadyTakenException();
+                    throw new EmailAlreadyTakenException(email);
                 });
     }
 

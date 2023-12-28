@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.project.trackfit.user.component.Role.CUSTOMER;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -89,41 +88,65 @@ public class ApplicationUserControllerTests {
     @ParameterizedTest
     @MethodSource("wrongInputParameters")
     @DisplayName("Creating a new user fails due to wrong request parameters")
-    public void givenWrongParameters_whenCreateUser_thenUserNotCreated(CreateUserRequest userInput,
+    public void givenWrongParameters_whenCreateUser_thenUserNotCreated(String jsonRequest,
                                                                        String emailError,
-                                                                       String ageError) throws Exception {
-        //given: the request to create a user with empty and null values
-        CreateUserRequest request = new CreateUserRequest(
-                userInput.getEmail(),
-                userInput.getPassword(),
-                userInput.getFirstName(),
-                userInput.getLastName(),
-                userInput.getRole(),
-                userInput.getAge(),
-                userInput.getAddress());
-
-
+                                                                       String ageError,
+                                                                       String roleError) throws Exception {
         //when: sending the request
         ResultActions response = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)));
+                .content(jsonRequest));
 
         //then: the proper error validation messages are expected
         response.andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.email", containsInAnyOrder(emailError)))
-                .andExpect(jsonPath("$.password", containsInAnyOrder("Password is required")))
-                .andExpect(jsonPath("$.firstName", containsInAnyOrder("First Name is required")))
-                .andExpect(jsonPath("$.lastName", containsInAnyOrder("Last Name is required")))
-                .andExpect(jsonPath("$.role", containsInAnyOrder("Role cannot be null")))
-                .andExpect(jsonPath("$.age", containsInAnyOrder(ageError)))
-                .andExpect(jsonPath("$.address", containsInAnyOrder("Address is required")));
+                .andExpect(jsonPath("$.password[0]", is("Password is required")))
+                .andExpect(jsonPath("$.firstName[0]", is("First Name is required")))
+                .andExpect(jsonPath("$.lastName[0]", is("Last Name is required")))
+                .andExpect(jsonPath("$.address[0]", is("Address is required")))
+                .andExpect(jsonPath("$.email[0]", is(emailError)))
+                .andExpect(jsonPath("$.role[0]", is(roleError)))
+                .andExpect(jsonPath("$.age[0]", is(ageError)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidRoleParameter")
+    @DisplayName("Creating a new user fails due to invalid role")
+    public void givenInvalidRole_whenCreateUser_thenBadRequest(String jsonRequest) throws Exception {
+        //when: sending the request
+        ResultActions response = mockMvc.perform(post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest));
+
+        //then: expect a general bad request error
+        response.andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Bad Request")))
+                .andExpect(jsonPath("$.details", is("Invalid value: 'INVALID' for the field: 'role'. The value must be one of: [CUSTOMER, TRAINER].")));
     }
 
     static Stream<Arguments> wrongInputParameters() {
         return Stream.of(
-                Arguments.of(new CreateUserRequest("", "", "", "", null, -18, ""), "Email must not be blank", "Age must be at least 18"),
-                Arguments.of(new CreateUserRequest("invalid_email", "", "", "", null, 101, ""), "Email is invalid", "Age must be no more than 100")
+                Arguments.of(
+                        "{\"email\":\"\", \"password\":\"\", \"firstName\":\"\", \"lastName\":\"\", \"role\":null, \"age\":-18, \"address\":\"\"}",
+                        "Email must not be blank",
+                        "Age must be at least 18",
+                        "Role cannot be null"
+                ),
+                Arguments.of(
+                        "{\"email\":\"invalid_email\", \"password\":\"\", \"firstName\":\"\", \"lastName\":\"\", \"role\":null, \"age\":101, \"address\":\"\"}",
+                        "Email is invalid",
+                        "Age must be no more than 100",
+                        "Role cannot be null"
+                )
+        );
+    }
+
+    static Stream<Arguments> invalidRoleParameter() {
+        return Stream.of(
+                Arguments.of(
+                        "{\"email\":\"valid_email@example.com\", \"password\":\"ValidPass123\", \"firstName\":\"John\", \"lastName\":\"Doe\", \"role\":\"INVALID\", \"age\":25, \"address\":\"123 Main St\"}"
+                )
         );
     }
 }
