@@ -1,5 +1,6 @@
 package com.project.trackfit.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
 import com.project.trackfit.user.dto.CreateUserRequest;
@@ -19,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -125,16 +128,36 @@ public class ApplicationUserControllerTests {
                 .andExpect(jsonPath("$.details", is("Invalid value: 'INVALID' for the field: 'role'. The value must be one of: [CUSTOMER, TRAINER].")));
     }
 
-    static Stream<Arguments> wrongInputParameters() {
+    static Stream<Arguments> wrongInputParameters() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> firstInvalidMap = new HashMap<>();
+        firstInvalidMap.put("email", "");
+        firstInvalidMap.put("password", "");
+        firstInvalidMap.put("firstName", "");
+        firstInvalidMap.put("lastName", "");
+        firstInvalidMap.put("role", null);
+        firstInvalidMap.put("age", -18);
+        firstInvalidMap.put("address", "");
+        String firstInvalidJson = objectMapper.writeValueAsString(firstInvalidMap);
+
+        Map<String, Object> secondInvalidMap = new HashMap<>();
+        secondInvalidMap.put("email", "invalid_email");
+        secondInvalidMap.put("password", "");
+        secondInvalidMap.put("firstName", "");
+        secondInvalidMap.put("lastName", "");
+        secondInvalidMap.put("role", null);
+        secondInvalidMap.put("age", 101);
+        secondInvalidMap.put("address", "");
+        String secondInvalidJson = objectMapper.writeValueAsString(secondInvalidMap);
+
         return Stream.of(
-                Arguments.of(
-                        "{\"email\":\"\", \"password\":\"\", \"firstName\":\"\", \"lastName\":\"\", \"role\":null, \"age\":-18, \"address\":\"\"}",
+                Arguments.of(firstInvalidJson,
                         "Email must not be blank",
                         "Age must be at least 18",
                         "Role cannot be null"
                 ),
                 Arguments.of(
-                        "{\"email\":\"invalid_email\", \"password\":\"\", \"firstName\":\"\", \"lastName\":\"\", \"role\":null, \"age\":101, \"address\":\"\"}",
+                        secondInvalidJson,
                         "Email is invalid",
                         "Age must be no more than 100",
                         "Role cannot be null"
@@ -142,11 +165,17 @@ public class ApplicationUserControllerTests {
         );
     }
 
-    static Stream<Arguments> invalidRoleParameter() {
-        return Stream.of(
-                Arguments.of(
-                        "{\"email\":\"valid_email@example.com\", \"password\":\"ValidPass123\", \"firstName\":\"John\", \"lastName\":\"Doe\", \"role\":\"INVALID\", \"age\":25, \"address\":\"123 Main St\"}"
-                )
-        );
+    static Stream<Arguments> invalidRoleParameter() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> invalidRoleMap = new HashMap<>();
+        invalidRoleMap.put("email", "valid_email@example.com");
+        invalidRoleMap.put("password", "ValidPass123");
+        invalidRoleMap.put("firstName", "John");
+        invalidRoleMap.put("lastName", "Doe");
+        invalidRoleMap.put("role", "INVALID");
+        invalidRoleMap.put("age", 25);
+        invalidRoleMap.put("address", "123 Main St");
+        String json1 = objectMapper.writeValueAsString(invalidRoleMap);
+        return Stream.of(Arguments.of(json1));
     }
 }
