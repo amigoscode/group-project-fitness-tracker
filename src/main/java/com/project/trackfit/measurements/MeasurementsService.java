@@ -7,6 +7,7 @@ import com.project.trackfit.customer.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class MeasurementsService implements IMeasurementsService {
         Measurements measurements = new Measurements();
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.date());
+        measurements.setDate(LocalDateTime.now());
         measurements.setCustomer(customer);
         measurementsRepository.save(measurements);
         return measurements.getId();
@@ -70,7 +71,7 @@ public class MeasurementsService implements IMeasurementsService {
 
         measurements.setHeight(createMeasurementsRequest.height());
         measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.date());
+        measurements.setDate(LocalDateTime.now());
 
         measurementsRepository.save(measurements);
     }

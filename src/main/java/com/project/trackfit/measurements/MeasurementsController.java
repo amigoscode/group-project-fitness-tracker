@@ -29,10 +29,6 @@ public class MeasurementsController {
 
     private final MeasurementsService measurementsService;
 
-    /**
-     * Creates measurements
-     * http://[::1]:8080/api/v1/measurements
-     */
     @PostMapping
     public ResponseEntity<APICustomResponse> createMeasurements(
             @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
@@ -49,10 +45,6 @@ public class MeasurementsController {
                 );
     }
 
-    /**
-     * Gets Measurements by Id
-     * http://[::1]:8080/api/v1/measurements/{id}
-     */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getMeasurementsById(
             @PathVariable("id") UUID measurementsId) {
@@ -69,11 +61,6 @@ public class MeasurementsController {
                 );
     }
 
-
-    /**
-     * Updates a measurement by Id
-     * http://[::1]:8080/api/v1/measurements/customer/{customerId}
-     */
     @PutMapping("{customerId}")
     public ResponseEntity<APICustomResponse> updateCustomerMeasurements(
             @PathVariable("customerId") UUID customerId,
@@ -91,10 +78,6 @@ public class MeasurementsController {
                 );
     }
 
-    /**
-     * Deletes a measurement by Id
-     * http://[::1]:8080/api/v1/measurements/{measurementId}
-     */
     @DeleteMapping("{measurementId}")
     public ResponseEntity<APICustomResponse> deleteMeasurementById(
             @PathVariable("measurementId") UUID measurementId) {
