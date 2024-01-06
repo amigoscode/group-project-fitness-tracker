@@ -124,7 +124,7 @@ public class ApplicationUserControllerTests {
         //then: expect a general bad request error
         response.andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("Bad Request")))
+                .andExpect(jsonPath("$.message", is("Invalid Field Input")))
                 .andExpect(jsonPath("$.details", is("Invalid value: 'INVALID' for the field: 'role'. The value must be one of: [CUSTOMER, TRAINER].")));
     }
 

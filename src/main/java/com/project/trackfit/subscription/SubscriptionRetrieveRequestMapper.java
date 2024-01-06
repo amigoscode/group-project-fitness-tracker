@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Service
 @AllArgsConstructor
-public class SubscriptionRetrieveRequestMapper implements Function<Subscription,RetrieveSubscriptionRequest> {
+public class SubscriptionRetrieveRequestMapper implements Function<Subscription, RetrieveSubscriptionRequest> {
 
     private final TrainerRetrieveRequestMapper trainerRetrieveRequestMapper;
     private final CustomerRetrieveRequestMapper customerRetrieveRequestMapper;

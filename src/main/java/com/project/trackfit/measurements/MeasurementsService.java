@@ -8,17 +8,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class MeasurementsService implements IMeasurementsService {
 
     private final MeasurementsRepository measurementsRepository;
-    private final MeasurementsRetrieveRequestMapper measurementsRetrieveRequestMapper;
     private final CustomerRepository customerRepository;
 
     @Override
@@ -36,23 +32,17 @@ public class MeasurementsService implements IMeasurementsService {
     }
 
     @Override
-    public List<RetrieveMeasurementsRequest> getCustomerMeasurements(UUID customerId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(ResourceNotFoundException::new);
-
-        Set<Measurements> measurementsSet = customer.getMeasurements();
-
-        return measurementsSet.stream()
-                .map(measurementsRetrieveRequestMapper)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public RetrieveMeasurementsRequest retrieveMeasurementsById(UUID measurementsId) {
-        return measurementsRepository
+    public MeasurementsResponse retrieveMeasurementsById(UUID measurementsId) {
+        Measurements measurements = measurementsRepository
                 .findById(measurementsId)
-                .map(measurementsRetrieveRequestMapper)
                 .orElseThrow(MeasurementNotFoundException::new);
+
+        return new MeasurementsResponse(
+                measurements.getId(),
+                measurements.getHeight(),
+                measurements.getWeight(),
+                measurements.getDate()
+        );
     }
 
     @Override

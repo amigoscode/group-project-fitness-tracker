@@ -48,7 +48,7 @@ public class MeasurementsController {
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getMeasurementsById(
             @PathVariable("id") UUID measurementsId) {
-        RetrieveMeasurementsRequest measurementsRequest = measurementsService.retrieveMeasurementsById(measurementsId);
+        MeasurementsResponse measurementsRequest = measurementsService.retrieveMeasurementsById(measurementsId);
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
