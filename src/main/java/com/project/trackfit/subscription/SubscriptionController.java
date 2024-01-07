@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,15 +28,10 @@ public class SubscriptionController {
 
     private final ISubscriptionService service;
 
-    /**
-     * Creates Subscriptions
-     * http://[::1]:8080/api/v1/subscription
-     */
     @PostMapping
     public ResponseEntity<APICustomResponse> subscribe(
-            @Valid @RequestBody CreateSubscriptionRequest subscriptionRequest) {
+            @Valid @RequestBody SubscriptionRequest subscriptionRequest) {
         UUID subscriptionId = service.createSubscription(subscriptionRequest);
-
         return ResponseEntity.status(CREATED)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
@@ -47,14 +43,9 @@ public class SubscriptionController {
                 );
     }
 
-    /**
-     * Gets all Subscriptions
-     * http://[::1]:8080/api/v1/subscription
-     */
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllSubscriptions() {
-        Iterable<RetrieveSubscriptionRequest> subscriptionRequests = service.findAllSubscription();
-
+        List<SubscriptionResponse> subscriptionRequests = service.findAllSubscription();
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
@@ -66,14 +57,9 @@ public class SubscriptionController {
                 );
     }
 
-    /**
-     * Gets all Subscriptions by ID
-     * http://[::1]:8080/api/v1/subscription/{subId}
-     */
     @GetMapping("{subId}")
-    public ResponseEntity<APICustomResponse> getSubscriptionDetails(
-            @PathVariable("subId") UUID subId) {
-        RetrieveSubscriptionRequest subscriptionDetails = service.findSubscriptionByID(subId);
+    public ResponseEntity<APICustomResponse> getSubscriptionDetails(@PathVariable("subId") UUID subId) {
+        SubscriptionResponse subscriptionDetails = service.findSubscriptionByID(subId);
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()

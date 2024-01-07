@@ -37,17 +37,17 @@ public class Subscription {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "trainer_id",nullable = false)
+    @JoinColumn(name = "trainer_id", nullable = false)
     private PersonalTrainer personalTrainer;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="customer_id",nullable = false)
+    @JoinColumn(name="customer_id", nullable = false)
     private Customer customer;
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name="subscription_type_id",nullable = false)
+    @JoinColumn(name="subscription_type_id", nullable = false)
     private SubscriptionType subscriptionType;
 
     public Subscription() {
@@ -57,12 +57,14 @@ public class Subscription {
             LocalDateTime subscribedAt,
             LocalDateTime expiredOn,
             Customer customer,
-            PersonalTrainer trainer
+            PersonalTrainer trainer,
+            SubscriptionType type
     ) {
-        this.subscribedAt=subscribedAt;
-        this.expiredOn=expiredOn;
-        this.customer=customer;
-        this.personalTrainer=trainer;
+        this.subscribedAt = subscribedAt;
+        this.expiredOn = expiredOn;
+        this.customer = customer;
+        this.personalTrainer = trainer;
+        this.subscriptionType = type;
     }
 
     public UUID getId() {

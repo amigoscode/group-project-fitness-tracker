@@ -1,11 +1,9 @@
 package com.project.trackfit.subscription;
 
-import java.time.LocalDateTime;
-
 import java.util.UUID;
 
-public record CreateSubscriptionRequest(
+public record SubscriptionRequest(
          UUID personalTrainerId,
          UUID customerId,
-         LocalDateTime subscribedAt
+         UUID subscriptionTypeId
 ) { }

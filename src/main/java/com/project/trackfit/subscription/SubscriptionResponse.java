@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 import java.util.UUID;
 
-public record RetrieveSubscriptionRequest(
+public record SubscriptionResponse(
          UUID id,
          LocalDateTime subscribedAt,
          LocalDateTime expiredOn,
