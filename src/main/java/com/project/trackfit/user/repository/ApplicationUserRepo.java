@@ -1,6 +1,6 @@
 package com.project.trackfit.user.repository;
 
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

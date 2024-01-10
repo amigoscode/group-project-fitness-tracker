@@ -2,11 +2,11 @@ package com.project.trackfit.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;

@@ -2,7 +2,7 @@ package com.project.trackfit.trainer.dto;
 
 import java.util.UUID;
 
-public record RetrieveTrainerRequest(
+public record TrainerResponse(
         UUID id,
         String email,
         String firstName,

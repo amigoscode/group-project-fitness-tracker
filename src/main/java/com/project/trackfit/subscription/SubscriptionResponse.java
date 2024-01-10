@@ -1,8 +1,8 @@
 package com.project.trackfit.subscription;
 
-import com.project.trackfit.customer.RetrieveCustomerRequest;
+import com.project.trackfit.customer.dto.CustomerResponse;
 
-import com.project.trackfit.trainer.dto.RetrieveTrainerRequest;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +13,6 @@ public record SubscriptionResponse(
          LocalDateTime subscribedAt,
          LocalDateTime expiredOn,
          Boolean isActive,
-         RetrieveTrainerRequest personalTrainer,
-         RetrieveCustomerRequest customer
+         TrainerResponse personalTrainer,
+         CustomerResponse customer
         ) { }

@@ -1,7 +1,7 @@
 package com.project.trackfit.trainer.service;
 
-import com.project.trackfit.trainer.dto.PersonalTrainer;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
+import com.project.trackfit.user.entity.ApplicationUser;
 
 import java.util.List;
 import java.util.UUID;

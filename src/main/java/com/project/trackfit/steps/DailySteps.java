@@ -1,7 +1,7 @@
 package com.project.trackfit.steps;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

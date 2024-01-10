@@ -1,10 +1,10 @@
 package com.project.trackfit.customer.service;
 
 import com.project.trackfit.core.exception.RequestValidationException;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.repository.CustomerRepository;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.user.component.Role;
 

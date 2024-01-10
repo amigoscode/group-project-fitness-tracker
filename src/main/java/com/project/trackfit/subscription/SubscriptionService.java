@@ -1,15 +1,15 @@
 package com.project.trackfit.subscription;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.RetrieveCustomerRequest;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.dto.CustomerResponse;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.service.ICustomerService;
 import com.project.trackfit.subscriptionType.ISubscriptionTypeService;
 import com.project.trackfit.subscriptionType.SubscriptionTypeResponse;
 import com.project.trackfit.subscriptionType.SubscriptionType;
 import com.project.trackfit.subscriptionType.SubscriptionTypeRepository;
-import com.project.trackfit.trainer.dto.PersonalTrainer;
-import com.project.trackfit.trainer.dto.RetrieveTrainerRequest;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -72,7 +72,7 @@ public class SubscriptionService implements ISubscriptionService {
         Customer customer = subscription.getCustomer();
         PersonalTrainer trainer = subscription.getPersonalTrainer();
 
-        RetrieveCustomerRequest customerRequest = new RetrieveCustomerRequest(
+        CustomerResponse customerRequest = new CustomerResponse(
                 customer.getId(),
                 customer.getUser().getFirstName(),
                 customer.getUser().getLastName(),
@@ -81,7 +81,7 @@ public class SubscriptionService implements ISubscriptionService {
                 customer.getAddress()
         );
 
-        RetrieveTrainerRequest trainerRequest = new RetrieveTrainerRequest(
+        TrainerResponse trainerRequest = new TrainerResponse(
                 trainer.getId(),
                 trainer.getUser().getEmail(),
                 trainer.getUser().getFirstName(),

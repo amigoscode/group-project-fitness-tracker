@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

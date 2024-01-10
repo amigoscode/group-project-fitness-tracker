@@ -1,8 +1,8 @@
 package com.project.trackfit.customer.service;
 
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 
 import java.util.UUID;
 

@@ -1,11 +1,11 @@
 package com.project.trackfit.trainer.controller;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
-import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;

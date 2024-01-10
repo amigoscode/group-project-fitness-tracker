@@ -1,7 +1,7 @@
 package com.project.trackfit.trainer.controller;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.project.trackfit.user.dto.ApplicationUser.mapData;
+import static com.project.trackfit.user.entity.ApplicationUser.mapData;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController

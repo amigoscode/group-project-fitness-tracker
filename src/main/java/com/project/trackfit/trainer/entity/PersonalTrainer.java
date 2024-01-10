@@ -1,7 +1,7 @@
-package com.project.trackfit.trainer.dto;
+package com.project.trackfit.trainer.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.subscription.Subscription;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,7 +1,7 @@
-package com.project.trackfit.customer.dto;
+package com.project.trackfit.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.measurements.Measurements;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.steps.DailySteps;

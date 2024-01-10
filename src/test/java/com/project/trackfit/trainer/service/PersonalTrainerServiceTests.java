@@ -1,9 +1,9 @@
 package com.project.trackfit.trainer.service;
 
-import com.project.trackfit.customer.dto.Customer;
-import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.customer.entity.Customer;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
-import com.project.trackfit.user.dto.ApplicationUser;
+import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.user.component.Role;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import org.jeasy.random.EasyRandom;

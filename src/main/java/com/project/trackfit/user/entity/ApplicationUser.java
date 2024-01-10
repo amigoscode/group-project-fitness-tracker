@@ -1,4 +1,4 @@
-package com.project.trackfit.user.dto;
+package com.project.trackfit.user.entity;
 
 import com.project.trackfit.user.component.Role;
 import jakarta.persistence.Column;

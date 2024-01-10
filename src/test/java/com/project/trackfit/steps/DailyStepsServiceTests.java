@@ -2,7 +2,7 @@ package com.project.trackfit.steps;
 
 import com.project.trackfit.core.exception.DailyStepsNotFoundException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

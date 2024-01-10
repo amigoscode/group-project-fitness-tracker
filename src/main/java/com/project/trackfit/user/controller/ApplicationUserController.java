@@ -4,7 +4,6 @@ import com.project.trackfit.core.APICustomResponse;
 import com.project.trackfit.user.dto.CreateUserRequest;
 import com.project.trackfit.user.service.IApplicationUserService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +16,15 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/v1/auth/register")
 public class ApplicationUserController {
 
     private final IApplicationUserService userService;
+
+    public ApplicationUserController(IApplicationUserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     public ResponseEntity<APICustomResponse> createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {

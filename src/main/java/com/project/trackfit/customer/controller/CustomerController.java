@@ -1,7 +1,7 @@
 package com.project.trackfit.customer.controller;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.customer.dto.Customer;
+import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
 import jakarta.validation.Valid;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.project.trackfit.user.dto.ApplicationUser.mapData;
+import static com.project.trackfit.user.entity.ApplicationUser.mapData;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController

@@ -1,7 +1,7 @@
 package com.project.trackfit.subscriptionType;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.trainer.dto.PersonalTrainer;
+import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.service.PersonalTrainerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

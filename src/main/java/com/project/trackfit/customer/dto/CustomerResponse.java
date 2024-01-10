@@ -1,8 +1,8 @@
-package com.project.trackfit.customer;
+package com.project.trackfit.customer.dto;
 
 import java.util.UUID;
 
-public record RetrieveCustomerRequest(
+public record CustomerResponse(
         UUID id,
         String firstName,
         String lastName,
