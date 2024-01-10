@@ -50,26 +50,6 @@ public class PersonalTrainer {
     public PersonalTrainer() {
     }
 
-    public PersonalTrainer(UUID id,
-                           ApplicationUser user,
-                           String firstName,
-                           String lastName,
-                           String phoneNumber,
-                           boolean isActivated,
-                           Set<Subscription> subscribers,
-                           boolean isSuspended,
-                           boolean isExpired) {
-        this.id = id;
-        this.user = user;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.isActivated = isActivated;
-        this.subscribers = subscribers;
-        this.isSuspended = isSuspended;
-        this.isExpired = isExpired;
-    }
-
     public PersonalTrainer(ApplicationUser applicationUser) {
         this.user = applicationUser;
     }

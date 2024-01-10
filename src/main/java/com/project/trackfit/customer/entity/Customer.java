@@ -57,24 +57,6 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(UUID id,
-                    ApplicationUser user,
-                    int age,
-                    String address,
-                    Set<Measurements> measurements,
-                    Set<Subscription> subscriptions,
-                    Set<DailySteps> steps,
-                    Set<Media> media) {
-        this.id = id;
-        this.user = user;
-        this.age = age;
-        this.address = address;
-        this.measurements = measurements;
-        this.subscriptions = subscriptions;
-        this.steps = steps;
-        this.media = media;
-    }
-
     public Customer(ApplicationUser applicationUser) {
         this.user = applicationUser;
         this.address = applicationUser.getAddress();
