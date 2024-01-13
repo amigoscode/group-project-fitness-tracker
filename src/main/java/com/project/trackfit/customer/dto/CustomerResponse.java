@@ -1,5 +1,7 @@
 package com.project.trackfit.customer.dto;
 
+import com.project.trackfit.user.component.Role;
+
 import java.util.UUID;
 
 public record CustomerResponse(
@@ -8,5 +10,6 @@ public record CustomerResponse(
         String lastName,
         Integer age,
         String email,
-        String address
+        String address,
+        Role role
 ) { }

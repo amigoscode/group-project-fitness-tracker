@@ -4,8 +4,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.entity.Customer;
-import com.project.trackfit.customer.service.CustomerService;
+import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.media.MediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,13 @@ public class ImageService {
     private  MediaRepository mediaRepository;
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerRepository customerRepository;
 
     @Value("${aws.s3.bucket_name}")
     private String bucketName;
 
     public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
-        Customer customer = customerService.getCustomerById(customerId);
+        Customer customer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
         return uploadImage(image, customer);
     }
 

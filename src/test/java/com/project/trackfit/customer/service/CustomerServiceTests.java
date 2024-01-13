@@ -1,6 +1,7 @@
 package com.project.trackfit.customer.service;
 
 import com.project.trackfit.core.exception.RequestValidationException;
+import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.repository.CustomerRepository;
@@ -99,20 +100,31 @@ public class CustomerServiceTests {
         //given: a customer ID
         UUID customerId = UUID.randomUUID();
 
-        //and: an expected customer
-        Customer expectedCustomer = new Customer(testApplicationUser);
-        expectedCustomer.setId(customerId);
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        customer.setUser(testApplicationUser);
+
+        //and: an expected customer response
+        CustomerResponse expectedCustomerResponse = new CustomerResponse(
+                customer.getId(),
+                customer.getUser().getFirstName(),
+                customer.getUser().getLastName(),
+                customer.getAge(),
+                customer.getUser().getEmail(),
+                customer.getAddress(),
+                customer.getUser().getRole()
+        );
 
         //and: mocking the repository to return this customer
-        given(customerRepository.findById(customerId)).willReturn(Optional.of(expectedCustomer));
+        given(customerRepository.findById(customerId)).willReturn(Optional.of(customer));
 
         //when: calling the service
-        Customer savedCustomer = customerService.getCustomerById(expectedCustomer.getId());
+        CustomerResponse savedCustomerResponse = customerService.getCustomerById(customerId);
 
         //then: the customer has been found
         verify(customerRepository).findById(customerId);
-        assertThat(savedCustomer).isNotNull();
-        assertEquals(expectedCustomer, savedCustomer);
+        assertThat(savedCustomerResponse).isNotNull();
+        assertEquals(expectedCustomerResponse, savedCustomerResponse);
     }
 
     @Test
@@ -143,12 +155,12 @@ public class CustomerServiceTests {
         given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
 
         //when: updating the customer according to the request
-        Customer updatedCustomer = customerService.updateCustomer(customer.getId(), request);
+        CustomerResponse updatedCustomer = customerService.updateCustomer(customer.getId(), request);
 
         //then: the customer's parameters have been updated successfully expect role
-        assertThat(updatedCustomer.getAge()).isEqualTo(request.getAge());
-        assertThat(updatedCustomer.getAddress()).isEqualTo(request.getAddress());
-        assertThat(updatedCustomer.getUser().getRole()).isEqualTo(customer.getUser().getRole());
+        assertThat(updatedCustomer.age()).isEqualTo(request.getAge());
+        assertThat(updatedCustomer.address()).isEqualTo(request.getAddress());
+        assertThat(updatedCustomer.role()).isEqualTo(customer.getUser().getRole());
     }
 
     @Test

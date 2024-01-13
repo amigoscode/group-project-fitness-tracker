@@ -3,7 +3,7 @@ package com.project.trackfit.subscription;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.entity.Customer;
-import com.project.trackfit.customer.service.ICustomerService;
+import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.subscriptionType.ISubscriptionTypeService;
 import com.project.trackfit.subscriptionType.SubscriptionTypeResponse;
 import com.project.trackfit.subscriptionType.SubscriptionType;
@@ -27,13 +27,15 @@ public class SubscriptionService implements ISubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionTypeRepository subscriptionTypeRepository;
     private final IPersonalTrainerService personalTrainerService;
-    private final ICustomerService customerService;
+    private final CustomerRepository customerRepository;
     private final ISubscriptionTypeService subscriptionTypeService;
 
     @Override
     public UUID createSubscription(SubscriptionRequest subscriptionRequest) {
         PersonalTrainer trainer = personalTrainerService.getTrainerByID(subscriptionRequest.personalTrainerId());
-        Customer currentCustomer = customerService.getCustomerById(subscriptionRequest.customerId());
+        Customer currentCustomer = customerRepository
+                .findById(subscriptionRequest.customerId())
+                .orElseThrow(ResourceNotFoundException::new);
 
         SubscriptionTypeResponse subscriptionTypeRequest = subscriptionTypeService.getSubscriptionTypeById(subscriptionRequest.subscriptionTypeId());
 
@@ -78,7 +80,8 @@ public class SubscriptionService implements ISubscriptionService {
                 customer.getUser().getLastName(),
                 customer.getAge(),
                 customer.getUser().getEmail(),
-                customer.getAddress()
+                customer.getAddress(),
+                customer.getUser().getRole()
         );
 
         TrainerResponse trainerRequest = new TrainerResponse(

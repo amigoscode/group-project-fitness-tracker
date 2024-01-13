@@ -1,7 +1,7 @@
 package com.project.trackfit.customer.controller;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.customer.entity.Customer;
+import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
 import jakarta.validation.Valid;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.project.trackfit.user.entity.ApplicationUser.mapData;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -35,11 +34,11 @@ public class CustomerController {
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getCustomerById(
             @PathVariable("id") UUID customer_id) {
-        Customer customerRequest = service.getCustomerById(customer_id);
+        CustomerResponse customerRequest = service.getCustomerById(customer_id);
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(mapCustomerData(customerRequest))
+                        .data(Map.of("Customer", customerRequest))
                         .message("Customer has been fetched successfully")
                         .status(OK)
                         .statusCode(OK.value())
@@ -51,19 +50,15 @@ public class CustomerController {
     public ResponseEntity<APICustomResponse> updateCustomerById(
             @PathVariable("id") UUID customerID,
             @Valid @RequestBody UpdateCustomerRequest updateCustomerRequest) {
-        Customer customerRequest = service.updateCustomer(customerID, updateCustomerRequest);
+        CustomerResponse customerRequest = service.updateCustomer(customerID, updateCustomerRequest);
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(mapCustomerData(customerRequest))
+                        .data(Map.of("Customer", customerRequest))
                         .message("Customer has been updated successfully")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
                 );
-    }
-
-    private Map<String, Object> mapCustomerData(Customer customerRequest) {
-        return mapData(customerRequest.getId(), customerRequest.getUser());
     }
 }

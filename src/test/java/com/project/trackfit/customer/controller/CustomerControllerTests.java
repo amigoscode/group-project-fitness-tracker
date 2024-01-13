@@ -2,6 +2,7 @@ package com.project.trackfit.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
+import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.service.ICustomerService;
@@ -37,7 +38,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.beans.BeanUtils.copyProperties;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -68,9 +68,10 @@ public class CustomerControllerTests {
 
     @BeforeEach
     public void setup() {
-        EasyRandomParameters parameters = new EasyRandomParameters()
-                .randomize(FieldPredicates.named("age")
-                        .and(FieldPredicates.inClass(Customer.class)
+        EasyRandomParameters parameters =
+                new EasyRandomParameters()
+                        .randomize(FieldPredicates.named("age")
+                        .and(FieldPredicates.inClass(CustomerResponse.class)
                                 .or(FieldPredicates.inClass(ApplicationUser.class))),
                         () -> new Random().nextInt(83) + 18);
         easyRandom = new EasyRandom(parameters);
@@ -80,13 +81,21 @@ public class CustomerControllerTests {
     @DisplayName("Successfully get a customer by his unique Id")
     public void givenCustomer_whenGetCustomerById_thenReturnCustomer() throws Exception {
         //given: a random customer
-        Customer randomCustomer = easyRandom.nextObject(Customer.class);
+        CustomerResponse customer = new CustomerResponse(
+                UUID.randomUUID(),
+                "John",
+                "Doe",
+                30,
+                "john@example.com",
+                "123 Street",
+                CUSTOMER
+        );
 
         //and: mocking the service to return this random customer
-        given(service.getCustomerById(randomCustomer.getId())).willReturn(randomCustomer);
+        given(service.getCustomerById(customer.id())).willReturn(customer);
 
         //when: trying to fetch this random customer
-        ResultActions response = mockMvc.perform(get("/api/v1/customers/{id}", randomCustomer.getId()));
+        ResultActions response = mockMvc.perform(get("/api/v1/customers/{id}", customer.id()));
 
         //then: the response is OK with expected values
         response.andDo(print())
@@ -119,20 +128,36 @@ public class CustomerControllerTests {
     @DisplayName("Successfully update a customer")
     public void givenSavedCustomer_whenUpdateCustomer_thenReturnUpdatedCustomer() throws Exception {
         //given: a random customer
-        Customer savedCustomer = easyRandom.nextObject(Customer.class);
+        CustomerResponse savedCustomer = new CustomerResponse(
+                UUID.randomUUID(),
+                "John",
+                "Doe",
+                30,
+                "john@example.com",
+                "123 Street",
+                CUSTOMER
+        );
 
         //and: an updated customer
-        Customer updatedCustomer = easyRandom.nextObject(Customer.class);
+        CustomerResponse updatedCustomer = new CustomerResponse(
+                savedCustomer.id(),
+                savedCustomer.firstName(),
+                savedCustomer.lastName(),
+                35,
+                savedCustomer.email(),
+                "456 New Street",
+                savedCustomer.role()
+        );
 
         //and: mocking the service to return this random customer
-        given(service.getCustomerById(savedCustomer.getId())).willReturn(savedCustomer);
+        given(service.getCustomerById(savedCustomer.id())).willReturn(savedCustomer);
 
         //and: mocking the service to update this customer
-        given(service.updateCustomer(eq(savedCustomer.getId()), any(UpdateCustomerRequest.class)))
+        given(service.updateCustomer(eq(savedCustomer.id()), any(UpdateCustomerRequest.class)))
                 .willReturn(updatedCustomer);
 
         //when: sending the request
-        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", savedCustomer.getId())
+        ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", savedCustomer.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedCustomer)));
 
@@ -151,8 +176,8 @@ public class CustomerControllerTests {
         //given: a random UUID for a non-existing customer
         UUID nonExistentCustomerId = UUID.randomUUID();
 
-        //and: creating an updated customer object
-        Customer updatedCustomer = easyRandom.nextObject(Customer.class);
+        //and: creating a valid update customer request
+        UpdateCustomerRequest validRequest = new UpdateCustomerRequest(30, "Valid Address", null);
 
         //and: mocking the service to return the proper exception
         given(service.updateCustomer(eq(nonExistentCustomerId), any(UpdateCustomerRequest.class)))
@@ -161,7 +186,7 @@ public class CustomerControllerTests {
         //when: sending the update request for the non-existing customer
         ResultActions response = mockMvc.perform(put("/api/v1/customers/{id}", nonExistentCustomerId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedCustomer)));
+                .content(objectMapper.writeValueAsString(validRequest)));
 
         //then: expect a 404 Not Found status
         response.andDo(print())
@@ -178,15 +203,16 @@ public class CustomerControllerTests {
         //and: a request with valid age and address
         UpdateCustomerRequest updateRequest = new UpdateCustomerRequest(35, "New Address", null);
 
-        //and: a Customer object to be returned by the mocked service
-        Customer updatedCustomer = new Customer();
-        copyProperties(savedCustomer, updatedCustomer);
-
-        //and: setting the new values for age and address
-        updatedCustomer.setAge(35);
-        updatedCustomer.setAddress("New Address");
-        updatedCustomer.getUser().setAge(35);
-        updatedCustomer.getUser().setAddress("New Address");
+        //and: a CustomerResponse object to be returned by the mocked service
+        CustomerResponse updatedCustomer = new CustomerResponse(
+                savedCustomer.getId(),
+                savedCustomer.getUser().getFirstName(),
+                savedCustomer.getUser().getLastName(),
+                35, // new age
+                savedCustomer.getUser().getEmail(),
+                "New Address",
+                savedCustomer.getUser().getRole()
+        );
 
         //and: mock the service method to return the updated customer
         given(service.updateCustomer(eq(savedCustomer.getId()), any(UpdateCustomerRequest.class))).willReturn(updatedCustomer);
@@ -202,8 +228,8 @@ public class CustomerControllerTests {
                 .andExpect(jsonPath("$.timeStamp", notNullValue()))
                 .andExpect(jsonPath("$.statusCode", is(200)))
                 .andExpect(jsonPath("$.message", is("Customer has been updated successfully")))
-                .andExpect(jsonPath("$.data.age", is(35)))
-                .andExpect(jsonPath("$.data.address", is("New Address")));
+                .andExpect(jsonPath("$.data.Customer.age", is(35)))
+                .andExpect(jsonPath("$.data.Customer.address", is("New Address")));
     }
 
     @ParameterizedTest
