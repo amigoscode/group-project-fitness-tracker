@@ -48,7 +48,8 @@ public class ApplicationUserService implements IApplicationUserService {
                 hashedPassword,
                 createUserRequest.getRole(),
                 createUserRequest.getAge(),
-                createUserRequest.getAddress()
+                createUserRequest.getAddress(),
+                createUserRequest.getPhoneNumber()
         );
         applicationUserRepo.save(applicationUser);
         return applicationUser;

@@ -47,6 +47,8 @@ public class ApplicationUser implements UserDetails {
 
     private String address;
 
+    private String phoneNumber;
+
     public ApplicationUser() {
     }
 
@@ -57,7 +59,8 @@ public class ApplicationUser implements UserDetails {
                            byte[] hashedPassword,
                            Role role,
                            Integer age,
-                           String address) {
+                           String address,
+                           String phoneNumber) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -66,6 +69,7 @@ public class ApplicationUser implements UserDetails {
         this.role = role;
         this.age = age;
         this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public UUID getId() {
@@ -176,6 +180,14 @@ public class ApplicationUser implements UserDetails {
         this.address = address;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public static Map<String, Object> mapData(UUID id, ApplicationUser user) {
         Map<String, Object> trainerData = new HashMap<>();
         trainerData.put("id", id);
@@ -184,6 +196,7 @@ public class ApplicationUser implements UserDetails {
         trainerData.put("age", user.getAge());
         trainerData.put("email", user.getEmail());
         trainerData.put("address", user.getAddress());
+        trainerData.put("phoneNumber", user.getPhoneNumber());
         return trainerData;
     }
 }

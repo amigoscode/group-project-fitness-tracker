@@ -161,7 +161,8 @@ public class ApplicationUserServiceTests {
                 "Kreouzos",
                 role,
                 38,
-                "Athens, Greece");
+                "Athens, Greece",
+                "00306931234567");
     }
 
     private ApplicationUser createTestApplicationUser(Role role) {
@@ -173,6 +174,7 @@ public class ApplicationUserServiceTests {
                 new byte[64],
                 role,
                 38,
-                "Athens, Greece");
+                "Athens, Greece",
+                "00306931234567");
     }
 }

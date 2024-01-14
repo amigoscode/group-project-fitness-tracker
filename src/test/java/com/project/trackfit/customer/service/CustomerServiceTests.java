@@ -54,7 +54,8 @@ public class CustomerServiceTests {
                 new byte[64],
                 Role.CUSTOMER,
                 38,
-                "Athens, Greece"
+                "Athens, Greece",
+                "00306931234567"
         );
         easyRandom = new EasyRandom();
     }

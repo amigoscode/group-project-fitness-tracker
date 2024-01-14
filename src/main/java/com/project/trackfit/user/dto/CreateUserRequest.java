@@ -1,6 +1,7 @@
 package com.project.trackfit.user.dto;
 
 import com.project.trackfit.user.component.Role;
+import com.project.trackfit.user.validation.ValidPhoneNumber;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -26,6 +27,8 @@ public class CreateUserRequest {
     private Integer age;
     @NotBlank(message = "Address is required")
     private String address;
+    @ValidPhoneNumber(message = "Phone number must start with 00 and include country code")
+    private String phoneNumber;
 
     public CreateUserRequest(String email,
                              String password,
@@ -33,7 +36,8 @@ public class CreateUserRequest {
                              String lastName,
                              Role role,
                              Integer age,
-                             String address) {
+                             String address,
+                             String phoneNumber) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -41,6 +45,7 @@ public class CreateUserRequest {
         this.role = role;
         this.age = age;
         this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {
@@ -97,5 +102,13 @@ public class CreateUserRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

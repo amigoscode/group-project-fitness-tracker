@@ -64,8 +64,9 @@ public class CustomerControllerIntegrationTest {
         Role role = Role.CUSTOMER;
         Integer age = 37;
         String address = "Athens";
+        String phoneNumber = "00306931234567";
 
-        registerUser(email, firstName, lastName, password, role, age, address);
+        registerUser(email, firstName, lastName, password, role, age, address, phoneNumber);
         String jwtToken = getJwtToken(email, password);
 
         headers.setBearerAuth(jwtToken);
@@ -102,9 +103,9 @@ public class CustomerControllerIntegrationTest {
         return savedCustomer.getId();
     }
 
-    protected void registerUser(String email, String firstName, String lastName, Integer password, Role role, Integer age, String address) {
+    protected void registerUser(String email, String firstName, String lastName, Integer password, Role role, Integer age, String address, String phoneNumber) {
         String registerUrl = "http://localhost:" + port + "/api/v1/auth/register";
-        HttpEntity<String> registerRequest = new HttpEntity<>(String.format("{\"email\":\"%s\",\"firstName\":\"%s\",\"lastName\":\"%s\",\"password\":\"%s\",\"role\":\"%s\",\"age\":\"%s\",\"address\":\"%s\"}", email, firstName, lastName, password, role.name(), age, address), headers);
+        HttpEntity<String> registerRequest = new HttpEntity<>(String.format("{\"email\":\"%s\",\"firstName\":\"%s\",\"lastName\":\"%s\",\"password\":\"%s\",\"role\":\"%s\",\"age\":\"%s\",\"address\":\"%s\",\"phoneNumber\":\"%s\"}", email, firstName, lastName, password, role.name(), age, address, phoneNumber), headers);
         restTemplate.postForEntity(registerUrl, registerRequest, String.class);
     }
 

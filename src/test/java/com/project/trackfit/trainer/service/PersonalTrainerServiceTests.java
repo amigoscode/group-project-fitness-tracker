@@ -55,7 +55,8 @@ public class PersonalTrainerServiceTests {
                 new byte[64],
                 Role.TRAINER,
                 38,
-                "Athens, Greece"
+                "Athens, Greece",
+                "00306931234567"
         );
         EasyRandomParameters parameters = new EasyRandomParameters()
                 .randomize(FieldPredicates.named("age")

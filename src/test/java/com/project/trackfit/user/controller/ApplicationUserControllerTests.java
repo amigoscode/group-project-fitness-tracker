@@ -67,7 +67,8 @@ public class ApplicationUserControllerTests {
                 "Kreouzos",
                 CUSTOMER,
                 38,
-                "Athens, Greece"
+                "Athens, Greece",
+                "00306931234567"
         );
 
         //and: mocking the service to return a UUID
@@ -94,7 +95,8 @@ public class ApplicationUserControllerTests {
     public void givenWrongParameters_whenCreateUser_thenUserNotCreated(String jsonRequest,
                                                                        String emailError,
                                                                        String ageError,
-                                                                       String roleError) throws Exception {
+                                                                       String roleError,
+                                                                       String phoneNumberError) throws Exception {
         //when: sending the request
         ResultActions response = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +111,8 @@ public class ApplicationUserControllerTests {
                 .andExpect(jsonPath("$.address[0]", is("Address is required")))
                 .andExpect(jsonPath("$.email[0]", is(emailError)))
                 .andExpect(jsonPath("$.role[0]", is(roleError)))
-                .andExpect(jsonPath("$.age[0]", is(ageError)));
+                .andExpect(jsonPath("$.age[0]", is(ageError)))
+                .andExpect(jsonPath("$.phoneNumber[0]", is(phoneNumberError)));
     }
 
     @ParameterizedTest
@@ -138,6 +141,7 @@ public class ApplicationUserControllerTests {
         firstInvalidMap.put("role", null);
         firstInvalidMap.put("age", -18);
         firstInvalidMap.put("address", "");
+        firstInvalidMap.put("phoneNumber", "30");
         String firstInvalidJson = objectMapper.writeValueAsString(firstInvalidMap);
 
         Map<String, Object> secondInvalidMap = new HashMap<>();
@@ -148,19 +152,22 @@ public class ApplicationUserControllerTests {
         secondInvalidMap.put("role", null);
         secondInvalidMap.put("age", 101);
         secondInvalidMap.put("address", "");
+        secondInvalidMap.put("phoneNumber", null);
         String secondInvalidJson = objectMapper.writeValueAsString(secondInvalidMap);
 
         return Stream.of(
                 Arguments.of(firstInvalidJson,
                         "Email must not be blank",
                         "Age must be at least 18",
-                        "Role cannot be null"
+                        "Role cannot be null",
+                        "Phone number must start with 00 and include country code"
                 ),
                 Arguments.of(
                         secondInvalidJson,
                         "Email is invalid",
                         "Age must be no more than 100",
-                        "Role cannot be null"
+                        "Role cannot be null",
+                        "Phone number must start with 00 and include country code"
                 )
         );
     }
@@ -175,6 +182,7 @@ public class ApplicationUserControllerTests {
         invalidRoleMap.put("role", "INVALID");
         invalidRoleMap.put("age", 25);
         invalidRoleMap.put("address", "123 Main St");
+        invalidRoleMap.put("phoneNumber", "00306931234567");
         String json1 = objectMapper.writeValueAsString(invalidRoleMap);
         return Stream.of(Arguments.of(json1));
     }
