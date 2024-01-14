@@ -30,10 +30,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public CustomerResponse getCustomerById(UUID userId) {
-        Customer customer =
-                customerRepository
-                        .findById(userId)
-                        .orElseThrow(ResourceNotFoundException::new);
+        Customer customer = customerRepository.findById(userId).orElseThrow(ResourceNotFoundException::new);
         return mapToCustomerResponse(customer);
     }
 
@@ -41,29 +38,22 @@ public class CustomerService implements ICustomerService {
     public CustomerResponse updateCustomer(
             UUID customerId,
             UpdateCustomerRequest updateRequest) {
-        Customer customer =
-                customerRepository
-                        .findById(customerId)
-                        .orElseThrow(ResourceNotFoundException::new);
-        ApplicationUser user = customer.getUser();
+        Customer customer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
 
         boolean changes = false;
 
-        if (updateRequest.getAge() != null && !updateRequest.getAge().equals(customer.getAge())) {
-            customer.setAge(updateRequest.getAge());
-            user.setAge(updateRequest.getAge());
+        if (updateRequest.getAge() != null && !updateRequest.getAge().equals(customer.getUser().getAge())) {
+            customer.getUser().setAge(updateRequest.getAge());
             changes = true;
         }
 
-        if (updateRequest.getAddress() != null && !updateRequest.getAddress().equals(customer.getAddress())) {
-            customer.setAddress(updateRequest.getAddress());
-            user.setAddress(updateRequest.getAddress());
+        if (updateRequest.getAddress() != null && !updateRequest.getAddress().equals(customer.getUser().getAddress())) {
+            customer.getUser().setAddress(updateRequest.getAddress());
             changes = true;
         }
 
         if (updateRequest.getRole() != null && !updateRequest.getRole().equals(customer.getUser().getRole())) {
             customer.getUser().setRole(updateRequest.getRole());
-            user.setRole(updateRequest.getRole());
             changes = true;
         }
 
@@ -80,9 +70,9 @@ public class CustomerService implements ICustomerService {
                 customer.getId(),
                 customer.getUser().getFirstName(),
                 customer.getUser().getLastName(),
-                customer.getAge(),
+                customer.getUser().getAge(),
                 customer.getUser().getEmail(),
-                customer.getAddress(),
+                customer.getUser().getAddress(),
                 customer.getUser().getRole()
         );
     }

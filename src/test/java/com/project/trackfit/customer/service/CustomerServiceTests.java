@@ -88,8 +88,8 @@ public class CustomerServiceTests {
         assertEquals(testApplicationUser.getEmail(), capturedCustomer.getUser().getEmail());
         assertEquals(testApplicationUser.getFirstName(), capturedCustomer.getUser().getFirstName());
         assertEquals(testApplicationUser.getLastName(), capturedCustomer.getUser().getLastName());
-        assertEquals(testApplicationUser.getAddress(), capturedCustomer.getAddress());
-        assertEquals(testApplicationUser.getAge(), capturedCustomer.getAge());
+        assertEquals(testApplicationUser.getAddress(), capturedCustomer.getUser().getAddress());
+        assertEquals(testApplicationUser.getAge(), capturedCustomer.getUser().getAge());
 
         //and: the returned customer ID matches the expected one
         assertEquals(expectedCustomerId, actualCustomerId);
@@ -110,9 +110,9 @@ public class CustomerServiceTests {
                 customer.getId(),
                 customer.getUser().getFirstName(),
                 customer.getUser().getLastName(),
-                customer.getAge(),
+                customer.getUser().getAge(),
                 customer.getUser().getEmail(),
-                customer.getAddress(),
+                customer.getUser().getAddress(),
                 customer.getUser().getRole()
         );
 
@@ -170,8 +170,8 @@ public class CustomerServiceTests {
         //given: a random customer and an update request with same property values as customer's
         Customer customer = easyRandom.nextObject(Customer.class);
         UpdateCustomerRequest request = new UpdateCustomerRequest(
-                customer.getAge(),
-                customer.getAddress(),
+                customer.getUser().getAge(),
+                customer.getUser().getAddress(),
                 customer.getUser().getRole());
 
         //and: mocking the service to simulate that the customer already exists

@@ -78,9 +78,9 @@ public class SubscriptionService implements ISubscriptionService {
                 customer.getId(),
                 customer.getUser().getFirstName(),
                 customer.getUser().getLastName(),
-                customer.getAge(),
+                customer.getUser().getAge(),
                 customer.getUser().getEmail(),
-                customer.getAddress(),
+                customer.getUser().getAddress(),
                 customer.getUser().getRole()
         );
 
@@ -89,7 +89,7 @@ public class SubscriptionService implements ISubscriptionService {
                 trainer.getUser().getEmail(),
                 trainer.getUser().getFirstName(),
                 trainer.getUser().getLastName(),
-                trainer.getPhoneNumber()
+                trainer.getUser().getPhoneNumber()
         );
 
         return new SubscriptionResponse(

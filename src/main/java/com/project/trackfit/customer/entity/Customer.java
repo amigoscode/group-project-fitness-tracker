@@ -34,10 +34,6 @@ public class Customer {
     @JoinColumn(name = "user_id")
     private ApplicationUser user;
 
-    private int age;
-
-    private String address;
-
     @JsonManagedReference
     @OneToMany(mappedBy ="customer")
     private Set<Measurements> measurements;
@@ -59,8 +55,6 @@ public class Customer {
 
     public Customer(ApplicationUser applicationUser) {
         this.user = applicationUser;
-        this.address = applicationUser.getAddress();
-        this.age = applicationUser.getAge();
     }
 
     public UUID getId() {
@@ -77,22 +71,6 @@ public class Customer {
 
     public void setUser(ApplicationUser user) {
         this.user = user;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public Set<Measurements> getMeasurements() {
