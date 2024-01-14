@@ -11,5 +11,6 @@ public record CustomerResponse(
         Integer age,
         String email,
         String address,
-        Role role
+        Role role,
+        String phoneNumber
 ) { }

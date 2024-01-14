@@ -88,7 +88,8 @@ public class CustomerControllerTests {
                 30,
                 "john@example.com",
                 "123 Street",
-                CUSTOMER
+                CUSTOMER,
+                "00306931234567"
         );
 
         //and: mocking the service to return this random customer
@@ -135,7 +136,8 @@ public class CustomerControllerTests {
                 30,
                 "john@example.com",
                 "123 Street",
-                CUSTOMER
+                CUSTOMER,
+                "00306931234567"
         );
 
         //and: an updated customer
@@ -146,7 +148,8 @@ public class CustomerControllerTests {
                 35,
                 savedCustomer.email(),
                 "456 New Street",
-                savedCustomer.role()
+                savedCustomer.role(),
+                "00306931234567"
         );
 
         //and: mocking the service to return this random customer
@@ -211,7 +214,8 @@ public class CustomerControllerTests {
                 35, // new age
                 savedCustomer.getUser().getEmail(),
                 "New Address",
-                savedCustomer.getUser().getRole()
+                savedCustomer.getUser().getRole(),
+                "00306931234567"
         );
 
         //and: mock the service method to return the updated customer

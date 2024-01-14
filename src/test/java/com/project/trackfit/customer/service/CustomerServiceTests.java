@@ -113,7 +113,8 @@ public class CustomerServiceTests {
                 customer.getUser().getAge(),
                 customer.getUser().getEmail(),
                 customer.getUser().getAddress(),
-                customer.getUser().getRole()
+                customer.getUser().getRole(),
+                customer.getUser().getPhoneNumber()
         );
 
         //and: mocking the repository to return this customer
