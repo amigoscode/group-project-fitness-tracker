@@ -3,6 +3,8 @@ package com.project.trackfit.trainer.controller;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
+import com.project.trackfit.core.mapper.CommonMapper;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import com.project.trackfit.user.entity.ApplicationUser;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import static com.project.trackfit.user.component.Role.CUSTOMER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -67,17 +70,23 @@ public class PersonalTrainerControllerTests {
     @Test
     @DisplayName("Successfully get a trainer by his unique Id")
     public void givenTrainer_whenGetTrainerById_thenReturnTrainer() throws Exception {
-        //given: a random personal trainer
-        PersonalTrainer randomTrainer = easyRandom.nextObject(PersonalTrainer.class);
-
-        //and: mocking the service to create a user with is UUID
-        //given(userService.createUser(any(CreateUserRequest.class))).willAnswer((invocation) -> randomTrainer.getId());
+        //given: a personal trainer
+        TrainerResponse trainer = new TrainerResponse(
+                UUID.randomUUID(),
+                "John",
+                "Doe",
+                30,
+                "john@example.com",
+                "123 Street",
+                CUSTOMER,
+                "00306931234567"
+        );
 
         //and: mocking the service to return this random personal trainer
-        given(service.getTrainerByID(randomTrainer.getId())).willReturn(randomTrainer);
+        given(service.getTrainerByID(trainer.id())).willReturn(trainer);
 
         //when: trying to fetch this random personal trainer
-        ResultActions response = mockMvc.perform(get("/api/v1/trainers/{id}", randomTrainer.getId()));
+        ResultActions response = mockMvc.perform(get("/api/v1/trainers/{id}", trainer.id()));
 
         //then: the response is OK with expected values
         response.andDo(print())
@@ -120,8 +129,13 @@ public class PersonalTrainerControllerTests {
         trainers.add(firstTrainer);
         trainers.add(secondTrainer);
 
+        // And: a corresponding list of trainer responses
+        List<TrainerResponse> trainerResponses = trainers.stream()
+                .map(CommonMapper::mapToTrainerResponse)
+                .toList();
+
         //and: mocking the service to return this list
-        given(service.findAllTrainers()).willReturn(trainers);
+        given(service.findAllTrainers()).willReturn(trainerResponses);
 
         //when: trying to fetch these personal trainers
         ResultActions response = mockMvc.perform(get("/api/v1/trainers"));
@@ -147,6 +161,6 @@ public class PersonalTrainerControllerTests {
                 .andExpect(jsonPath("$.timeStamp", notNullValue()))
                 .andExpect(jsonPath("$.statusCode", is(200)))
                 .andExpect(jsonPath("$.message", is("No trainers available")))
-                .andExpect(jsonPath("$.data", hasSize(0)));
+                .andExpect(jsonPath("$.data.Trainers", hasSize(0)));
     }
 }

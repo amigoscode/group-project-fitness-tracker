@@ -1,5 +1,7 @@
 package com.project.trackfit.trainer.service;
 
+import com.project.trackfit.core.mapper.CommonMapper;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
 import com.project.trackfit.user.entity.ApplicationUser;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.project.trackfit.core.mapper.CommonMapper.mapToTrainerResponse;
 
 @Service
 public class PersonalTrainerService implements IPersonalTrainerService {
@@ -27,14 +32,16 @@ public class PersonalTrainerService implements IPersonalTrainerService {
     }
 
     @Override
-    public PersonalTrainer getTrainerByID(UUID id) {
-        return personalTrainerRepository.
-                findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+    public TrainerResponse getTrainerByID(UUID id) {
+        PersonalTrainer trainer = personalTrainerRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        return mapToTrainerResponse(trainer);
     }
 
     @Override
-    public List<PersonalTrainer> findAllTrainers() {
-        return personalTrainerRepository.findAll();
+    public List<TrainerResponse> findAllTrainers() {
+        List<PersonalTrainer> trainers = personalTrainerRepository.findAll();
+        return trainers.stream()
+                .map(CommonMapper::mapToTrainerResponse)
+                .collect(Collectors.toList());
     }
 }

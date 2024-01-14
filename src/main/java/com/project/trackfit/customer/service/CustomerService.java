@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static com.project.trackfit.core.mapper.CommonMapper.mapToCustomerResponse;
+
 @Service
 public class CustomerService implements ICustomerService {
 
@@ -63,17 +65,5 @@ public class CustomerService implements ICustomerService {
 
         customerRepository.save(customer);
         return mapToCustomerResponse(customer);
-    }
-
-    private CustomerResponse mapToCustomerResponse(Customer customer) {
-        return new CustomerResponse(
-                customer.getId(),
-                customer.getUser().getFirstName(),
-                customer.getUser().getLastName(),
-                customer.getUser().getAge(),
-                customer.getUser().getEmail(),
-                customer.getUser().getAddress(),
-                customer.getUser().getRole()
-        );
     }
 }

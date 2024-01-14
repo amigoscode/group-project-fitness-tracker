@@ -2,7 +2,7 @@ package com.project.trackfit.subscriptionType;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
-import com.project.trackfit.trainer.service.PersonalTrainerService;
+import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,13 @@ import java.util.UUID;
 public class SubscriptionTypeService implements ISubscriptionTypeService {
 
     private final SubscriptionTypeRepository subscriptionTypeRepository;
-    private final PersonalTrainerService personalTrainerService;
+    private final PersonalTrainerRepository personalTrainerRepository;
 
     @Override
     public UUID createSubscriptionType(SubscriptionTypeRequest subscriptionTypeRequest) {
-        PersonalTrainer trainerInstance = personalTrainerService.
-                getTrainerByID(subscriptionTypeRequest.trainer_id());
+        PersonalTrainer trainerInstance = personalTrainerRepository
+                .findById(subscriptionTypeRequest.trainer_id())
+                .orElseThrow(ResourceNotFoundException::new);
 
         SubscriptionType subscriptionType = new SubscriptionType(
                 subscriptionTypeRequest.subscription_type_title(),

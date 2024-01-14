@@ -1,7 +1,7 @@
 package com.project.trackfit.trainer.controller;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.trainer.entity.PersonalTrainer;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.service.IPersonalTrainerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.project.trackfit.user.entity.ApplicationUser.mapData;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -32,13 +30,13 @@ public class PersonalTrainerController {
 
     @GetMapping
     public ResponseEntity<APICustomResponse> getAllTrainers() {
-        List<PersonalTrainer> trainers = personalTrainerService.findAllTrainers();
+        List<TrainerResponse> trainers = personalTrainerService.findAllTrainers();
         String message = trainers.isEmpty() ? "No trainers available" : "Fetched all personal trainers";
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(convertTo(trainers))
+                        .data(Map.of("Trainers", trainers))
                         .message(message)
                         .status(OK)
                         .statusCode(OK.value())
@@ -48,28 +46,16 @@ public class PersonalTrainerController {
 
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getTrainerById(@PathVariable("id") UUID trainerId) {
-        PersonalTrainer trainerRequest = personalTrainerService.getTrainerByID(trainerId);
+        TrainerResponse trainerRequest = personalTrainerService.getTrainerByID(trainerId);
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(mapPersonalTrainerData(trainerRequest))
+                        .data(Map.of("Trainer", trainerRequest))
                         .message("Trainer has been fetched successfully")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
                 );
-    }
-
-    public List<Map<String, Object>> convertTo(List<PersonalTrainer> trainers) {
-        List<Map<String, Object>> trainersData = new ArrayList<>();
-        for (PersonalTrainer trainer : trainers) {
-            trainersData.add(mapPersonalTrainerData(trainer));
-        }
-        return trainersData;
-    }
-
-    public Map<String, Object> mapPersonalTrainerData(PersonalTrainer trainerRequest) {
-        return mapData(trainerRequest.getId(), trainerRequest.getUser());
     }
 }

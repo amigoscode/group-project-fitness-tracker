@@ -10,7 +10,7 @@ import com.project.trackfit.subscriptionType.SubscriptionType;
 import com.project.trackfit.subscriptionType.SubscriptionTypeRepository;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.dto.TrainerResponse;
-import com.project.trackfit.trainer.service.IPersonalTrainerService;
+import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +20,25 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.project.trackfit.core.mapper.CommonMapper.mapToCustomerResponse;
+import static com.project.trackfit.core.mapper.CommonMapper.mapToTrainerResponse;
+
 @Service
 @AllArgsConstructor
 public class SubscriptionService implements ISubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionTypeRepository subscriptionTypeRepository;
-    private final IPersonalTrainerService personalTrainerService;
+    private final PersonalTrainerRepository personalTrainerRepository;
     private final CustomerRepository customerRepository;
     private final ISubscriptionTypeService subscriptionTypeService;
 
     @Override
     public UUID createSubscription(SubscriptionRequest subscriptionRequest) {
-        PersonalTrainer trainer = personalTrainerService.getTrainerByID(subscriptionRequest.personalTrainerId());
+        PersonalTrainer trainer = personalTrainerRepository
+                .findById(subscriptionRequest.personalTrainerId())
+                .orElseThrow(ResourceNotFoundException::new);
+
         Customer currentCustomer = customerRepository
                 .findById(subscriptionRequest.customerId())
                 .orElseThrow(ResourceNotFoundException::new);
@@ -74,23 +80,8 @@ public class SubscriptionService implements ISubscriptionService {
         Customer customer = subscription.getCustomer();
         PersonalTrainer trainer = subscription.getPersonalTrainer();
 
-        CustomerResponse customerRequest = new CustomerResponse(
-                customer.getId(),
-                customer.getUser().getFirstName(),
-                customer.getUser().getLastName(),
-                customer.getUser().getAge(),
-                customer.getUser().getEmail(),
-                customer.getUser().getAddress(),
-                customer.getUser().getRole()
-        );
-
-        TrainerResponse trainerRequest = new TrainerResponse(
-                trainer.getId(),
-                trainer.getUser().getEmail(),
-                trainer.getUser().getFirstName(),
-                trainer.getUser().getLastName(),
-                trainer.getUser().getPhoneNumber()
-        );
+        CustomerResponse customerRequest = mapToCustomerResponse(customer);
+        TrainerResponse trainerRequest = mapToTrainerResponse(trainer);
 
         return new SubscriptionResponse(
                 subscription.getId(),

@@ -1,6 +1,7 @@
 package com.project.trackfit.trainer.service;
 
 import com.project.trackfit.customer.entity.Customer;
+import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
 import com.project.trackfit.user.entity.ApplicationUser;
@@ -108,19 +109,32 @@ public class PersonalTrainerServiceTests {
         UUID trainerId = UUID.randomUUID();
 
         //and: an expected trainer
-        PersonalTrainer expectedTrainer = new PersonalTrainer(testApplicationUser);
-        expectedTrainer.setId(trainerId);
+        PersonalTrainer trainer = new PersonalTrainer();
+        trainer.setId(trainerId);
+        trainer.setUser(testApplicationUser);
+
+        //and: an expected trainer response
+        TrainerResponse expectedCustomerResponse = new TrainerResponse(
+                trainer.getId(),
+                trainer.getUser().getFirstName(),
+                trainer.getUser().getLastName(),
+                trainer.getUser().getAge(),
+                trainer.getUser().getEmail(),
+                trainer.getUser().getAddress(),
+                trainer.getUser().getRole(),
+                trainer.getUser().getPhoneNumber()
+        );
 
         //and: mocking the repository to return this trainer
-        given(personalTrainerRepository.findById(trainerId)).willReturn(Optional.of(expectedTrainer));
+        given(personalTrainerRepository.findById(trainerId)).willReturn(Optional.of(trainer));
 
         //when: calling the service
-        PersonalTrainer savedTrainer = personalTrainerService.getTrainerByID(trainerId);
+        TrainerResponse savedTrainer = personalTrainerService.getTrainerByID(trainerId);
 
         //then: the trainer has been found
         verify(personalTrainerRepository).findById(trainerId);
         assertThat(savedTrainer).isNotNull();
-        assertEquals(expectedTrainer, savedTrainer);
+        assertEquals(expectedCustomerResponse, savedTrainer);
     }
 
     @Test
@@ -151,7 +165,7 @@ public class PersonalTrainerServiceTests {
         given(personalTrainerRepository.findAll()).willReturn(List.of(firstTrainer, secondTrainer));
 
         //when: calling the service
-        List<PersonalTrainer> trainersList = personalTrainerService.findAllTrainers();
+        List<TrainerResponse> trainersList = personalTrainerService.findAllTrainers();
 
         //then: the list is not null and contains these two trainers
         assertThat(trainersList).isNotNull();
@@ -165,7 +179,7 @@ public class PersonalTrainerServiceTests {
         given(personalTrainerRepository.findAll()).willReturn(Collections.emptyList());
 
         //when: calling the service
-        List<PersonalTrainer> trainersList = personalTrainerService.findAllTrainers();
+        List<TrainerResponse> trainersList = personalTrainerService.findAllTrainers();
 
         //then: the list is indeed empty
         assertThat(trainersList).isEmpty();
