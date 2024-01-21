@@ -1,83 +1,79 @@
 package com.project.trackfit.aws;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.media.Media;
 import com.project.trackfit.media.MediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class ImageService {
 
-    private final AmazonS3 s3Client;
+    private final S3Service s3Service;
     private final MediaRepository mediaRepository;
     private final CustomerRepository customerRepository;
-
-    @Value("${aws.s3.bucket_name}")
-    private String bucketName;
+    private final S3Buckets s3Buckets;
 
     @Autowired
-    public ImageService(AmazonS3 s3Client,
+    public ImageService(S3Service s3Service,
                         MediaRepository mediaRepository,
-                        CustomerRepository customerRepository) {
-        this.s3Client = s3Client;
+                        CustomerRepository customerRepository,
+                        S3Buckets s3Buckets) {
+        this.s3Service = s3Service;
         this.mediaRepository = mediaRepository;
         this.customerRepository = customerRepository;
+        this.s3Buckets = s3Buckets;
     }
 
-    public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
-        return uploadImage(image, customer);
-    }
+    public void uploadImageForCustomer(UUID customerId, MultipartFile image) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(ResourceNotFoundException::new);
 
-    public Media uploadImage(MultipartFile image, Customer customer) throws IOException {
-        String key = generateKey(image.getOriginalFilename());
-        saveImageToS3(image, key);
+        UUID mediaId = UUID.randomUUID();
+        String imageKey = String.format("profile-images/%s/%s", customerId, mediaId);
+
+        try {
+            s3Service.putObject(
+                    s3Buckets.getCustomer(),
+                    imageKey,
+                    image.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Media media = new Media();
-        media.setId(UUID.randomUUID());
+        media.setId(mediaId);
+        media.setType(image.getContentType());
         media.setType(image.getContentType());
         media.setDate(LocalDateTime.now());
         media.setCustomer(customer);
+        media.setKey(imageKey);
 
         mediaRepository.save(media);
-
-        return media;
     }
 
-    private String generateKey(String originalFilename) {
-        return UUID.randomUUID() + "_" + originalFilename;
-    }
+    public byte[] getImage(UUID customerId, UUID mediaId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(ResourceNotFoundException::new);
 
-    private void saveImageToS3(MultipartFile image, String key) throws IOException {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(image.getSize());
-        metadata.setContentType(image.getContentType());
-
-        PutObjectRequest putObjectRequest = new PutObjectRequest(getBucketName(), key, image.getInputStream(), metadata);
-        s3Client.putObject(putObjectRequest);
-    }
-
-    public S3Object getImage(UUID mediaId) {
         Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new IllegalArgumentException("Media not found with id: " + mediaId));
+                .orElseThrow(ResourceNotFoundException::new);
 
-        return s3Client.getObject(getBucketName(), media.getId().toString());
-    }
+        if(!media.getCustomer().getId().equals(customer.getId())) {
+            throw new ResourceNotFoundException();
+        }
 
-    private String getBucketName() {
-        return bucketName;
+        return s3Service.getObject(
+                s3Buckets.getCustomer(),
+                media.getKey()
+        );
     }
 }

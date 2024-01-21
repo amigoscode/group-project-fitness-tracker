@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.trackfit.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,9 +17,6 @@ import java.util.UUID;
 public class Media {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO,
-            generator = "UUID"
-    )
     @Column(nullable = false, updatable = false)
     private UUID id;
 
@@ -30,6 +25,9 @@ public class Media {
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    @Column(name = "`key`", nullable = false)
+    private String key;
 
     @JsonBackReference
     @ManyToOne
@@ -61,6 +59,14 @@ public class Media {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Customer getCustomer() {
