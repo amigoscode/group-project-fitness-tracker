@@ -2,7 +2,6 @@ package com.project.trackfit.aws;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.project.trackfit.media.Media;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +16,14 @@ import java.io.IOException;
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("api/v1/images")
 public class ImageController {
 
     private final ImageService imageService;
+
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
 
     @PostMapping("{customerId}/upload")
     public ResponseEntity<Media> uploadImage(

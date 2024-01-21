@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class DailyStepsRetrieveRequestMapper implements Function<DailySteps, RetrieveDailyStepsRequest> {
+public class DailyStepsRetrieveRequestMapper implements Function<DailySteps, DailyStepsResponse> {
     @Override
-    public RetrieveDailyStepsRequest apply(DailySteps steps) {
+    public DailyStepsResponse apply(DailySteps steps) {
         Customer customer = steps.getCustomer();
         if (customer == null) {
             throw new IllegalStateException("User is null for customer with ID " + steps.getId());
         }
-        return new RetrieveDailyStepsRequest(
+        return new DailyStepsResponse(
                 steps.getId(),
                 steps.getSteps(),
                 steps.getDate()

@@ -11,7 +11,7 @@ import com.project.trackfit.subscriptionType.SubscriptionTypeRepository;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.dto.TrainerResponse;
 import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
@@ -21,10 +21,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.project.trackfit.core.mapper.CommonMapper.mapToCustomerResponse;
+import static com.project.trackfit.core.mapper.CommonMapper.mapToSubscriptionResponse;
 import static com.project.trackfit.core.mapper.CommonMapper.mapToTrainerResponse;
 
 @Service
-@AllArgsConstructor
 public class SubscriptionService implements ISubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
@@ -32,6 +32,19 @@ public class SubscriptionService implements ISubscriptionService {
     private final PersonalTrainerRepository personalTrainerRepository;
     private final CustomerRepository customerRepository;
     private final ISubscriptionTypeService subscriptionTypeService;
+
+    @Autowired
+    public SubscriptionService(SubscriptionRepository subscriptionRepository,
+                               SubscriptionTypeRepository subscriptionTypeRepository,
+                               PersonalTrainerRepository personalTrainerRepository,
+                               CustomerRepository customerRepository,
+                               ISubscriptionTypeService subscriptionTypeService) {
+        this.subscriptionRepository = subscriptionRepository;
+        this.subscriptionTypeRepository = subscriptionTypeRepository;
+        this.personalTrainerRepository = personalTrainerRepository;
+        this.customerRepository = customerRepository;
+        this.subscriptionTypeService = subscriptionTypeService;
+    }
 
     @Override
     public UUID createSubscription(SubscriptionRequest subscriptionRequest) {
@@ -83,13 +96,6 @@ public class SubscriptionService implements ISubscriptionService {
         CustomerResponse customerRequest = mapToCustomerResponse(customer);
         TrainerResponse trainerRequest = mapToTrainerResponse(trainer);
 
-        return new SubscriptionResponse(
-                subscription.getId(),
-                subscription.getSubscribedAt(),
-                subscription.getExpiredOn(),
-                subscription.getActive(),
-                trainerRequest,
-                customerRequest
-        );
+        return mapToSubscriptionResponse(subscription, customerRequest, trainerRequest);
     }
 }

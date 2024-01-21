@@ -2,7 +2,7 @@ package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.APICustomResponse;
 import com.project.trackfit.user.entity.ApplicationUser;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,12 +19,17 @@ import java.util.Map;
 
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "api/v1/auth/token")
 public class AuthenticationController {
 
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
+
+    @Autowired
+    public AuthenticationController(JwtService jwtService, ApplicationConfig applicationConfig) {
+        this.jwtService = jwtService;
+        this.applicationConfig = applicationConfig;
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping

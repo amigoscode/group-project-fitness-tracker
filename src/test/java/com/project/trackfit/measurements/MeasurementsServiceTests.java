@@ -38,7 +38,7 @@ class MeasurementsServiceTests {
     private CustomerRepository customerRepository;
 
     private MeasurementsResponse measurementsResponse;
-    private CreateMeasurementsRequest createMeasurementsRequest;
+    private MeasurementsRequest measurementsRequest;
     private UUID customerId;
     private UUID measurementId;
     private Customer customer;
@@ -62,7 +62,7 @@ class MeasurementsServiceTests {
                 LocalDateTime.now()
         );
 
-        createMeasurementsRequest = new CreateMeasurementsRequest(
+        measurementsRequest = new MeasurementsRequest(
                 "1.70",
                 "70",
                 customerId,
@@ -74,7 +74,7 @@ class MeasurementsServiceTests {
     @DisplayName("Should create measurements with the given request")
     void testCreateMeasurements() throws ParseException {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        measurementsService.createMeasurements(createMeasurementsRequest);
+        measurementsService.createMeasurements(measurementsRequest);
         verify(customerRepository).findById(customerId);
         verify(measurementsRepository).save(any(Measurements.class));
     }
@@ -85,7 +85,7 @@ class MeasurementsServiceTests {
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> measurementsService.createMeasurements(createMeasurementsRequest));
+                () -> measurementsService.createMeasurements(measurementsRequest));
     }
 
 /*    @Test
@@ -122,7 +122,7 @@ class MeasurementsServiceTests {
     @Test
     @DisplayName("Should call the update method")
     void testUpdateCustomerMeasurements() throws ParseException {
-        CreateMeasurementsRequest request = new CreateMeasurementsRequest(
+        MeasurementsRequest request = new MeasurementsRequest(
                 "1.80",
                 "75",
                 customerId,
@@ -145,14 +145,14 @@ class MeasurementsServiceTests {
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> measurementsService.updateCustomerMeasurements(customerId, createMeasurementsRequest)
+                () -> measurementsService.updateCustomerMeasurements(customerId, measurementsRequest)
         );
     }
 
     @Test
     @DisplayName("Should throw exception when measurement not found")
     void testUpdateCustomerMeasurements_measurementNotFound() throws ParseException {
-        CreateMeasurementsRequest request = new CreateMeasurementsRequest(
+        MeasurementsRequest request = new MeasurementsRequest(
                 "1.80",
                 "75",
                 customerId,

@@ -2,7 +2,6 @@ package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,10 +14,13 @@ import java.security.NoSuchAlgorithmException;
 
 
 @Service
-@AllArgsConstructor
 public class ApplicationConfig implements UserDetailsService {
 
     private final ApplicationUserRepo applicationUserRepo;
+
+    public ApplicationConfig(ApplicationUserRepo applicationUserRepo) {
+        this.applicationUserRepo = applicationUserRepo;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

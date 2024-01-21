@@ -9,19 +9,29 @@ import com.project.trackfit.user.component.PasswordCreation;
 import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.user.repository.ApplicationUserRepo;
 import com.project.trackfit.user.dto.CreateUserRequest;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ApplicationUserService implements IApplicationUserService {
 
     private final ApplicationUserRepo applicationUserRepo;
     private final ICustomerService customerService;
     private final IPersonalTrainerService trainerService;
     private final PasswordCreation password;
+
+    @Autowired
+    public ApplicationUserService(ApplicationUserRepo applicationUserRepo,
+                                  ICustomerService customerService,
+                                  IPersonalTrainerService trainerService,
+                                  PasswordCreation password) {
+        this.applicationUserRepo = applicationUserRepo;
+        this.customerService = customerService;
+        this.trainerService = trainerService;
+        this.password = password;
+    }
 
     @Override
     public UUID createUser(CreateUserRequest createUserRequest) {

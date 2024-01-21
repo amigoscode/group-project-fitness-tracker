@@ -3,18 +3,24 @@ package com.project.trackfit.subscriptionType;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.trainer.entity.PersonalTrainer;
 import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class SubscriptionTypeService implements ISubscriptionTypeService {
 
     private final SubscriptionTypeRepository subscriptionTypeRepository;
     private final PersonalTrainerRepository personalTrainerRepository;
+
+    @Autowired
+    public SubscriptionTypeService(SubscriptionTypeRepository subscriptionTypeRepository,
+                                   PersonalTrainerRepository personalTrainerRepository) {
+        this.subscriptionTypeRepository = subscriptionTypeRepository;
+        this.personalTrainerRepository = personalTrainerRepository;
+    }
 
     @Override
     public UUID createSubscriptionType(SubscriptionTypeRequest subscriptionTypeRequest) {

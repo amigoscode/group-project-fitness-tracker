@@ -2,7 +2,6 @@ package com.project.trackfit.measurements;
 
 import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,17 +21,20 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/measurements")
 public class MeasurementsController {
 
     private final MeasurementsService measurementsService;
 
+    public MeasurementsController(MeasurementsService measurementsService) {
+        this.measurementsService = measurementsService;
+    }
+
     @PostMapping
     public ResponseEntity<APICustomResponse> createMeasurements(
-            @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
-        UUID measurementsId = measurementsService.createMeasurements(createMeasurementsRequest);
+            @Valid @RequestBody MeasurementsRequest measurementsRequest) {
+        UUID measurementsId = measurementsService.createMeasurements(measurementsRequest);
 
         return ResponseEntity.status(CREATED)
                 .body(APICustomResponse.builder()
@@ -64,8 +66,8 @@ public class MeasurementsController {
     @PutMapping("{customerId}")
     public ResponseEntity<APICustomResponse> updateCustomerMeasurements(
             @PathVariable("customerId") UUID customerId,
-            @Valid @RequestBody CreateMeasurementsRequest createMeasurementsRequest) {
-        measurementsService.updateCustomerMeasurements(customerId, createMeasurementsRequest);
+            @Valid @RequestBody MeasurementsRequest measurementsRequest) {
+        measurementsService.updateCustomerMeasurements(customerId, measurementsRequest);
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()

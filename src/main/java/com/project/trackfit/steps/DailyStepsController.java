@@ -2,7 +2,6 @@ package com.project.trackfit.steps;
 
 import com.project.trackfit.core.APICustomResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,22 +19,20 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@AllArgsConstructor
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("api/v1/dailysteps")
 public class DailyStepsController {
 
     private final DailyStepsService dailyStepsService;
 
+    public DailyStepsController(DailyStepsService dailyStepsService) {
+        this.dailyStepsService = dailyStepsService;
+    }
 
-    /**
-     * Creates Daily Steps
-     * http://[::1]:8080/api/v1/dailysteps
-     */
     @PostMapping
     public ResponseEntity<APICustomResponse> createDailySteps(
-            @Valid @RequestBody CreateDailyStepsRequest createDailyStepsRequest) {
-        UUID dailyStepsId = dailyStepsService.createDailySteps(createDailyStepsRequest);
+            @Valid @RequestBody DailyStepsRequest dailyStepsRequest) {
+        UUID dailyStepsId = dailyStepsService.createDailySteps(dailyStepsRequest);
 
         return ResponseEntity.status(CREATED)
                 .body(APICustomResponse.builder()
@@ -48,14 +45,10 @@ public class DailyStepsController {
                 );
     }
 
-    /**
-     * Gets Daily Steps by Id
-     * http://[::1]:8080/api/v1/dailysteps/{id}
-     */
     @GetMapping("{id}")
     public ResponseEntity<APICustomResponse> getDailyStepsById(
             @PathVariable("id") UUID dailyStepsId) {
-        RetrieveDailyStepsRequest dailyStepsRequest = dailyStepsService.retrieveDailyStepsById(dailyStepsId);
+        DailyStepsResponse dailyStepsRequest = dailyStepsService.retrieveDailyStepsById(dailyStepsId);
 
         return ResponseEntity.status(OK)
                 .body(APICustomResponse.builder()

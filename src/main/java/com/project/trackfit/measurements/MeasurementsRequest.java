@@ -2,7 +2,7 @@ package com.project.trackfit.measurements;
 
 import java.util.UUID;
 
-public record CreateMeasurementsRequest(
+public record MeasurementsRequest(
         String height,
         String weight,
         UUID customerId,

@@ -21,17 +21,21 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
-    @Autowired
-    private  AmazonS3 s3Client;
-
-    @Autowired
-    private  MediaRepository mediaRepository;
-
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final AmazonS3 s3Client;
+    private final MediaRepository mediaRepository;
+    private final CustomerRepository customerRepository;
 
     @Value("${aws.s3.bucket_name}")
     private String bucketName;
+
+    @Autowired
+    public ImageService(AmazonS3 s3Client,
+                        MediaRepository mediaRepository,
+                        CustomerRepository customerRepository) {
+        this.s3Client = s3Client;
+        this.mediaRepository = mediaRepository;
+        this.customerRepository = customerRepository;
+    }
 
     public Media uploadImageForCustomer(UUID customerId, MultipartFile image) throws IOException {
         Customer customer = customerRepository.findById(customerId).orElseThrow(ResourceNotFoundException::new);
