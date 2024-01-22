@@ -1,10 +1,14 @@
 package com.project.trackfit.customer.service;
 
+import com.project.trackfit.aws.S3Buckets;
+import com.project.trackfit.aws.S3Service;
 import com.project.trackfit.core.exception.RequestValidationException;
 import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
 import com.project.trackfit.customer.repository.CustomerRepository;
+import com.project.trackfit.media.Media;
+import com.project.trackfit.media.MediaRepository;
 import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.user.component.Role;
@@ -18,7 +22,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,7 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,12 +46,23 @@ public class CustomerServiceTests {
     @Mock
     private CustomerRepository customerRepository;
 
+    @Mock
+    private S3Service s3Service;
+
+    @Mock
+    private S3Buckets s3Buckets;
+
+    @Mock
+    private MediaRepository mediaRepository;
+
     @InjectMocks
     private CustomerService customerService;
 
     private ApplicationUser testApplicationUser;
 
     private EasyRandom easyRandom;
+
+    private final String bucketName = "test-bucket";
 
     @BeforeEach
     public void setUp() {
@@ -184,5 +204,56 @@ public class CustomerServiceTests {
 
         //then: no interactions with the repository take place
         verify(customerRepository, never()).save(customer);
+    }
+
+    @Test
+    @DisplayName("Unit test for uploading an image")
+    void uploadImageTest() throws IOException {
+        // Arrange
+        UUID customerId = UUID.randomUUID();
+        MultipartFile image = mock(MultipartFile.class);
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        byte[] imageData = new byte[]{1, 2, 3, 4};
+
+        given(image.getContentType()).willReturn("image/jpeg");
+        given(image.getBytes()).willReturn(imageData);
+        given(customerRepository.findById(customerId)).willReturn(Optional.of(customer));
+        given(s3Buckets.getCustomer()).willReturn(bucketName);
+
+        // Act
+        customerService.uploadImageForCustomer(customerId, image);
+
+        // Assert
+        verify(s3Service, times(1)).putObject(any(String.class), any(String.class), any(byte[].class));
+        verify(mediaRepository, times(1)).save(any(Media.class));
+    }
+
+
+    @Test
+    @DisplayName("Unit test for getting an image")
+    void getImageTest() {
+        // Arrange
+        UUID customerId = UUID.randomUUID();
+        UUID mediaId = UUID.randomUUID();
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        Media media = new Media();
+        media.setId(mediaId);
+        media.setType("image/jpeg");
+        media.setDate(LocalDateTime.now());
+        media.setCustomer(customer);
+
+        given(mediaRepository.findById(mediaId)).willReturn(Optional.of(media));
+        given(customerRepository.findById(customerId)).willReturn(Optional.of(customer));
+        given(s3Buckets.getCustomer()).willReturn(bucketName);
+        given(s3Service.getObject(bucketName, media.getKey())).willReturn(new byte[]{1, 2, 3, 4});
+
+        // Act
+        byte[] result = customerService.getImage(customerId, mediaId);
+
+        // Assert
+        verify(mediaRepository, times(1)).findById(mediaId);
+        verify(s3Service, times(1)).getObject(bucketName, media.getKey());
     }
 }
