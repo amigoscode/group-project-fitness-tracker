@@ -7,8 +7,8 @@ import com.project.trackfit.customer.dto.CustomerResponse;
 import com.project.trackfit.customer.entity.Customer;
 import com.project.trackfit.customer.repository.CustomerRepository;
 import com.project.trackfit.customer.dto.UpdateCustomerRequest;
-import com.project.trackfit.media.Media;
-import com.project.trackfit.media.MediaRepository;
+import com.project.trackfit.customer.entity.Media;
+import com.project.trackfit.customer.repository.MediaRepository;
 import com.project.trackfit.user.entity.ApplicationUser;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 
