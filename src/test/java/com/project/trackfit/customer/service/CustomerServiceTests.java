@@ -22,6 +22,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,6 +42,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomerServiceTests {
@@ -207,28 +212,100 @@ public class CustomerServiceTests {
     }
 
     @Test
-    @DisplayName("Unit test for uploading an image")
-    void uploadImageTest() throws IOException {
-        // Arrange
-        UUID customerId = UUID.randomUUID();
-        MultipartFile image = mock(MultipartFile.class);
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        byte[] imageData = new byte[]{1, 2, 3, 4};
+    @DisplayName("Uploading an image succeeds")
+    public void givenCustomerObject_whenUploadImage_thenSuccess() {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
 
-        given(image.getContentType()).willReturn("image/jpeg");
-        given(image.getBytes()).willReturn(imageData);
-        given(customerRepository.findById(customerId)).willReturn(Optional.of(customer));
+        //and: mocking the repository to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //and: creating an image along with a S3 bucket
+        MultipartFile image = new MockMultipartFile("file", "Hello World".getBytes());
         given(s3Buckets.getCustomer()).willReturn(bucketName);
 
-        // Act
-        customerService.uploadImageForCustomer(customerId, image);
+        //when: uploading the image
+        customerService.uploadImage(customer.getId(), image);
 
-        // Assert
-        verify(s3Service, times(1)).putObject(any(String.class), any(String.class), any(byte[].class));
-        verify(mediaRepository, times(1)).save(any(Media.class));
+        //then: the media gets saved
+        ArgumentCaptor<Media> mediaCaptor = ArgumentCaptor.forClass(Media.class);
+        verify(mediaRepository, times(1)).save(mediaCaptor.capture());
+
+        //and: the media are assigned to this customer
+        Media savedMedia = mediaCaptor.getValue();
+        assertEquals(customer.getId(), savedMedia.getCustomer().getId());
+
+        //and: the expected content type gets returned
+        assertEquals(image.getContentType(), savedMedia.getType());
+
+        //and: check that the key is in the correct format
+        String expectedKeyFormat = "profile-images/" + customer.getId() + "/" + savedMedia.getId();
+        assertEquals(expectedKeyFormat, savedMedia.getKey());
+
+        //and: verify that s3Service is called with correct parameters
+        ArgumentCaptor<String> bucketCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> imageKeyCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<byte[]> contentCaptor = ArgumentCaptor.forClass(byte[].class);
+        verify(s3Service, times(1)).putObject(
+                bucketCaptor.capture(),
+                imageKeyCaptor.capture(),
+                contentCaptor.capture());
+
+        //and: check that the bucket name, imageKey, and content are as expected
+        assertEquals(bucketName, bucketCaptor.getValue());
+        assertEquals(expectedKeyFormat, imageKeyCaptor.getValue());
+        assertArrayEquals("Hello World".getBytes(), contentCaptor.getValue());
     }
 
+    @Test
+    @DisplayName("Uploading an image fails due to non existent customer")
+    public void givenNonExistentCustomer_whenUploadImage_thenExceptionThrown() {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
+
+        //and: an image file
+        MultipartFile image = new MockMultipartFile("file", "Hello World".getBytes());
+
+        //and: mocking the repository to simulate that the customer doesn't exist
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.empty());
+
+        //when: uploading the image, a ResourceNotFoundException is expected
+        assertThatThrownBy(() ->
+                customerService.uploadImage(customer.getId(), image))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        //then: only the customer repository has one interaction
+        verify(customerRepository).findById(customer.getId());
+        verifyNoMoreInteractions(customerRepository);
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Service);
+    }
+
+    @Test
+    @DisplayName("Uploading procedure fails due to invalid file")
+    public void givenInvalidFile_whenUpload_thenExceptionThrown() throws IOException {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
+
+        //and: mocking the repository to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //and: creating an image along with a S3 bucket
+        MultipartFile image = mock(MultipartFile.class);
+        given(s3Buckets.getCustomer()).willReturn(bucketName);
+
+        //and: simulating that this image will throw an exception
+        given(image.getBytes()).willThrow(IOException.class);
+
+        //when: uploading the image, a RuntimeException is expected
+        assertThatThrownBy(() ->
+                customerService.uploadImage(customer.getId(), image))
+                .isInstanceOf(RuntimeException.class)
+                .hasRootCauseInstanceOf(IOException.class);
+
+        //then: no media gets saved
+        verify(mediaRepository, never()).save(any());
+    }
 
     @Test
     @DisplayName("Unit test for getting an image")

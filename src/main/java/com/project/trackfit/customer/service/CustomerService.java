@@ -85,7 +85,7 @@ public class CustomerService implements ICustomerService {
         return mapToCustomerResponse(customer);
     }
 
-    public void uploadImageForCustomer(UUID customerId, MultipartFile image) {
+    public void uploadImage(UUID customerId, MultipartFile image) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(ResourceNotFoundException::new);
 

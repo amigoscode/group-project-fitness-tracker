@@ -11,6 +11,6 @@ public interface ICustomerService {
     UUID createCustomer(ApplicationUser applicationUser);
     CustomerResponse getCustomerById(UUID customer_id);
     CustomerResponse updateCustomer(UUID customerId, UpdateCustomerRequest updateCustomerRequest);
-    void uploadImageForCustomer(UUID customerId, MultipartFile image);
+    void uploadImage(UUID customerId, MultipartFile image);
     byte[] getImage(UUID customerId, UUID mediaId);
 }

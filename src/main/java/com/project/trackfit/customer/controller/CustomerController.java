@@ -75,7 +75,7 @@ public class CustomerController {
             @PathVariable("customerId") UUID customerId,
             @RequestParam("image") MultipartFile image
     ) {
-        service.uploadImageForCustomer(customerId, image);
+        service.uploadImage(customerId, image);
         return ResponseEntity.ok(
                 APICustomResponse.builder()
                         .timeStamp(LocalDateTime.now())
