@@ -124,7 +124,7 @@ public class CustomerService implements ICustomerService {
 
         return s3Service.getObject(
                 s3Buckets.getCustomer(),
-                media.getKey()
+                "profile-images/%s/%s".formatted(customerId, mediaId)
         );
     }
 }

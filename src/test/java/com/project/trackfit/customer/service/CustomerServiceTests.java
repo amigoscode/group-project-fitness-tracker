@@ -26,7 +26,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -308,29 +307,93 @@ public class CustomerServiceTests {
     }
 
     @Test
-    @DisplayName("Unit test for getting an image")
-    void getImageTest() {
-        // Arrange
-        UUID customerId = UUID.randomUUID();
-        UUID mediaId = UUID.randomUUID();
-        Customer customer = new Customer();
-        customer.setId(customerId);
-        Media media = new Media();
-        media.setId(mediaId);
-        media.setType("image/jpeg");
-        media.setDate(LocalDateTime.now());
+    @DisplayName("Downloading an image succeeds")
+    public void givenCustomerAndMedia_whenGetImage_thenImageDownloaded() {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
+
+        //and: a random media
+        Media media = easyRandom.nextObject(Media.class);
+
+        //and: set the ownership between this media and customer
         media.setCustomer(customer);
 
-        given(mediaRepository.findById(mediaId)).willReturn(Optional.of(media));
-        given(customerRepository.findById(customerId)).willReturn(Optional.of(customer));
+        //and: mocking the customer repository to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //and: mocking the media repository to simulate that the media already exists
+        given(mediaRepository.findById(media.getId())).willReturn(Optional.of(media));
+
+        //and: mocking the S3 bucket to return the bucket
         given(s3Buckets.getCustomer()).willReturn(bucketName);
-        given(s3Service.getObject(bucketName, media.getKey())).willReturn(new byte[]{1, 2, 3, 4});
 
-        // Act
-        byte[] result = customerService.getImage(customerId, mediaId);
+        //and: mocking the S3 service to return the image
+        given(s3Service.getObject(bucketName, "profile-images/%s/%s".formatted(customer.getId(), media.getId())))
+                .willReturn("image".getBytes());
 
-        // Assert
-        verify(mediaRepository, times(1)).findById(mediaId);
-        verify(s3Service, times(1)).getObject(bucketName, media.getKey());
+        //when: calling the service
+        byte[] actualImage = customerService.getImage(customer.getId(), media.getId());
+
+        //then: the image has been downloaded
+        assertThat(actualImage).isEqualTo("image".getBytes());
+        verify(mediaRepository, times(1)).findById(media.getId());
     }
+
+    @Test
+    @DisplayName("Failed to download an image because no media is present")
+    public void givenCustomerButNoMedia_whenGetImage_thenThrowException() {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
+
+        //and: a random media
+        Media media = easyRandom.nextObject(Media.class);
+
+        //and: set the ownership between this media and customer
+        media.setCustomer(customer);
+
+        //and: mocking the customer repository to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //and: mocking the media repository to simulate that the media already exists
+        given(mediaRepository.findById(media.getId())).willReturn(Optional.empty());
+
+        //when: calling the service
+        assertThatThrownBy(() -> customerService
+                .getImage(customer.getId(), media.getId()))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        //then: the image download should not proceed
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Service);
+    }
+
+    @Test
+    @DisplayName("Failed to download an image when media does not belong to the customer")
+    public void givenCustomerAndMedia_whenMediaDoesNotBelongToCustomer_thenThrowException() {
+        //given: a random customer
+        Customer customer = easyRandom.nextObject(Customer.class);
+
+        //and: a random media
+        Media media = easyRandom.nextObject(Media.class);
+
+        //and: ensuring that media does not belong to the customer initially created
+        Customer differentCustomer = new Customer();
+        differentCustomer.setId(UUID.randomUUID());
+        media.setCustomer(differentCustomer);
+
+        //and: mocking the customer repository to simulate that the customer already exists
+        given(customerRepository.findById(customer.getId())).willReturn(Optional.of(customer));
+
+        //and: mocking the media repository to simulate that the media already exists
+        given(mediaRepository.findById(media.getId())).willReturn(Optional.of(media));
+
+        //when: calling the service
+        assertThatThrownBy(() -> customerService.getImage(customer.getId(), media.getId()))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        //then: the image download should not proceed
+        verifyNoInteractions(s3Buckets);
+        verifyNoInteractions(s3Service);
+    }
+
 }
