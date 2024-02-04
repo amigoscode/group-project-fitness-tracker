@@ -25,6 +25,8 @@ public class S3Service {
                 .key(key)
                 .build();
 
+        //TODO: this line exports PutObjectResponse. Check it for exceptions
+        //https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/handling-exceptions.html
         s3.putObject(objectRequest, RequestBody.fromBytes(file));
     }
 
