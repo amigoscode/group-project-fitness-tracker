@@ -1,43 +1,72 @@
 package com.project.trackfit.subscription;
 
+import com.project.trackfit.core.exception.ResourceNotFoundException;
+import com.project.trackfit.customer.CustomerResponse;
 import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.ICustomerService;
+import com.project.trackfit.customer.CustomerRepository;
+import com.project.trackfit.subscriptionType.ISubscriptionTypeService;
+import com.project.trackfit.subscriptionType.SubscriptionTypeResponse;
+import com.project.trackfit.subscriptionType.SubscriptionType;
+import com.project.trackfit.subscriptionType.SubscriptionTypeRepository;
 import com.project.trackfit.trainer.PersonalTrainer;
-import com.project.trackfit.trainer.IPersonalTrainerService;
-import lombok.AllArgsConstructor;
+import com.project.trackfit.trainer.PersonalTrainerResponse;
+import com.project.trackfit.trainer.PersonalTrainerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.project.trackfit.core.mapper.CommonMapper.mapToCustomerResponse;
+import static com.project.trackfit.core.mapper.CommonMapper.mapToSubscriptionResponse;
+import static com.project.trackfit.core.mapper.CommonMapper.mapToTrainerResponse;
+
 @Service
-@AllArgsConstructor
 public class SubscriptionService implements ISubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final IPersonalTrainerService IPersonalTrainerService;
-    private final ICustomerService ICustomerService;
-    private final SubscriptionRetrieveRequestMapper retrieveRequestMapper;
+    private final SubscriptionTypeRepository subscriptionTypeRepository;
+    private final PersonalTrainerRepository personalTrainerRepository;
+    private final CustomerRepository customerRepository;
+    private final ISubscriptionTypeService subscriptionTypeService;
 
-    private RetrieveSubscriptionRequest findOrThrow(final UUID subId) {
-        return subscriptionRepository
-                .findById(subId)
-                .map(retrieveRequestMapper)
-                .orElseThrow(ResolutionException::new);
+    @Autowired
+    public SubscriptionService(SubscriptionRepository subscriptionRepository,
+                               SubscriptionTypeRepository subscriptionTypeRepository,
+                               PersonalTrainerRepository personalTrainerRepository,
+                               CustomerRepository customerRepository,
+                               ISubscriptionTypeService subscriptionTypeService) {
+        this.subscriptionRepository = subscriptionRepository;
+        this.subscriptionTypeRepository = subscriptionTypeRepository;
+        this.personalTrainerRepository = personalTrainerRepository;
+        this.customerRepository = customerRepository;
+        this.subscriptionTypeService = subscriptionTypeService;
     }
 
     @Override
-    public UUID createSubscription(CreateSubscriptionRequest subscriptionRequest) {
-        PersonalTrainer trainer = IPersonalTrainerService.getTrainerByID(subscriptionRequest.personalTrainerId());
-        Customer currentCustomer = ICustomerService.getCustomerById(subscriptionRequest.customerId());
+    public UUID createSubscription(SubscriptionRequest subscriptionRequest) {
+        PersonalTrainer trainer = personalTrainerRepository
+                .findById(subscriptionRequest.personalTrainerId())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        Customer currentCustomer = customerRepository
+                .findById(subscriptionRequest.customerId())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        SubscriptionTypeResponse subscriptionTypeRequest = subscriptionTypeService.getSubscriptionTypeById(subscriptionRequest.subscriptionTypeId());
+
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById(subscriptionTypeRequest.subscription_id())
+                .orElseThrow(ResourceNotFoundException::new);
 
         Subscription subscribe = new Subscription(
-                subscriptionRequest.subscribedAt(),
-                subscriptionRequest.subscribedAt().plus(30, ChronoUnit.DAYS),
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(30),
                 currentCustomer,
-                trainer
+                trainer,
+                subscriptionType
         );
 
         subscriptionRepository.save(subscribe);
@@ -45,15 +74,28 @@ public class SubscriptionService implements ISubscriptionService {
     }
 
     @Override
-    public RetrieveSubscriptionRequest findSubscriptionByID(UUID subscription_id) {
-        return findOrThrow(subscription_id);
+    public SubscriptionResponse findSubscriptionByID(UUID subscription_id) {
+        return subscriptionRepository
+                .findById(subscription_id)
+                .map(this::mapToRetrieveSubscriptionRequest)
+                .orElseThrow(ResolutionException::new);
     }
 
     @Override
-    public Iterable<RetrieveSubscriptionRequest> findAllSubscription() {
+    public List<SubscriptionResponse> findAllSubscription() {
         return subscriptionRepository.findAll()
                 .stream()
-                .map(retrieveRequestMapper)
+                .map(this::mapToRetrieveSubscriptionRequest)
                 .collect(Collectors.toList());
+    }
+
+    private SubscriptionResponse mapToRetrieveSubscriptionRequest(Subscription subscription) {
+        Customer customer = subscription.getCustomer();
+        PersonalTrainer trainer = subscription.getPersonalTrainer();
+
+        CustomerResponse customerRequest = mapToCustomerResponse(customer);
+        PersonalTrainerResponse trainerRequest = mapToTrainerResponse(trainer);
+
+        return mapToSubscriptionResponse(subscription, customerRequest, trainerRequest);
     }
 }
