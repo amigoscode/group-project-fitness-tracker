@@ -2,8 +2,8 @@ package com.project.trackfit.measurements;
 
 import com.project.trackfit.core.exception.MeasurementNotFoundException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.entity.Customer;
-import com.project.trackfit.customer.repository.CustomerRepository;
+import com.project.trackfit.customer.Customer;
+import com.project.trackfit.customer.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

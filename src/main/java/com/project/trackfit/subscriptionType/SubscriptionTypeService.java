@@ -1,8 +1,8 @@
 package com.project.trackfit.subscriptionType;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.trainer.entity.PersonalTrainer;
-import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
+import com.project.trackfit.trainer.PersonalTrainer;
+import com.project.trackfit.trainer.PersonalTrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

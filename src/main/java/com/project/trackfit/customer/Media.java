@@ -1,11 +1,8 @@
-package com.project.trackfit.steps;
+package com.project.trackfit.customer;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.trackfit.customer.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,28 +12,28 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "daily_steps")
-public class DailySteps {
+@Table(name = "media")
+public class Media {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO,
-            generator = "UUID"
-    )
     @Column(nullable = false, updatable = false)
     private UUID id;
 
     @Column(nullable = false)
-    private String steps;
+    private String type;
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    @Column(name = "`key`", nullable = false)
+    private String key;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    public DailySteps() {
+    public Media() {
     }
 
     public UUID getId() {
@@ -47,12 +44,12 @@ public class DailySteps {
         this.id = id;
     }
 
-    public String getSteps() {
-        return steps;
+    public String getType() {
+        return type;
     }
 
-    public void setSteps(String steps) {
-        this.steps = steps;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public LocalDateTime getDate() {
@@ -61,6 +58,14 @@ public class DailySteps {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Customer getCustomer() {

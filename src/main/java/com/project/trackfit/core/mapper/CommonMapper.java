@@ -1,11 +1,11 @@
 package com.project.trackfit.core.mapper;
 
-import com.project.trackfit.customer.dto.CustomerResponse;
-import com.project.trackfit.customer.entity.Customer;
+import com.project.trackfit.customer.CustomerResponse;
+import com.project.trackfit.customer.Customer;
 import com.project.trackfit.subscription.Subscription;
 import com.project.trackfit.subscription.SubscriptionResponse;
-import com.project.trackfit.trainer.dto.TrainerResponse;
-import com.project.trackfit.trainer.entity.PersonalTrainer;
+import com.project.trackfit.trainer.PersonalTrainerResponse;
+import com.project.trackfit.trainer.PersonalTrainer;
 
 public class CommonMapper {
 
@@ -22,8 +22,8 @@ public class CommonMapper {
         );
     }
 
-    public static TrainerResponse mapToTrainerResponse(PersonalTrainer trainer) {
-        return new TrainerResponse(
+    public static PersonalTrainerResponse mapToTrainerResponse(PersonalTrainer trainer) {
+        return new PersonalTrainerResponse(
                 trainer.getId(),
                 trainer.getUser().getFirstName(),
                 trainer.getUser().getLastName(),
@@ -38,13 +38,13 @@ public class CommonMapper {
     public static SubscriptionResponse mapToSubscriptionResponse(
             Subscription subscription,
             CustomerResponse customerResponse,
-            TrainerResponse trainerResponse) {
+            PersonalTrainerResponse personalTrainerResponse) {
         return new SubscriptionResponse(
                 subscription.getId(),
                 subscription.getSubscribedAt(),
                 subscription.getExpiredOn(),
                 subscription.getActive(),
-                trainerResponse,
+                personalTrainerResponse,
                 customerResponse
         );
     }

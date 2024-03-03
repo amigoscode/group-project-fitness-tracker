@@ -1,16 +1,16 @@
 package com.project.trackfit.subscription;
 
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.dto.CustomerResponse;
-import com.project.trackfit.customer.entity.Customer;
-import com.project.trackfit.customer.repository.CustomerRepository;
+import com.project.trackfit.customer.CustomerResponse;
+import com.project.trackfit.customer.Customer;
+import com.project.trackfit.customer.CustomerRepository;
 import com.project.trackfit.subscriptionType.ISubscriptionTypeService;
 import com.project.trackfit.subscriptionType.SubscriptionTypeResponse;
 import com.project.trackfit.subscriptionType.SubscriptionType;
 import com.project.trackfit.subscriptionType.SubscriptionTypeRepository;
-import com.project.trackfit.trainer.entity.PersonalTrainer;
-import com.project.trackfit.trainer.dto.TrainerResponse;
-import com.project.trackfit.trainer.repository.PersonalTrainerRepository;
+import com.project.trackfit.trainer.PersonalTrainer;
+import com.project.trackfit.trainer.PersonalTrainerResponse;
+import com.project.trackfit.trainer.PersonalTrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,7 +94,7 @@ public class SubscriptionService implements ISubscriptionService {
         PersonalTrainer trainer = subscription.getPersonalTrainer();
 
         CustomerResponse customerRequest = mapToCustomerResponse(customer);
-        TrainerResponse trainerRequest = mapToTrainerResponse(trainer);
+        PersonalTrainerResponse trainerRequest = mapToTrainerResponse(trainer);
 
         return mapToSubscriptionResponse(subscription, customerRequest, trainerRequest);
     }

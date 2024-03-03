@@ -1,7 +1,7 @@
 package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.user.entity.ApplicationUser;
+import com.project.trackfit.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ResponseEntity<APICustomResponse> authenticateCustomer(@RequestBody AuthenticationRequest req) throws Exception {
-      ApplicationUser user;
+      User user;
 
         try {
             user = applicationConfig.authenticate(req.email(), req.password());

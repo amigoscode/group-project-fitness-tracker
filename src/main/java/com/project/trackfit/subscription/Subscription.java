@@ -2,9 +2,9 @@ package com.project.trackfit.subscription;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.trackfit.customer.entity.Customer;
+import com.project.trackfit.customer.Customer;
 import com.project.trackfit.subscriptionType.SubscriptionType;
-import com.project.trackfit.trainer.entity.PersonalTrainer;
+import com.project.trackfit.trainer.PersonalTrainer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
