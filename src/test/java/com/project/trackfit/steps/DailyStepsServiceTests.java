@@ -13,10 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,8 +37,8 @@ public class DailyStepsServiceTests {
     @Mock
     private CustomerRepository customerRepository;
 
-    private CreateDailyStepsRequest createDailyStepsRequest;
-    private RetrieveDailyStepsRequest retrieveDailyStepsRequest;
+    private DailyStepsRequest dailyStepsRequest;
+    private DailyStepsResponse dailyStepsResponse;
     private UUID customerId;
     private UUID dailyStepsId;
     private Customer customer;
@@ -54,14 +51,14 @@ public class DailyStepsServiceTests {
         customer = new Customer();
         dailySteps = new DailySteps();
 
-        createDailyStepsRequest = new CreateDailyStepsRequest(
+        dailyStepsRequest = new DailyStepsRequest(
                 "10000",
                 LocalDateTime.now(),
                 customerId,
                 null
         );
 
-        retrieveDailyStepsRequest = new RetrieveDailyStepsRequest(
+        dailyStepsResponse = new DailyStepsResponse(
                 dailyStepsId,
                 "10000",
                 LocalDateTime.now()
@@ -74,7 +71,7 @@ public class DailyStepsServiceTests {
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(dailyStepsRepository.save(any(DailySteps.class))).thenReturn(dailySteps);
 
-        dailyStepsService.createDailySteps(createDailyStepsRequest);
+        dailyStepsService.createDailySteps(dailyStepsRequest);
 
         verify(customerRepository).findById(customerId);
         verify(dailyStepsRepository).save(any(DailySteps.class));
@@ -86,39 +83,7 @@ public class DailyStepsServiceTests {
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> dailyStepsService.createDailySteps(createDailyStepsRequest)
-        );
-    }
-
-    @Test
-    @DisplayName("Should return the customer daily steps")
-    void testGetCustomerDailySteps() {
-        Set<DailySteps> dailyStepsSet = new HashSet<>();
-        dailyStepsSet.add(dailySteps);
-        customer.setSteps(dailyStepsSet);
-
-        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(dailyStepsRetrieveRequestMapper.apply(dailySteps)).thenReturn(retrieveDailyStepsRequest);
-
-        List<RetrieveDailyStepsRequest> result = dailyStepsService.getCustomerDailySteps(customerId);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(dailyStepsId, result.get(0).id());
-        assertEquals("10000", result.get(0).steps());
-
-        verify(customerRepository).findById(customerId);
-        verify(dailyStepsRetrieveRequestMapper).apply(dailySteps);
-    }
-
-    @Test
-    @DisplayName("Should throw exception when customer not found")
-    void testGetCustomerDailySteps_customerNotFound() {
-        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-
-        assertThrows(
-                ResourceNotFoundException.class,
-                () -> dailyStepsService.getCustomerDailySteps(customerId)
+                () -> dailyStepsService.createDailySteps(dailyStepsRequest)
         );
     }
 
@@ -126,9 +91,9 @@ public class DailyStepsServiceTests {
     @DisplayName("Should retrieve daily steps by id")
     void testRetrieveDailyStepsById() {
         when(dailyStepsRepository.findById(dailyStepsId)).thenReturn(Optional.of(dailySteps));
-        when(dailyStepsRetrieveRequestMapper.apply(dailySteps)).thenReturn(retrieveDailyStepsRequest);
+        when(dailyStepsRetrieveRequestMapper.apply(dailySteps)).thenReturn(dailyStepsResponse);
 
-        RetrieveDailyStepsRequest result = dailyStepsService.retrieveDailyStepsById(dailyStepsId);
+        DailyStepsResponse result = dailyStepsService.retrieveDailyStepsById(dailyStepsId);
 
         assertNotNull(result);
         assertEquals(dailyStepsId, result.id());

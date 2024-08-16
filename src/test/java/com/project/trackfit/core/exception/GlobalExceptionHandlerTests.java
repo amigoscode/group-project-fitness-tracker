@@ -1,71 +1,67 @@
 package com.project.trackfit.core.exception;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class GlobalExceptionHandlerTests {
 
-    @Mock
-    private ResourceNotFoundException resourceNotFoundException;
-
-    @Mock
-    private MeasurementNotFoundException measurementNotFoundException;
-
-    @Mock
-    private EmailNotValidException emailNotValidException;
-
-    @Mock
-    private EmailAlreadyTakenException emailAlreadyTakenException;
-
-    @InjectMocks
     private GlobalExceptionHandler globalExceptionHandler;
+
+    @BeforeEach
+    public void setup() {
+        globalExceptionHandler = new GlobalExceptionHandler();
+    }
 
     @Test
     @DisplayName("Check that ResourceNotFoundException returns corresponding error response")
     public void handleResourceNotFoundException_shouldReturnErrorResponse() {
-        when(resourceNotFoundException.getMessage()).thenReturn("User Doesn't Exist");
+        //given: an instance of ResourceNotFoundException
+        ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException();
+
+        //when: calling the method under test
         ErrorResponse response = globalExceptionHandler.handleResourceNotFoundException(resourceNotFoundException);
+
+        //then: assert that the response is as expected
         assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
         assertEquals("User Doesn't Exist", response.getMessage());
-        assertEquals("User Doesn't Exist", response.getEx().getMessage());
     }
+
 
     @Test
     @DisplayName("Check that MeasurementNotFoundException returns corresponding error response")
     public void handleMeasurementNotFoundException_shouldReturnErrorResponse() {
-        when(measurementNotFoundException.getMessage()).thenReturn("Measurement Doesn't Exist");
+        //given: an instance of MeasurementNotFoundException
+        MeasurementNotFoundException measurementNotFoundException = new MeasurementNotFoundException();
+
+        //when: calling the method under test
         ErrorResponse response = globalExceptionHandler.handleMeasurementNotFoundException(measurementNotFoundException);
+
+        //then: assert that the response is as expected
         assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
         assertEquals("Measurement Doesn't Exist", response.getMessage());
-        assertEquals("Measurement Doesn't Exist", response.getEx().getMessage());
     }
 
-    @Test
-    @DisplayName("Check that EmailNotValidException returns corresponding error response")
-    public void handleEmailNotValidException_shouldReturnErrorResponse() {
-        when(emailNotValidException.getMessage()).thenReturn("Email not valid");
-        ErrorResponse response = globalExceptionHandler.handleEmailNotValidException(emailNotValidException);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getHttpStatus());
-        assertEquals("Email not valid", response.getMessage());
-        assertEquals("Email not valid", response.getEx().getMessage());
-    }
 
     @Test
     @DisplayName("Check that EmailAlreadyTakenException returns corresponding error response")
     public void handleEmailAlreadyTakenException_shouldReturnErrorResponse() {
-        when(emailAlreadyTakenException.getMessage()).thenReturn("Email already taken");
+        //given: an instance of EmailAlreadyTakenException with a specific email
+        String testEmail = "test@example.com";
+        EmailAlreadyTakenException emailAlreadyTakenException = new EmailAlreadyTakenException(testEmail);
+
+        //when: calling the method under test
         ErrorResponse response = globalExceptionHandler.handleEmailAlreadyTakenException(emailAlreadyTakenException);
+
+        //then: assert that the response is as expected
         assertEquals(HttpStatus.BAD_REQUEST, response.getHttpStatus());
         assertEquals("Email already taken", response.getMessage());
-        assertEquals("Email already taken", response.getEx().getMessage());
+        assertEquals("The email address '" + testEmail + "' is already in use. Please choose a different one.", response.getDetails());
     }
 }

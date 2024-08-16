@@ -1,8 +1,7 @@
 package com.project.trackfit.security.jwt;
 
-import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.core.ApplicationUserRepo;
-import lombok.AllArgsConstructor;
+import com.project.trackfit.user.User;
+import com.project.trackfit.user.UserRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,26 +14,29 @@ import java.security.NoSuchAlgorithmException;
 
 
 @Service
-@AllArgsConstructor
 public class ApplicationConfig implements UserDetailsService {
 
-    private final ApplicationUserRepo applicationUserRepo;
+    private final UserRepository userRepository;
+
+    public ApplicationConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return applicationUserRepo.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(
                         () -> new UsernameNotFoundException("User not found with email: " + email)
                 );
     }
 
-    public ApplicationUser authenticate(String email, String password) throws NoSuchAlgorithmException {
+    public User authenticate(String email, String password) throws NoSuchAlgorithmException {
 
         if (email.isEmpty() || password.isEmpty()) {
             throw new BadCredentialsException("Unauthorized");
         }
 
-        var userEntity = applicationUserRepo.findByEmail(email);
+        var userEntity = userRepository.findByEmail(email);
 
         if (userEntity.isEmpty()) {
             throw new BadCredentialsException("Unauthorized");

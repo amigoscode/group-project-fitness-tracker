@@ -1,15 +1,14 @@
 package com.project.trackfit.customer;
 
-import com.project.trackfit.core.ApplicationUser;
+import com.project.trackfit.user.User;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 public interface ICustomerService {
-    UUID createCustomer(ApplicationUser applicationUser, CreateCustomerRequest createCustomerRequest);
-    Customer getCustomerById(UUID customer_id);
-    RetrieveCustomerRequest RetrieveCustomerById(UUID customer_id);
-    RetrieveCustomerRequest updateCustomer(UUID customerId,UpdateCustomerRequest updateCustomerRequest);
-    Customer getCustomerByUserId(UUID user_id);
-
+    UUID createCustomer(User user);
+    CustomerResponse getCustomerById(UUID customer_id);
+    CustomerResponse updateCustomer(UUID customerId, CustomerUpdateRequest customerUpdateRequest);
+    void uploadImage(UUID customerId, MultipartFile image);
+    byte[] getImage(UUID customerId, UUID mediaId);
 }

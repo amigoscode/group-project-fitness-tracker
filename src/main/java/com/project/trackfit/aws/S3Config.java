@@ -1,31 +1,32 @@
 package com.project.trackfit.aws;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class S3Config {
 
-    @Value("${aws.access_key_id}")
-    private String awsAccessKeyId;
-
-    @Value("${aws.secret_access_key}")
-    private String awsSecretAccessKey;
-
-    @Value("${aws.s3.region}")
+    @Value("${aws.region}")
     private String awsRegion;
 
+    @Value("${aws.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${aws.secretAccessKey}")
+    private String secretAccessKey;
+
     @Bean
-    public AmazonS3 s3client() {
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
-        return AmazonS3ClientBuilder.standard()
-                .withRegion(awsRegion)
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+    public S3Client s3Client() {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+
+        return S3Client.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                .region(Region.of(awsRegion))
                 .build();
     }
 }

@@ -4,73 +4,70 @@ import com.project.trackfit.core.exception.MeasurementNotFoundException;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
 import com.project.trackfit.customer.Customer;
 import com.project.trackfit.customer.CustomerRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class MeasurementsService implements IMeasurementsService {
 
     private final MeasurementsRepository measurementsRepository;
-    private final MeasurementsRetrieveRequestMapper measurementsRetrieveRequestMapper;
     private final CustomerRepository customerRepository;
 
+    @Autowired
+    public MeasurementsService(MeasurementsRepository measurementsRepository,
+                               CustomerRepository customerRepository) {
+        this.measurementsRepository = measurementsRepository;
+        this.customerRepository = customerRepository;
+    }
+
     @Override
-    public UUID createMeasurements(CreateMeasurementsRequest createMeasurementsRequest) {
-        Customer customer = customerRepository.findById(createMeasurementsRequest.customerId())
+    public UUID createMeasurements(MeasurementsRequest measurementsRequest) {
+        Customer customer = customerRepository.findById(measurementsRequest.customerId())
                 .orElseThrow(ResourceNotFoundException::new);
 
         Measurements measurements = new Measurements();
-        measurements.setHeight(createMeasurementsRequest.height());
-        measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.date());
+        measurements.setHeight(measurementsRequest.height());
+        measurements.setWeight(measurementsRequest.weight());
+        measurements.setDate(LocalDateTime.now());
         measurements.setCustomer(customer);
         measurementsRepository.save(measurements);
         return measurements.getId();
     }
 
     @Override
-    public List<RetrieveMeasurementsRequest> getCustomerMeasurements(UUID customerId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(ResourceNotFoundException::new);
-
-        Set<Measurements> measurementsSet = customer.getMeasurements();
-
-        return measurementsSet.stream()
-                .map(measurementsRetrieveRequestMapper)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public RetrieveMeasurementsRequest retrieveMeasurementsById(UUID measurementsId) {
-        return measurementsRepository
+    public MeasurementsResponse retrieveMeasurementsById(UUID measurementsId) {
+        Measurements measurements = measurementsRepository
                 .findById(measurementsId)
-                .map(measurementsRetrieveRequestMapper)
                 .orElseThrow(MeasurementNotFoundException::new);
+
+        return new MeasurementsResponse(
+                measurements.getId(),
+                measurements.getHeight(),
+                measurements.getWeight(),
+                measurements.getDate()
+        );
     }
 
     @Override
-    public void updateCustomerMeasurements(UUID customerId, CreateMeasurementsRequest createMeasurementsRequest) {
+    public void updateCustomerMeasurements(UUID customerId, MeasurementsRequest measurementsRequest) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(ResourceNotFoundException::new);
 
         Measurements measurements;
-        if (createMeasurementsRequest.measurementsId() != null) {
-            measurements = measurementsRepository.findById(createMeasurementsRequest.measurementsId())
+        if (measurementsRequest.measurementsId() != null) {
+            measurements = measurementsRepository.findById(measurementsRequest.measurementsId())
                     .orElseThrow(MeasurementNotFoundException::new);
         } else {
             measurements = new Measurements();
             measurements.setCustomer(customer);
         }
 
-        measurements.setHeight(createMeasurementsRequest.height());
-        measurements.setWeight(createMeasurementsRequest.weight());
-        measurements.setDate(createMeasurementsRequest.date());
+        measurements.setHeight(measurementsRequest.height());
+        measurements.setWeight(measurementsRequest.weight());
+        measurements.setDate(LocalDateTime.now());
 
         measurementsRepository.save(measurements);
     }

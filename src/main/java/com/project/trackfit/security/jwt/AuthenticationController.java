@@ -1,9 +1,8 @@
 package com.project.trackfit.security.jwt;
 
 import com.project.trackfit.core.APICustomResponse;
-import com.project.trackfit.core.ApplicationUser;
-import com.project.trackfit.core.GenericController;
-import lombok.AllArgsConstructor;
+import com.project.trackfit.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,26 +11,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import static org.springframework.http.HttpStatus.OK;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 
-
-
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "api/v1/auth/token")
-public class AuthenticationController  extends GenericController {
+public class AuthenticationController {
 
     private final JwtService jwtService;
     private final ApplicationConfig applicationConfig;
 
+    @Autowired
+    public AuthenticationController(JwtService jwtService, ApplicationConfig applicationConfig) {
+        this.jwtService = jwtService;
+        this.applicationConfig = applicationConfig;
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<APICustomResponse> authenticateCustomer(@RequestBody AuthenticationRequest req)
-            throws Exception {
-      ApplicationUser user;
+    public ResponseEntity<APICustomResponse> authenticateCustomer(@RequestBody AuthenticationRequest req) throws Exception {
+      User user;
 
         try {
             user = applicationConfig.authenticate(req.email(), req.password());
@@ -39,14 +42,18 @@ public class AuthenticationController  extends GenericController {
             throw new Exception("Incorrect username or password", e);
         }
 
-        var userDetails = applicationConfig.loadUserByUsername(user.getEmail());
+        applicationConfig.loadUserByUsername(user.getEmail());
 
         var jwt = jwtService.generateToken(user.getEmail(), user.getRole());
 
-        return createResponse(
-                Map.of("accessToken",jwt,"userRole",user.getRole()),
-                "User is authenticated successfully",
-                OK
-        ) ;
+        return ResponseEntity.status(OK)
+                .body(APICustomResponse.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("accessToken", jwt, "userRole", user.getRole()))
+                        .message("User is authenticated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+                );
     }
 }
