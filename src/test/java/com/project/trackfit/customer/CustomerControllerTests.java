@@ -2,11 +2,6 @@ package com.project.trackfit.customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.trackfit.core.exception.ResourceNotFoundException;
-import com.project.trackfit.customer.CustomerController;
-import com.project.trackfit.customer.CustomerResponse;
-import com.project.trackfit.customer.Customer;
-import com.project.trackfit.customer.CustomerUpdateRequest;
-import com.project.trackfit.customer.ICustomerService;
 import com.project.trackfit.security.jwt.JwtRequestFilter;
 import com.project.trackfit.user.User;
 import org.jeasy.random.EasyRandom;
